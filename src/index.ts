@@ -1,6 +1,5 @@
 import { wrap } from 'comlink'
-import { isNumber, throttle } from 'lodash'
-import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
+import { isNumber, throttle, times } from 'lodash'
 import './index.css'
 import {
   makeFilledParticles,
@@ -11,15 +10,16 @@ import { Simulation } from './simulation/Simulation'
 import SimulationWorker from './simulation/SimulationWorker?worker'
 import { getHashParams } from './util/getHashParams'
 import { Renderer } from './view/Renderer'
+import { Row } from './view/Row'
 
 /**
  * Initial parameters
  */
 
-const DIMENSIONS = 4
+const DIMENSIONS = 3
 const RADIUS = 14
-const DEFAULT_COUNT = 3
-const DEFAULT_SPIN = -0.004
+const DEFAULT_COUNT = 9
+const DEFAULT_SPIN = 0.007
 
 const params = getHashParams()
 const spin = isNumber(params['spin']) ? params['spin'] : DEFAULT_SPIN
@@ -39,7 +39,7 @@ window.addEventListener(
 )
 
 /**
- * Initial particles
+ * Initial particle data
  */
 
 const particlesByDimension: Particle[][] = []
@@ -61,29 +61,40 @@ const simulationWorkers = particlesByDimension.map((particles) => {
   return simulationWorker
 })
 
-// TEMP TEST
-const intervalId = setInterval(async () => {
-  await Promise.all(simulationWorkers.map((sw) => sw.tick()))
-  const data = await Promise.all(simulationWorkers.map((sw) => sw.getData()))
-  console.log(data)
-}, 1000)
-window.addEventListener('blur', () => clearInterval(intervalId))
-
 /**
- * Testing three.js
+ * Visualization rows
  */
 
-const geometry = new BoxGeometry(1, 1, 1)
-const material = new MeshBasicMaterial({ color: 0x00ff00 })
-const cube = new Mesh(geometry, material)
+const rows = times(DIMENSIONS + 1, (i) => {
+  const row = new Row({
+    dimensions: i,
+    radius: RADIUS,
+    x: 0,
+    y: 80 - i * (3.5 * 12),
+    z: 0,
+  })
+  renderer.scene.add(row.getObject())
+  return row
+})
 
-renderer.scene.add(cube)
+/**
+ * Animation loop
+ */
 
-function animate() {
-  requestAnimationFrame(animate)
-  cube.rotation.x += 0.01
-  cube.rotation.y += 0.01
+const animate = async () => {
+  requestAnimationFrame(() => void animate())
+  // Tick simulation workers and collect new data
+  const responses = await Promise.all(simulationWorkers.map((w) => w.tick()))
+  // Update rows with new data, and spin
+  rows.forEach((row, i) => {
+    const newData = responses[i]
+    if (!newData) throw new Error('Unreachable')
+    row.update(newData)
+    row.rotate(spin)
+  })
+  // Render changes
   renderer.render()
 }
 
-animate()
+// Begin
+void animate()

@@ -12,6 +12,11 @@ interface SimulationConfig {
   radius: number
 }
 
+export interface SimulationData {
+  particles: Particle[]
+  neighborhood: Neighborhood
+}
+
 const DEFAULT_CONFIG: SimulationConfig = {
   behavior: {
     name: 'orbiting',
@@ -44,7 +49,7 @@ export class Simulation {
     this.config = { ...this.config, ...config }
   }
 
-  tick() {
+  tick(): SimulationData {
     // Reset accelerations
     this.particles.forEach(
       (p) => (p.acceleration = multiply(p.acceleration, 0)),
@@ -79,9 +84,8 @@ export class Simulation {
 
     // Re-calculate particle relations
     this.neighborhood = getNeighborhood(this.particles)
-  }
 
-  getData() {
+    // Return new data
     return {
       particles: this.particles,
       neighborhood: this.neighborhood,

@@ -17,6 +17,8 @@ module.exports = {
   rules: {
     // Allow vars like "_myVar"
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    // Mark class props as readonly if possible
+    '@typescript-eslint/prefer-readonly': 'error',
     // Add curlies on multi-line statements (combines with prettier)
     curly: ['error', 'multi-line'],
     // Require strict equality checking

@@ -8,6 +8,18 @@ export interface Particle {
   acceleration: VectorN
 }
 
+export const cloneParticle = ({
+  dimensions,
+  position,
+  velocity,
+  acceleration,
+}: Particle) => ({
+  dimensions,
+  position: [...position],
+  velocity: [...velocity],
+  acceleration: [...acceleration],
+})
+
 export const makeFreshParticles = (
   dimensions: number,
   radius: number,
