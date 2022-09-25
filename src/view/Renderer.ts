@@ -12,11 +12,12 @@ export class Renderer {
   private readonly renderer: THREE.WebGLRenderer
   private readonly camera: THREE.PerspectiveCamera
 
-  constructor(width: number, height: number) {
+  constructor(width: number, height: number, canvas?: HTMLCanvasElement) {
     // Set up renderer
     this.renderer = new WebGLRenderer({
       antialias: true,
       alpha: true,
+      canvas,
     })
     this.renderer.setSize(width, height)
 

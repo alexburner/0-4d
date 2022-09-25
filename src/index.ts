@@ -1,5 +1,5 @@
 import { wrap } from 'comlink'
-import { isNumber, throttle, times } from 'lodash'
+import { isNumber, times } from 'lodash'
 import './index.css'
 import {
   makeFilledParticles,
@@ -16,34 +16,35 @@ import { Row } from './view/Row'
  * Initial parameters
  */
 
-const DIMENSIONS = 3
+const WIDTH = 900
+const HEIGHT = 720
 const RADIUS = 14
 const DEFAULT_COUNT = 9
 const DEFAULT_SPIN = 0.007
+const DEFAULT_DIMENSIONS = 3
 
 const params = getHashParams()
 const spin = isNumber(params['spin']) ? params['spin'] : DEFAULT_SPIN
 const count = isNumber(params['count']) ? params['count'] : DEFAULT_COUNT
+const dimensions = isNumber(params['d']) ? params['d'] : DEFAULT_DIMENSIONS
+const dimensionCount = dimensions + 1 // for zero
 
 /**
  * Three.js Renderer
  */
 
-const renderer = new Renderer(window.innerWidth, window.innerHeight)
-document.body.appendChild(renderer.canvas)
-window.addEventListener(
-  'resize',
-  throttle(() => renderer.resize(window.innerWidth, window.innerHeight), 100, {
-    trailing: true,
-  }),
-)
+const canvas = document.createElement('canvas')
+canvas.style.display = 'block'
+canvas.style.margin = '2% auto'
+document.body.appendChild(canvas)
+const renderer = new Renderer(WIDTH, HEIGHT, canvas)
 
 /**
  * Initial particle data
  */
 
 const particlesByDimension: Particle[][] = []
-for (let dimension = 0; dimension < DIMENSIONS + 1; dimension++) {
+for (let dimension = 0; dimension < dimensionCount; dimension++) {
   const prevParticles = particlesByDimension[dimension - 1]
   const nextParticles = prevParticles
     ? makeFilledParticles(dimension, RADIUS, prevParticles)
@@ -65,7 +66,7 @@ const simulationWorkers = particlesByDimension.map((particles) => {
  * Visualization rows
  */
 
-const rows = times(DIMENSIONS + 1, (i) => {
+const rows = times(dimensionCount, (i) => {
   const row = new Row({
     dimensions: i,
     radius: RADIUS,
