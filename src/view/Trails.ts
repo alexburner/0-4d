@@ -117,9 +117,6 @@ export class TimeTrails extends Trails {
       particleQueue.values().forEach((particle) => {
         const z = particle.position[2] ?? 0
         particle.position[2] = z - this.trailGap
-        if (particle.position.length < 3) {
-          console.log(particle.position[2])
-        }
       })
     })
 
