@@ -8,7 +8,7 @@ Things through space and time
 
 ```
 https://alexburner.github.io/0-4d/
-#d=4                  <- dimensions
+#d=5                  <- dimensions
 &count=24             <- particles
 &behavior=wandering   <- behavior
 &bounding=edgeBinding <- bounding
