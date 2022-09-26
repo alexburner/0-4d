@@ -2,7 +2,7 @@
 
 Things through space and time
 
-[<img width="1245" alt="Screen Shot 2022-09-25 at 5 41 21 PM" src="https://user-images.githubusercontent.com/409114/192173606-13fd91f3-927f-4b03-8b6b-a70b7eb7879c.png">](https://alexburner.github.io/0-4d/)
+[<img width="600" alt="Screen Shot 2022-09-26 at 7 15 08 AM" src="https://user-images.githubusercontent.com/409114/192299641-d08aed2a-4b9e-4500-bc1f-3426dbb7ba38.png">](https://alexburner.github.io/0-4d/)
 
 ## URL Params
 
