@@ -7,8 +7,6 @@ import { add, limitMagnitude, multiply } from './VectorN'
 interface SimulationConfig {
   behavior: Behavior
   bounding: Bounding
-  maxForce: number
-  maxSpeed: number
   radius: number
 }
 
@@ -17,39 +15,21 @@ export interface SimulationData {
   neighborhood: Neighborhood
 }
 
-const DEFAULT_CONFIG: SimulationConfig = {
-  behavior: {
-    name: 'orbiting',
-    config: {
-      mass: {
-        g: 1,
-        orbiter: 10,
-        attractor: 30,
-      },
-      distance: {
-        min: 50,
-        max: 250,
-      },
-    },
-  },
-  bounding: 'centerScaling',
-  maxForce: 1,
-  maxSpeed: 1,
-  radius: 1,
-}
-
 export class Simulation {
+  private config?: SimulationConfig
   private particles: Particle[] = []
   private neighborhood: Neighborhood = []
-  private config: SimulationConfig = DEFAULT_CONFIG
+  private readonly maxSpeed = 1
 
-  init(particles: Particle[], config: Partial<SimulationConfig> = {}) {
+  init(particles: Particle[], config: SimulationConfig) {
+    this.config = config
     this.particles = particles
     this.neighborhood = getNeighborhood(particles)
-    this.config = { ...this.config, ...config }
   }
 
   tick(): SimulationData {
+    if (!this.config) throw new Error('Simulation tick before init')
+
     // Reset accelerations
     this.particles.forEach(
       (p) => (p.acceleration = multiply(p.acceleration, 0)),
@@ -68,7 +48,7 @@ export class Simulation {
     // Update positions
     this.particles.forEach((p) => {
       p.velocity = add(p.velocity, p.acceleration)
-      p.velocity = limitMagnitude(p.velocity, this.config.maxSpeed)
+      p.velocity = limitMagnitude(p.velocity, this.maxSpeed)
       p.position = add(p.position, p.velocity)
     })
 
