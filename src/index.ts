@@ -18,12 +18,12 @@ import { Row } from './view/Row'
  */
 
 // Constants
-const WIDTH = 900
-const HEIGHT = 800
+const WIDTH = 1440
+const HEIGHT = 2560
 const RADIUS = 14
 const DEFAULT_COUNT = 9
-const DEFAULT_SPIN = 0.007
-const DEFAULT_DIMENSIONS = 4
+const DEFAULT_SPIN = 0.02
+const DEFAULT_DIMENSIONS = 16
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 const DEFAULT_BOUNDING = 'centerScaling'
 
@@ -50,7 +50,7 @@ const behavior = behaviors[behaviorName]
 // Create & append canvas
 const canvas = document.createElement('canvas')
 canvas.style.display = 'block'
-canvas.style.margin = '4% auto'
+canvas.style.margin = 'auto'
 document.body.appendChild(canvas)
 
 // Create renderer
@@ -93,7 +93,7 @@ const rows = times(dimensionCount, (i) => {
     dimensions: i,
     radius: RADIUS,
     x: 0,
-    y: 100 - i * (3.5 * 12),
+    y: 330 - i * (3.5 * 12),
     z: 0,
   })
   renderer.scene.add(row.getObject())
@@ -106,8 +106,12 @@ const rows = times(dimensionCount, (i) => {
 
 const animate = async () => {
   requestAnimationFrame(() => void animate())
+  // Render scene
+  renderer.render()
+
   // Tick simulation workers and collect new data
   const responses = await Promise.all(simulationWorkers.map((w) => w.tick()))
+
   // Update rows with new data, and spin
   rows.forEach((row, i) => {
     const newData = responses[i]
@@ -115,8 +119,6 @@ const animate = async () => {
     row.update(newData)
     row.rotate(spin)
   })
-  // Render changes
-  renderer.render()
 }
 
 // Begin
