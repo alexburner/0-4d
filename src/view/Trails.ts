@@ -108,7 +108,7 @@ export class TimeTrails extends Trails {
 
   constructor() {
     super()
-    this.trailLength = 800
+    this.trailLength = 1200
   }
 
   update(data: SimulationData) {

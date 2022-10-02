@@ -89,11 +89,13 @@ const simulationWorkers = particlesByDimension.map((particles) => {
  */
 
 const rows = times(dimensionCount, (i) => {
+  let y = 330 - i * (3.5 * 12)
+  if (i > 3) y -= (3.5 * 12) / 2
   const row = new Row({
     dimensions: i,
     radius: RADIUS,
     x: 0,
-    y: 330 - i * (3.5 * 12),
+    y,
     z: 0,
   })
   renderer.scene.add(row.getObject())

@@ -30,6 +30,7 @@ export class Renderer {
     // Set up camera
     this.camera = new PerspectiveCamera(VIEWANGLE, width / height, NEAR, FAR)
     this.camera.position.z = 40 * ZOOM
+    this.camera.position.x = 50
   }
 
   render() {
