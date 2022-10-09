@@ -22,6 +22,12 @@ export const behaviors: Record<Behavior['name'], Behavior> = {
       jitter: 0.3,
     },
   },
+  diffusion: {
+    name: 'diffusion',
+    config: {
+      charge: 0.0000000001,
+    },
+  },
 }
 
 export const isBehaviorName = (val: unknown): val is Behavior['name'] =>

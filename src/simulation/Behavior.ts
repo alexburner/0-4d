@@ -1,4 +1,5 @@
 import { clamp } from 'lodash'
+import { Neighborhood } from './Neighborhood'
 import { Particle } from './Particle'
 import {
   add,
@@ -9,7 +10,7 @@ import {
   setMagnitude,
 } from './VectorN'
 
-export type Behavior = OrbitingBehavior | WanderingBehavior
+export type Behavior = OrbitingBehavior | WanderingBehavior | DiffusionBehavior
 
 /**
  * Orbiting
@@ -65,5 +66,40 @@ export const wandering = (
     // Generate random acceleration & add to particle
     const acceleration = randomVector(particle.dimensions, config.jitter)
     particle.acceleration = add(particle.acceleration, acceleration)
+  })
+}
+
+/**
+ * Diffusion
+ */
+
+interface DiffusionBehavior {
+  name: 'diffusion'
+  config: { charge: number }
+}
+
+export const diffusion = (
+  particles: Particle[],
+  neighborhood: Neighborhood,
+  config: DiffusionBehavior['config'],
+) => {
+  // Only works if more than 1 particle
+  if (particles.length < 1) return
+
+  // Compare every particle to nearest neighbor
+  const count = particles.length
+  const countSq = count * count
+  const chargeSq = config.charge * config.charge
+  particles.forEach((particle, i) => {
+    const neighbors = neighborhood[i]
+    if (!neighbors) return
+    const nearestNeighbor = neighbors[0]
+    if (!nearestNeighbor) return
+    const { delta, distance } = nearestNeighbor
+    // Set force magnitude with inverse square law + magic
+    const distanceSq = distance > 0 ? distance * distance : 1
+    const force = setMagnitude(delta, chargeSq / distanceSq / countSq)
+    // Accelerate away from neighbor
+    particle.acceleration = add(particle.acceleration, force)
   })
 }
