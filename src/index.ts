@@ -2,6 +2,10 @@ import { wrap } from 'comlink'
 import { isNumber, times } from 'lodash'
 import { behaviors, isBehaviorName, isBounding } from './config'
 import './index.css'
+import { Renderer } from './render/Renderer'
+import { Row } from './render/row/Row'
+import { TrailingSpaceView } from './render/views/trailing/TrailingSpaceView'
+import { TrailingTimeView } from './render/views/trailing/TrailingTimeView'
 import {
   makeFilledParticles,
   makeFreshParticles,
@@ -10,18 +14,16 @@ import {
 import { Simulation } from './simulation/Simulation'
 import SimulationWorker from './simulation/SimulationWorker?worker'
 import { getHashParams } from './util/getHashParams'
-import { Renderer } from './view/Renderer'
-import { Row } from './view/Row'
 
 /**
  * Initial parameters
  */
 
-const ugh = 1440 / 1980
+const lol = 1440 / 1980
 
 // Constants
-const WIDTH = 1920 * ugh
-const HEIGHT = 1080 * ugh
+const WIDTH = 1920 * lol
+const HEIGHT = 1080 * lol
 const RADIUS = 14
 const DEFAULT_COUNT = 9
 const DEFAULT_SPIN = 0.0125
@@ -97,8 +99,10 @@ const rows = times(dimensionCount, (i) => {
     x: 0,
     y: 85 - i * (3.5 * 12),
     z: 0,
+    spaceView: new TrailingSpaceView(),
+    timeView: new TrailingTimeView(),
   })
-  renderer.scene.add(row.getObject())
+  renderer.scene.add(row.group)
   return row
 })
 

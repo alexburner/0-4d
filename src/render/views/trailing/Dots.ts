@@ -7,7 +7,7 @@ import {
   Points,
   PointsMaterial,
 } from 'three'
-import { SimulationData } from '../simulation/Simulation'
+import { SimulationData } from '../../../simulation/Simulation'
 
 const MAX_POINTS = 1000
 const DOT_SIZE = 4

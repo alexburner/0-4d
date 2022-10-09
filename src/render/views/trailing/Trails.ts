@@ -7,9 +7,9 @@ import {
   Points,
   PointsMaterial,
 } from 'three'
-import { cloneParticle, Particle } from '../simulation/Particle'
-import { SimulationData } from '../simulation/Simulation'
-import { RecentQueue } from '../util/RecentQueue'
+import { cloneParticle, Particle } from '../../../simulation/Particle'
+import { SimulationData } from '../../../simulation/Simulation'
+import { RecentQueue } from '../../../util/RecentQueue'
 
 const TRAIL_LENGTH = 200
 const MAX_POINTS = TRAIL_LENGTH * 100
