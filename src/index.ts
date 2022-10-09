@@ -17,13 +17,15 @@ import { Row } from './view/Row'
  * Initial parameters
  */
 
+const ugh = 1440 / 1980
+
 // Constants
-const WIDTH = 1440
-const HEIGHT = 2560
+const WIDTH = 1920 * ugh
+const HEIGHT = 1080 * ugh
 const RADIUS = 14
 const DEFAULT_COUNT = 9
-const DEFAULT_SPIN = 0.02
-const DEFAULT_DIMENSIONS = 16
+const DEFAULT_SPIN = 0.0125
+const DEFAULT_DIMENSIONS = 4
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 const DEFAULT_BOUNDING = 'centerScaling'
 
@@ -89,13 +91,11 @@ const simulationWorkers = particlesByDimension.map((particles) => {
  */
 
 const rows = times(dimensionCount, (i) => {
-  let y = 330 - i * (3.5 * 12)
-  if (i > 3) y -= (3.5 * 12) / 2
   const row = new Row({
     dimensions: i,
     radius: RADIUS,
     x: 0,
-    y,
+    y: 100 - i * (3.5 * 12),
     z: 0,
   })
   renderer.scene.add(row.getObject())

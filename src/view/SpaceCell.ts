@@ -5,7 +5,7 @@ import { makeSquarePlane } from './plane'
 import { SpaceArgs } from './Row'
 import { Trails } from './Trails'
 
-const ROTATE_AXIS = new Vector3(1, 0, 0)
+const ROTATE_AXIS = new Vector3(0, 1, 0)
 
 export class SpaceCell {
   private readonly dimensions: number
