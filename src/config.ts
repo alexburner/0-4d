@@ -27,7 +27,7 @@ export const behaviors: Record<Behavior['name'], Behavior> = {
 export const isBehaviorName = (val: unknown): val is Behavior['name'] =>
   typeof val === 'string' && val in behaviors
 
-const boundings = new Set(['centerScaling', 'edgeBinding'])
+const boundings = new Set(['centerScaling', 'edgeBinding', 'edgeWrapping'])
 export const isBounding = (val: unknown): val is Bounding =>
   typeof val === 'string' && boundings.has(val)
 

@@ -1,5 +1,5 @@
 import { Behavior, orbiting, wandering } from './Behavior'
-import { Bounding, centerScaling, edgeBinding } from './Bounding'
+import { Bounding, centerScaling, edgeBinding, edgeWrapping } from './Bounding'
 import { getNeighborhood, Neighborhood } from './Neighborhood'
 import { Particle } from './Particle'
 import { add, limitMagnitude, multiply } from './VectorN'
@@ -59,6 +59,9 @@ export class Simulation {
         break
       case 'edgeBinding':
         edgeBinding(this.particles, this.config.radius)
+        break
+      case 'edgeWrapping':
+        edgeWrapping(this.particles, this.config.radius)
         break
     }
 

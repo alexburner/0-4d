@@ -1,8 +1,8 @@
 import { max } from 'lodash'
 import { Particle } from './Particle'
-import { getMagnitudeSq, multiply, setMagnitude } from './VectorN'
+import { getMagnitude, getMagnitudeSq, multiply, setMagnitude } from './VectorN'
 
-export type Bounding = 'centerScaling' | 'edgeBinding'
+export type Bounding = 'centerScaling' | 'edgeBinding' | 'edgeWrapping'
 
 /**
  * Scale all particle positions to be within radius of center
@@ -36,4 +36,20 @@ export const edgeBinding = (
   particles.forEach(
     (p) => (p.position = setMagnitude(p.position, targetRadius)),
   )
+}
+
+/**
+ * Wrap particles across radial edges
+ */
+export const edgeWrapping = (
+  particles: Particle[],
+  targetRadius: number,
+): void => {
+  particles.forEach((p) => {
+    const radius = getMagnitude(p.position)
+    if (radius > targetRadius) {
+      p.position = setMagnitude(p.position, targetRadius)
+      p.position = p.position.map((v) => -v)
+    }
+  })
 }
