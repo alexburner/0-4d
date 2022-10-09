@@ -4,7 +4,7 @@ import { getMagnitude, subtract, VectorN } from './VectorN'
 /**
  * A relation from one Particle to another
  */
-interface Neighbor {
+export interface Neighbor {
   index: number
   distance: number
   delta: VectorN

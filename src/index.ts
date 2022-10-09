@@ -1,9 +1,11 @@
 import { wrap } from 'comlink'
 import { isNumber, times } from 'lodash'
-import { behaviors, isBehaviorName, isBounding } from './config'
+import { behaviors, isBehaviorName, isBounding, isViewName } from './config'
 import './index.css'
 import { Renderer } from './render/Renderer'
 import { Row } from './render/row/Row'
+import { StackingSpaceView } from './render/views/stacking/StackingSpaceView'
+import { StackingTimeView } from './render/views/stacking/StackingTimeView'
 import { TrailingSpaceView } from './render/views/trailing/TrailingSpaceView'
 import { TrailingTimeView } from './render/views/trailing/TrailingTimeView'
 import {
@@ -30,6 +32,7 @@ const DEFAULT_SPIN = 0.0125
 const DEFAULT_DIMENSIONS = 4
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 const DEFAULT_BOUNDING = 'centerScaling'
+const DEFAULT_VIEW_NAME = 'trailing'
 
 // Url params
 const params = getHashParams()
@@ -38,6 +41,7 @@ const count = isNumber(params['count']) ? params['count'] : DEFAULT_COUNT
 const dimensions = isNumber(params['d']) ? params['d'] : DEFAULT_DIMENSIONS
 const behaviorParam = params['behavior']
 const boundingParam = params['bounding']
+const viewParam = params['view']
 
 // Derived
 const dimensionCount = dimensions + 1 // for zero
@@ -46,6 +50,10 @@ const behaviorName = isBehaviorName(behaviorParam)
   ? behaviorParam
   : DEFAULT_BEHAVIOR_NAME
 const behavior = behaviors[behaviorName]
+const viewName = isViewName(viewParam) ? viewParam : DEFAULT_VIEW_NAME
+const SpaceView =
+  viewName === 'trailing' ? TrailingSpaceView : StackingSpaceView
+const TimeView = viewName === 'trailing' ? TrailingTimeView : StackingTimeView
 
 /**
  * Three.js Renderer
@@ -99,8 +107,8 @@ const rows = times(dimensionCount, (i) => {
     x: 0,
     y: 85 - i * (3.5 * 12),
     z: 0,
-    spaceView: new TrailingSpaceView(),
-    timeView: new TrailingTimeView(),
+    spaceView: new SpaceView(),
+    timeView: new TimeView(),
   })
   renderer.scene.add(row.group)
   return row

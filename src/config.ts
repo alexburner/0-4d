@@ -24,10 +24,15 @@ export const behaviors: Record<Behavior['name'], Behavior> = {
   },
 }
 
-const boundings = new Set(['centerScaling', 'edgeBinding'])
-
 export const isBehaviorName = (val: unknown): val is Behavior['name'] =>
   typeof val === 'string' && val in behaviors
 
+const boundings = new Set(['centerScaling', 'edgeBinding'])
 export const isBounding = (val: unknown): val is Bounding =>
   typeof val === 'string' && boundings.has(val)
+
+const viewNames = ['stacking', 'trailing'] as const
+const viewNameSet = new Set<string>(viewNames)
+type ViewName = typeof viewNames[number]
+export const isViewName = (val: unknown): val is ViewName =>
+  typeof val === 'string' && viewNameSet.has(val)

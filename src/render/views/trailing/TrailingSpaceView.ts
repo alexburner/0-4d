@@ -1,8 +1,8 @@
 import { Group } from 'three'
 import { SimulationData } from '../../../simulation/Simulation'
 import { AbstractView } from '../AbstractView'
-import { Dots } from './Dots'
-import { Trails } from './Trails'
+import { Dots } from '../Dots'
+import { Trails } from '../Trails'
 
 export class TrailingSpaceView extends AbstractView {
   readonly group: Group

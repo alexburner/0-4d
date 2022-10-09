@@ -4,12 +4,13 @@ import {
   BufferGeometry,
   CanvasTexture,
   DynamicDrawUsage,
+  Object3D,
   Points,
   PointsMaterial,
 } from 'three'
-import { cloneParticle, Particle } from '../../../simulation/Particle'
-import { SimulationData } from '../../../simulation/Simulation'
-import { RecentQueue } from '../../../util/RecentQueue'
+import { cloneParticle, Particle } from '../../simulation/Particle'
+import { SimulationData } from '../../simulation/Simulation'
+import { RecentQueue } from '../../util/RecentQueue'
 
 const TRAIL_LENGTH = 200
 const MAX_POINTS = TRAIL_LENGTH * 100
@@ -64,7 +65,7 @@ export class Trails {
   update({ particles }: SimulationData) {
     // (maybe) Add queues to fit
     while (this.particleQueues.length < particles.length) {
-      this.particleQueues.push(new RecentQueue<Particle>(this.trailLength))
+      this.particleQueues.push(new RecentQueue(this.trailLength))
     }
 
     // (maybe) Remove queues to fit
@@ -98,29 +99,7 @@ export class Trails {
     this.particleQueues = []
   }
 
-  getObject(): THREE.Object3D {
+  getObject(): Object3D {
     return this.pointCloud
-  }
-}
-
-export class TimeTrails extends Trails {
-  private readonly trailGap = 1 / 4
-
-  constructor() {
-    super()
-    this.trailLength = 1200
-  }
-
-  update(data: SimulationData) {
-    // Give each existing particle a nudge in z space
-    this.particleQueues.forEach((particleQueue) => {
-      particleQueue.values().forEach((particle) => {
-        const z = particle.position[2] ?? 0
-        particle.position[2] = z - this.trailGap
-      })
-    })
-
-    // Plain Trail update
-    super.update(data)
   }
 }
