@@ -3,7 +3,7 @@ import { PerspectiveCamera, Scene, WebGLRenderer } from 'three'
 const VIEWANGLE = 45
 const NEAR = 1
 const FAR = 5000
-const ZOOM = 8
+const ZOOM = 7
 
 export class Renderer {
   readonly scene: Scene

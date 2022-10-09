@@ -95,7 +95,7 @@ const rows = times(dimensionCount, (i) => {
     dimensions: i,
     radius: RADIUS,
     x: 0,
-    y: 100 - i * (3.5 * 12),
+    y: 85 - i * (3.5 * 12),
     z: 0,
   })
   renderer.scene.add(row.getObject())

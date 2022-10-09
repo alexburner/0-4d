@@ -33,7 +33,7 @@ export class TimeCell {
 
   rotate(spin: number) {
     if (this.dimensions < 2) return
-    this.group.rotateOnAxis(ROTATE_AXIS, -spin)
+    this.group.rotateOnAxis(ROTATE_AXIS, spin)
   }
 
   getObject(): Object3D {
