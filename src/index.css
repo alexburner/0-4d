@@ -1,10 +1,23 @@
 :root {
   background: #161616;
   color: #efefef;
+  font-family: sans-serif;
 }
 
 html,
 body {
   margin: 0;
   padding: 0;
+}
+
+a,
+a:active,
+a:hover,
+a:visited {
+  color: #efefef;
+}
+
+.page {
+  width: 600px;
+  margin: 4% auto;
 }

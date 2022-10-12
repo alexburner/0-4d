@@ -1,8 +1,8 @@
-import { Canvas } from '@react-three/fiber'
 import { FC } from 'react'
 import { useHash } from 'react-use'
 import { Home } from './routes/Home'
 import { NotFound } from './routes/NotFound'
+import { Orbits } from './routes/Orbits'
 import { SpinningBox } from './routes/SpinningBox'
 import { parseHashRoute } from './util/hashRoute'
 
@@ -13,11 +13,9 @@ export const App: FC = () => {
     case '':
       return <Home />
     case 'spinningBox':
-      return (
-        <Canvas>
-          <SpinningBox />
-        </Canvas>
-      )
+      return <SpinningBox />
+    case 'orbits':
+      return <Orbits route={route} />
     default:
       return <NotFound route={route} />
   }
