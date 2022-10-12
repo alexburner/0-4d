@@ -1,5 +1,11 @@
+import { Canvas } from '@react-three/fiber'
 import { FC } from 'react'
 
 export const App: FC = () => (
-  <>Hello World</>
+  <Canvas>
+    <mesh>
+      <boxGeometry />
+      <meshNormalMaterial />
+    </mesh>
+  </Canvas>
 )
