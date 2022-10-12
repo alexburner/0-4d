@@ -1,24 +1,24 @@
-import { Canvas, useFrame } from '@react-three/fiber'
-import { FC, useRef } from 'react'
-import { Mesh, Vector3 } from 'three'
+import { Canvas } from '@react-three/fiber'
+import { FC } from 'react'
+import { useHash } from 'react-use'
+import { Home } from './routes/Home'
+import { NotFound } from './routes/NotFound'
+import { SpinningBox } from './routes/SpinningBox'
+import { parseHashRoute } from './util/hashRoute'
 
-export const App: FC = () => (
-  <Canvas>
-    <SpinningBox />
-  </Canvas>
-)
-
-const ROTATE_AXIS = new Vector3(1, 0, 0)
-
-const SpinningBox: FC = () => {
-  const meshRef = useRef<Mesh>()
-  useFrame((_state, delta) => {
-    meshRef.current?.rotateOnAxis(ROTATE_AXIS, delta)
-  })
-  return (
-    <mesh ref={meshRef}>
-      <boxGeometry />
-      <meshNormalMaterial />
-    </mesh>
-  )
+export const App: FC = () => {
+  const [hash] = useHash()
+  const route = parseHashRoute(hash)
+  switch (route.path) {
+    case '':
+      return <Home />
+    case 'spinningBox':
+      return (
+        <Canvas>
+          <SpinningBox />
+        </Canvas>
+      )
+    default:
+      return <NotFound route={route} />
+  }
 }
