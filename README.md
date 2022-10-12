@@ -1,23 +1,15 @@
-# 0-4d
+# `download-selected`
 
-Things through space and time
+A list of items, built with Vite + React + TypeScript
 
-[<img width="600" alt="Screen Shot 2022-09-26 at 7 15 08 AM" src="https://user-images.githubusercontent.com/409114/192299641-d08aed2a-4b9e-4500-bc1f-3426dbb7ba38.png">](https://alexburner.github.io/0-4d/)
+https://alexburner.github.io/download-selected
 
-## URL Params
-
-```
-https://alexburner.github.io/0-4d/
-#d=5                  <- dimensions
-&count=24             <- particles
-&behavior=wandering   <- behavior
-&bounding=edgeBinding <- bounding
-```
+<img width="1041" alt="Screen Shot 2022-10-08 at 5 27 58 PM" src="https://user-images.githubusercontent.com/409114/194732146-beb6fb9f-743b-464a-96ad-1ce9a8a7facd.png">
 
 ## Development
 
 ```sh
-npm run dev # run dev server
+npm run dev      # run dev server
 
 npm run eslint   # run eslint --fix
 npm run prettier # run prettier

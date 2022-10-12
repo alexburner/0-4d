@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  ignorePatterns: '**/*.js',
+  ignorePatterns: ['**/*.js', '**/*.cjs'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     tsconfigRootDir: __dirname,
@@ -10,8 +10,11 @@ module.exports = {
   extends: [
     // Cascading priority: each subsequent ruleset overrides overlaps in previous
     'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:@typescript-eslint/strict',
     'prettier', // Must be last: turns off any rules that prettier can handle
   ],
   rules: {
@@ -23,6 +26,12 @@ module.exports = {
     curly: ['error', 'multi-line'],
     // Require strict equality checking
     eqeqeq: 'error',
+    // Not needed for vite/esbuild transpilation
+    'react/react-in-jsx-scope': 0,
+    // Not needed with TypeScript
+    'react/prop-types': 0,
+    // Prevent extra tags for components without children
+    'react/self-closing-comp': 'error',
     // Prevent missed `await` keywords
     'require-await': 'error',
     // Prevents some real head-scratcher bugs
