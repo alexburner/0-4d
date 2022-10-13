@@ -2,18 +2,29 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy, wrap } from 'comlink'
 import { times } from 'lodash'
 import { FC, useEffect, useMemo } from 'react'
+import create from 'zustand'
 import {
   makeFilledParticles,
   makeFreshParticles,
   Particle,
 } from '../simulation/particles'
-import { Simulation } from '../simulation/Simulation'
+import { Simulation, SimulationData } from '../simulation/Simulation'
 import SimulationWorker from '../simulation/SimulationWorker?worker'
 import { HashRoute } from '../util/hashRoute'
 
 const PARTICLE_COUNT = 12
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
+
+interface SimulationStore {
+  simulations: SimulationData[] | undefined
+  updateSimulations: (next: SimulationData[]) => void
+}
+
+const useSimulationsStore = create<SimulationStore>((set) => ({
+  simulations: undefined,
+  updateSimulations: (next) => set({ simulations: next }),
+}))
 
 export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
   <Canvas>
@@ -26,6 +37,17 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
 
   const particlesByDimension = useMemo(() => createParticlesByDimension(), [])
   const workers = useMemo(() => createWorkers(), [])
+
+  // TODO next: subscribe to transient store updates elsewhere
+
+  const updateSimulations = useSimulationsStore(
+    (state) => state.updateSimulations,
+  )
+
+  const tickWorkers = async () => {
+    const updates = await Promise.all(workers.map((worker) => worker.tick()))
+    updateSimulations(updates)
+  }
 
   // Worker init & release
   useEffect(() => {
@@ -57,13 +79,7 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
     }
   }, [particlesByDimension, workers])
 
-  useFrame(() => {
-    workers.forEach((worker) => {
-      // TODO push resulting simulation data into zustrand
-      // so it can be transiently consumed by descendants
-      void worker.tick().then((simulationData) => console.log(simulationData))
-    })
-  })
+  useFrame(() => void tickWorkers())
 
   return null
 }
