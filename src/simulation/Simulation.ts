@@ -8,6 +8,7 @@ interface SimulationConfig {
   behavior: Behavior
   bounding: Bounding
   radius: number
+  maxSpeed: 1
 }
 
 export interface SimulationData {
@@ -19,7 +20,6 @@ export class Simulation {
   private config?: SimulationConfig
   private particles: Particle[] = []
   private neighborhood: Neighborhood = []
-  private readonly maxSpeed = 1
 
   init(particles: Particle[], config: SimulationConfig) {
     this.config = config
@@ -48,7 +48,7 @@ export class Simulation {
     // Update positions
     this.particles.forEach((p) => {
       p.velocity = add(p.velocity, p.acceleration)
-      p.velocity = limitMagnitude(p.velocity, this.maxSpeed)
+      p.velocity = limitMagnitude(p.velocity, this.config?.maxSpeed ?? 1)
       p.position = add(p.position, p.velocity)
     })
 
