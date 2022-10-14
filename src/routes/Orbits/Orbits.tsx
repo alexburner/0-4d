@@ -28,9 +28,11 @@ export const useSimulationsStore = create<SimulationStore>((set) => ({
 }))
 
 export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
-  <Canvas>
-    <OrbitsR3F route={route} />
-  </Canvas>
+  <div style={{ width: '1080px', height: '960px', margin: 'auto' }}>
+    <Canvas>
+      <OrbitsR3F route={route} />
+    </Canvas>
+  </div>
 )
 
 const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {

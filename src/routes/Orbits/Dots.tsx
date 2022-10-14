@@ -1,59 +1,55 @@
-import { FC, useEffect, useMemo, useRef } from 'react'
-import { AdditiveBlending, BufferAttribute, BufferGeometry } from 'three'
+import { FC, useEffect, useMemo } from 'react'
+import {
+  AdditiveBlending,
+  BufferAttribute,
+  BufferGeometry,
+  CanvasTexture,
+  DynamicDrawUsage,
+  PointsMaterial,
+} from 'three'
 import { useSimulationsStore } from './Orbits'
 
 const MAX_POINTS = 1000
 const DOT_SIZE = 4
 
 export const Dots: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
-  const canvas = useMemo(createDotCanvas, [])
-  const positionsRef = useRef(new Float32Array(MAX_POINTS * 3))
-  const geometryRef = useRef<BufferGeometry>(null)
-  const attributeRef = useRef<BufferAttribute>(null)
-  useEffect(
-    () =>
-      useSimulationsStore.subscribe((state) => {
-        const particles = state.simulations?.[simulationIndex]?.particles
-        const positions = positionsRef.current
-        const geometry = geometryRef.current
-        const attribute = attributeRef.current
-        if (!particles || !geometry || !attribute) return
-        particles.forEach((particle, i) => {
-          positions[i * 3 + 0] = particle.position[0] ?? 0
-          positions[i * 3 + 1] = particle.position[1] ?? 0
-          positions[i * 3 + 2] = particle.position[2] ?? 0
-        })
-        geometry.setDrawRange(0, particles.length)
-        attribute.needsUpdate = true
-      }),
-    [simulationIndex],
-  )
-  return (
-    <points>
-      <bufferGeometry ref={geometryRef}>
-        <bufferAttribute
-          ref={attributeRef}
-          attach="attributes-position"
-          count={positionsRef.current.length}
-          array={positionsRef.current}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        blending={AdditiveBlending}
-        depthTest={false}
-        depthWrite={false}
-        transparent={true}
-        opacity={0.9}
-        size={DOT_SIZE}
-      >
-        <canvasTexture attach="map" image={canvas} />
-      </pointsMaterial>
-    </points>
-  )
+  const positions = useMemo(() => new Float32Array(MAX_POINTS * 3), [])
+  const attribute = useMemo(() => createAttribute(positions), [positions])
+  const geometry = useMemo(() => createGeometry(attribute), [attribute])
+  const texture = useMemo(() => createTexture(), [])
+  const material = useMemo(() => createMaterial(texture), [texture])
+
+  useEffect(() => {
+    useSimulationsStore.subscribe((state) => {
+      const particles = state.simulations?.[simulationIndex]?.particles
+      if (!particles) return
+      particles.forEach((particle, i) => {
+        positions[i * 3 + 0] = particle.position[0] ?? 0
+        positions[i * 3 + 1] = particle.position[1] ?? 0
+        positions[i * 3 + 2] = particle.position[2] ?? 0
+      })
+      geometry.setDrawRange(0, particles.length)
+      attribute.needsUpdate = true
+    })
+  }, [simulationIndex, attribute, geometry, positions])
+
+  return <points geometry={geometry} material={material} />
 }
 
-const createDotCanvas = () => {
+const createAttribute = (positions: Float32Array) => {
+  const attribute = new BufferAttribute(positions, 3)
+  attribute.setUsage(DynamicDrawUsage)
+  return attribute
+}
+
+const createGeometry = (attribute: BufferAttribute) => {
+  const geometry = new BufferGeometry()
+  geometry.setAttribute('position', attribute)
+  geometry.setDrawRange(0, 0)
+  return geometry
+}
+
+const createTexture = () => {
   const size = 256
   const padding = 4
   const radius = size / 2 - padding
@@ -67,5 +63,17 @@ const createDotCanvas = () => {
   context.arc(center, center, radius, 0, 2 * Math.PI)
   context.fillStyle = 'rgba(255, 255, 255, 1)'
   context.fill()
-  return canvas
+  return new CanvasTexture(canvas)
+}
+
+const createMaterial = (texture: CanvasTexture) => {
+  return new PointsMaterial({
+    blending: AdditiveBlending,
+    depthTest: false,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.9,
+    map: texture,
+    size: DOT_SIZE,
+  })
 }
