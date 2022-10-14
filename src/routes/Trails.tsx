@@ -18,15 +18,17 @@ import {
 } from '../stores/simulationStore'
 import { HashRoute } from '../util/hashRoute'
 
-const TOTAL_WIDTH = 1080
-const TOTAL_HEIGHT = 1840
+const TOTAL_WIDTH = 1840
+const TOTAL_HEIGHT = 1080
 const TITLE_HEIGHT = 200
-const CANVAS_WIDTH = TOTAL_WIDTH
-const CANVAS_HEIGHT = (TOTAL_HEIGHT - TITLE_HEIGHT) / 2
+const TITLE_WIDTH = TOTAL_WIDTH
+const CANVAS_MARGIN = 40
+const CANVAS_WIDTH = TOTAL_WIDTH / 2 - CANVAS_MARGIN * 3
+const CANVAS_HEIGHT = TOTAL_HEIGHT - TITLE_HEIGHT
 const VIEWANGLE = 45
 const NEAR = 1
 const FAR = 5000
-const ZOOM = 7
+const ZOOM = 7.5
 
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
@@ -61,65 +63,74 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
     >
       <div
         style={{
-          width: `${TOTAL_WIDTH}px`,
-          height: `${TITLE_HEIGHT}px`,
+          display: 'flex',
+          justifyContent: 'space-evenly',
+          height: `${CANVAS_HEIGHT}px`,
+          paddingTop: `${CANVAS_MARGIN}px`,
+        }}
+      >
+        <div
+          style={{
+            width: `${CANVAS_WIDTH}px`,
+            height: `${CANVAS_HEIGHT}px`,
+          }}
+        >
+          <Canvas
+            resize={{ scroll: false }}
+            camera={{
+              fov: VIEWANGLE,
+              aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
+              near: NEAR,
+              far: FAR,
+              position: [0, 0, 40 * ZOOM],
+            }}
+            style={{ background: '#333' }}
+          >
+            <TrailsR3F
+              particleCount={particleCount}
+              spin={spin}
+              behavior={behavior}
+              bounding="edgeBinding"
+              useSimulationsStore={useStore1}
+            />
+          </Canvas>
+        </div>
+        <div
+          style={{
+            width: `${CANVAS_WIDTH}px`,
+            height: `${CANVAS_HEIGHT}px`,
+          }}
+        >
+          <Canvas
+            camera={{
+              fov: VIEWANGLE,
+              aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
+              near: NEAR,
+              far: FAR,
+              position: [0, 0, 40 * ZOOM],
+            }}
+            style={{ background: '#333' }}
+          >
+            <TrailsR3F
+              particleCount={particleCount}
+              spin={spin}
+              behavior={behavior}
+              bounding="centerScaling"
+              useSimulationsStore={useStore2}
+            />
+          </Canvas>
+        </div>
+      </div>
+      <div
+        style={{
+          width: `${TITLE_WIDTH}px`,
+          height: `${TITLE_HEIGHT / 2}px`,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
         }}
       >
         <h1>Trails — {upperFirst(behaviorName)}</h1>
-      </div>
-      <div
-        style={{
-          width: `${CANVAS_WIDTH}px`,
-          height: `${CANVAS_HEIGHT}px`,
-        }}
-      >
-        <Canvas
-          resize={{ scroll: false }}
-          camera={{
-            fov: VIEWANGLE,
-            aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
-            near: NEAR,
-            far: FAR,
-            position: [0, 0, 40 * ZOOM],
-          }}
-          style={{ background: '#333' }}
-        >
-          <TrailsR3F
-            particleCount={particleCount}
-            spin={spin}
-            behavior={behavior}
-            bounding="centerScaling"
-            useSimulationsStore={useStore1}
-          />
-        </Canvas>
-      </div>
-      <div
-        style={{
-          width: `${CANVAS_WIDTH}px`,
-          height: `${CANVAS_HEIGHT}px`,
-        }}
-      >
-        <Canvas
-          camera={{
-            fov: VIEWANGLE,
-            aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
-            near: NEAR,
-            far: FAR,
-            position: [0, 0, 40 * ZOOM],
-          }}
-          style={{ background: '#333' }}
-        >
-          <TrailsR3F
-            particleCount={particleCount}
-            spin={spin}
-            behavior={behavior}
-            bounding="edgeBinding"
-            useSimulationsStore={useStore2}
-          />
-        </Canvas>
       </div>
     </div>
   )
@@ -214,6 +225,7 @@ const TrailsR3F: FC<{
 const xAxis = new Vector3(1, 0, 0)
 const zAxis = new Vector3(0, 0, 1)
 const rightAngle = Math.PI / 2
+const leftStart = -50
 
 const SpaceCell: FC<{
   useSimulationsStore: UseSimulationsStore
@@ -231,7 +243,7 @@ const SpaceCell: FC<{
     groupRef.current?.rotateOnAxis(xAxis, spin)
   })
   return (
-    <group ref={groupRef} position={[-110, 0, 0]}>
+    <group ref={groupRef} position={[leftStart - 40, 0, 0]}>
       <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
@@ -262,7 +274,7 @@ const TimeCell: FC<{
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
-    <group ref={groupRef} position={[-70, 0, 0]}>
+    <group ref={groupRef} position={[leftStart, 0, 0]}>
       <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
