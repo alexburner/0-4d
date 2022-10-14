@@ -1,14 +1,9 @@
 import { Canvas, useFrame } from '@react-three/fiber'
-import { releaseProxy, wrap } from 'comlink'
+import { releaseProxy } from 'comlink'
 import { times } from 'lodash'
 import { FC, useEffect, useMemo, useRef } from 'react'
-import {
-  makeFilledParticles,
-  makeFreshParticles,
-  Particle,
-} from '../../simulation/particles'
-import { Simulation } from '../../simulation/Simulation'
-import SimulationWorker from '../../simulation/SimulationWorker?worker'
+import { createWorkers } from '../../simulation/createWorkers'
+import { makeParticlesThroughDimensions } from '../../simulation/particles'
 import { HashRoute } from '../../util/hashRoute'
 import { Dots } from './Dots'
 import { useSimulationsStore } from './store'
@@ -32,7 +27,7 @@ export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
         aspect: WIDTH / HEIGHT,
         near: NEAR,
         far: FAR,
-        position: [50, 0, 40 * ZOOM],
+        position: [0, 0, 40 * ZOOM],
       }}
     >
       <OrbitsR3F route={route} />
@@ -44,16 +39,21 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
   console.log(route) // TODO allow route-based params
 
   /**
-   * Initialize simulation particles
+   * Create simulation particles
    */
 
   const particlesByDimension = useMemo(
-    () => createParticlesByDimension(DIMENSION_COUNT),
+    () =>
+      makeParticlesThroughDimensions(
+        DIMENSION_COUNT,
+        PARTICLE_COUNT,
+        SIMULATION_RADIUS,
+      ),
     [],
   )
 
   /**
-   * Setup simulation workers
+   * Create simulation workers
    */
 
   const workers = useMemo(() => createWorkers(DIMENSION_COUNT), [])
@@ -94,7 +94,7 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
   }, [particlesByDimension, workers])
 
   /**
-   * Tick simulation workers & update store data each frame
+   * Each frame, tick simulation workers & update store
    */
 
   const updateSimulations = useSimulationsStore(
@@ -113,30 +113,24 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
   return (
     <>
       {times(DIMENSION_COUNT, (i) => (
-        <group
-          key={i}
-          position={[0, 85 - i * (3.5 * 12), 0]}
-          rotation={[0, 0, -Math.PI / 2]}
-        >
-          <Dots simulationIndex={i} useSimulationsStore={useSimulationsStore} />
+        <group key={i} position={[0, 85 - i * (3.5 * 12), 0]}>
+          <group position={[-110, 0, 0]} rotation={[0, 0, -Math.PI / 2]}>
+            <Dots
+              simulationIndex={i}
+              useSimulationsStore={useSimulationsStore}
+            />
+          </group>
+          <group
+            position={[-70, 0, 0]}
+            rotation={[Math.PI / 2, 0, -Math.PI / 2]}
+          >
+            <Dots
+              simulationIndex={i}
+              useSimulationsStore={useSimulationsStore}
+            />
+          </group>
         </group>
       ))}
     </>
   )
 }
-
-const createParticlesByDimension = (dimensionCount: number) => {
-  const particlesByDimension: Particle[][] = []
-  for (let dimension = 0; dimension < dimensionCount; dimension++) {
-    // Prefill next dimension with previous values, if available
-    const prevParticles = particlesByDimension[dimension - 1]
-    const nextParticles = prevParticles
-      ? makeFilledParticles(dimension, SIMULATION_RADIUS, prevParticles)
-      : makeFreshParticles(dimension, SIMULATION_RADIUS, PARTICLE_COUNT)
-    particlesByDimension.push(nextParticles)
-  }
-  return particlesByDimension
-}
-
-const createWorkers = (dimensionCount: number) =>
-  times(dimensionCount, () => wrap<Simulation>(new SimulationWorker()))

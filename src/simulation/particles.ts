@@ -61,3 +61,23 @@ const assign = (dst: VectorN, src: VectorN): VectorN =>
     const srcN = src[dimension]
     return srcN !== undefined ? srcN : dstN
   })
+
+/**
+ * Makes a set of particles & upscales it through dimensions
+ */
+export const makeParticlesThroughDimensions = (
+  dimensionCount: number,
+  particleCount: number,
+  radius: number,
+) => {
+  const particlesByDimension: Particle[][] = []
+  for (let dimension = 0; dimension < dimensionCount; dimension++) {
+    // Prefill next dimension with previous values, if available
+    const prevParticles = particlesByDimension[dimension - 1]
+    const nextParticles = prevParticles
+      ? makeFilledParticles(dimension, radius, prevParticles)
+      : makeFreshParticles(dimension, radius, particleCount)
+    particlesByDimension.push(nextParticles)
+  }
+  return particlesByDimension
+}
