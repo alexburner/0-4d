@@ -7,6 +7,7 @@ import { createWorkers } from '../../simulation/createWorkers'
 import { makeParticlesThroughDimensions } from '../../simulation/particles'
 import { HashRoute } from '../../util/hashRoute'
 import { Dots } from './Dots'
+import { SquarePlane } from './Plane'
 import { SpaceTrails } from './SpaceTrails'
 import { useSimulationsStore } from './store'
 import { TimeTrails } from './TimeTrails'
@@ -144,6 +145,7 @@ const SpaceCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
       />
+      <SquarePlane radius={SIMULATION_RADIUS} />
     </group>
   )
 }
@@ -164,6 +166,7 @@ const TimeCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
       />
+      <SquarePlane radius={SIMULATION_RADIUS} />
     </group>
   )
 }
