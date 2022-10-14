@@ -7,7 +7,9 @@ import { createWorkers } from '../../simulation/createWorkers'
 import { makeParticlesThroughDimensions } from '../../simulation/particles'
 import { HashRoute } from '../../util/hashRoute'
 import { Dots } from './Dots'
+import { SpaceTrails } from './SpaceTrails'
 import { useSimulationsStore } from './store'
+import { TimeTrails } from './TimeTrails'
 
 const WIDTH = 1080
 const HEIGHT = 920
@@ -138,6 +140,10 @@ const SpaceCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
       />
+      <SpaceTrails
+        simulationIndex={simulationIndex}
+        useSimulationsStore={useSimulationsStore}
+      />
     </group>
   )
 }
@@ -151,6 +157,10 @@ const TimeCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
   return (
     <group ref={groupRef} position={[-70, 0, 0]}>
       <Dots
+        simulationIndex={simulationIndex}
+        useSimulationsStore={useSimulationsStore}
+      />
+      <TimeTrails
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
       />
