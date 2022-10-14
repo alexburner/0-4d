@@ -17,12 +17,15 @@ import {
 } from '../stores/simulationStore'
 import { HashRoute } from '../util/hashRoute'
 
-const WIDTH = 1080
-const HEIGHT = 920
+const TOTAL_WIDTH = 1080
+const TOTAL_HEIGHT = 1840
+const TITLE_HEIGHT = 200
+const CANVAS_WIDTH = TOTAL_WIDTH
+const CANVAS_HEIGHT = (TOTAL_HEIGHT - TITLE_HEIGHT) / 2
 const VIEWANGLE = 45
 const NEAR = 1
 const FAR = 5000
-const ZOOM = 7.5
+const ZOOM = 7
 
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
@@ -35,13 +38,36 @@ const useStore1 = createUseSimulationsStore()
 const useStore2 = createUseSimulationsStore()
 
 export const Trails: FC<{ route: HashRoute }> = ({ route }) => (
-  <>
-    <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px`, margin: 'auto' }}>
+  <div
+    style={{
+      width: `${TOTAL_WIDTH}px`,
+      height: `${TOTAL_HEIGHT}px`,
+      background: '#333',
+      margin: 'auto',
+    }}
+  >
+    <div
+      style={{
+        width: `${TOTAL_WIDTH}px`,
+        height: `${TITLE_HEIGHT}px`,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <h1>Hello World</h1>
+    </div>
+    <div
+      style={{
+        width: `${CANVAS_WIDTH}px`,
+        height: `${CANVAS_HEIGHT}px`,
+      }}
+    >
       <Canvas
         resize={{ scroll: false }}
         camera={{
           fov: VIEWANGLE,
-          aspect: WIDTH / HEIGHT,
+          aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
           near: NEAR,
           far: FAR,
           position: [0, 0, 40 * ZOOM],
@@ -55,11 +81,16 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => (
         />
       </Canvas>
     </div>
-    <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px`, margin: 'auto' }}>
+    <div
+      style={{
+        width: `${CANVAS_WIDTH}px`,
+        height: `${CANVAS_HEIGHT}px`,
+      }}
+    >
       <Canvas
         camera={{
           fov: VIEWANGLE,
-          aspect: WIDTH / HEIGHT,
+          aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
           near: NEAR,
           far: FAR,
           position: [0, 0, 40 * ZOOM],
@@ -73,7 +104,7 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => (
         />
       </Canvas>
     </div>
-  </>
+  </div>
 )
 
 const TrailsR3F: FC<{
@@ -158,7 +189,7 @@ const TrailsR3F: FC<{
   return (
     <>
       {times(DIMENSION_COUNT, (i) => (
-        <group key={i} position={[0, 85 - i * (3.5 * 12), 0]}>
+        <group key={i} position={[0, 95 - i * (3.5 * 12), 0]}>
           <SpaceCell
             useSimulationsStore={useSimulationsStore}
             simulationIndex={i}
