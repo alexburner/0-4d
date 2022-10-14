@@ -26,6 +26,8 @@ module.exports = {
     curly: ['error', 'multi-line'],
     // Require strict equality checking
     eqeqeq: 'error',
+    // Doesn't jive with react-three-fiber (ex: <canvasTexture attach />)
+    'react/no-unknown-property': 0,
     // Not needed for vite/esbuild transpilation
     'react/react-in-jsx-scope': 0,
     // Not needed with TypeScript

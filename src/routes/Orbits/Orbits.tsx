@@ -1,16 +1,17 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy, wrap } from 'comlink'
 import { times } from 'lodash'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useEffect, useMemo, useRef } from 'react'
 import create from 'zustand'
 import {
   makeFilledParticles,
   makeFreshParticles,
   Particle,
-} from '../simulation/particles'
-import { Simulation, SimulationData } from '../simulation/Simulation'
-import SimulationWorker from '../simulation/SimulationWorker?worker'
-import { HashRoute } from '../util/hashRoute'
+} from '../../simulation/particles'
+import { Simulation, SimulationData } from '../../simulation/Simulation'
+import SimulationWorker from '../../simulation/SimulationWorker?worker'
+import { HashRoute } from '../../util/hashRoute'
+import { Dots } from './Dots'
 
 const PARTICLE_COUNT = 12
 const SIMULATION_RADIUS = 14
@@ -21,7 +22,7 @@ interface SimulationStore {
   updateSimulations: (next: SimulationData[]) => void
 }
 
-const useSimulationsStore = create<SimulationStore>((set) => ({
+export const useSimulationsStore = create<SimulationStore>((set) => ({
   simulations: undefined,
   updateSimulations: (next) => set({ simulations: next }),
 }))
@@ -50,38 +51,41 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
   }
 
   // Worker init & release
+  const workersReadyRef = useRef(false)
   useEffect(() => {
     particlesByDimension.forEach((particles, i) => {
       const worker = workers[i]
       if (!worker) throw new Error('Unreachable')
-      void worker.init(particles, {
-        behavior: {
-          name: 'orbiting',
-          config: {
-            mass: {
-              g: 1,
-              orbiter: 10,
-              attractor: 30,
-            },
-            distance: {
-              min: 50,
-              max: 250,
+      void worker
+        .init(particles, {
+          behavior: {
+            name: 'orbiting',
+            config: {
+              mass: {
+                g: 1,
+                orbiter: 10,
+                attractor: 30,
+              },
+              distance: {
+                min: 50,
+                max: 250,
+              },
             },
           },
-        },
-        bounding: 'centerScaling',
-        radius: SIMULATION_RADIUS,
-        maxSpeed: 1,
-      })
+          bounding: 'centerScaling',
+          radius: SIMULATION_RADIUS,
+          maxSpeed: 1,
+        })
+        .then(() => (workersReadyRef.current = true))
     })
     return () => {
       workers.forEach((worker) => worker[releaseProxy]())
     }
   }, [particlesByDimension, workers])
 
-  useFrame(() => void tickWorkers())
+  useFrame(() => workersReadyRef.current && void tickWorkers())
 
-  return null
+  return <Dots simulationIndex={3} />
 }
 
 const createParticlesByDimension = () => {
