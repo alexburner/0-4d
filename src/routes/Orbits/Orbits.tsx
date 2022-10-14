@@ -23,6 +23,8 @@ const PARTICLE_COUNT = 12
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
 
+const SPIN = 0.0125 / 2
+
 export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
   <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px`, margin: 'auto' }}>
     <Canvas
@@ -133,8 +135,14 @@ const rightAngle = Math.PI / 2
 const SpaceCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
+    // Initial rotation
     groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
   }, [])
+  useFrame(() => {
+    // Spin rotation
+    if (simulationIndex < 3) return
+    groupRef.current?.rotateOnAxis(xAxis, SPIN)
+  })
   return (
     <group ref={groupRef} position={[-110, 0, 0]}>
       <Dots
@@ -153,9 +161,15 @@ const SpaceCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
 const TimeCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
+    // Initial rotation
     groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
     groupRef.current?.rotateOnAxis(xAxis, rightAngle)
   }, [])
+  useFrame(() => {
+    // Spin rotation
+    if (simulationIndex < 2) return
+    groupRef.current?.rotateOnAxis(zAxis, SPIN)
+  })
   return (
     <group ref={groupRef} position={[-70, 0, 0]}>
       <Dots
