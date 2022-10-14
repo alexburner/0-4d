@@ -3,8 +3,8 @@ import { Page } from '../components/Page'
 
 const links = [
   {
-    text: 'Trails — Orbits',
-    href: '#trails?behavior=orbits',
+    text: 'Trails — Orbiting',
+    href: '#trails?behavior=orbiting',
   },
   {
     text: 'Trails — Wandering',
