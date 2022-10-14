@@ -53,61 +53,79 @@ export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
 const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
   console.log(route)
 
-  const particlesByDimension = useMemo(() => createParticlesByDimension(), [])
-  const workers = useMemo(() => createWorkers(), [])
+  /**
+   * Initialize simulation particles
+   */
 
-  // TODO next: subscribe to transient store updates elsewhere
-
-  const updateSimulations = useSimulationsStore(
-    (state) => state.updateSimulations,
+  const particlesByDimension = useMemo(
+    () => createParticlesByDimension(DIMENSION_COUNT),
+    [],
   )
 
-  const tickWorkers = async () => {
-    const updates = await Promise.all(workers.map((worker) => worker.tick()))
-    updateSimulations(updates)
-  }
+  /**
+   * Setup simulation workers
+   */
 
-  // Worker init & release
+  const workers = useMemo(() => createWorkers(DIMENSION_COUNT), [])
   const workersReadyRef = useRef(false)
   useEffect(() => {
-    particlesByDimension.forEach((particles, i) => {
-      const worker = workers[i]
-      if (!worker) throw new Error('Unreachable')
-      void worker
-        .init(particles, {
-          behavior: {
-            name: 'orbiting',
-            config: {
-              mass: {
-                g: 1,
-                orbiter: 10,
-                attractor: 30,
-              },
-              distance: {
-                min: 50,
-                max: 250,
-              },
+    // Init workers on mount
+    const initPromises = workers.map((worker, i) => {
+      const particles = particlesByDimension[i]
+      if (!particles) throw new Error('Unreachable')
+      return worker.init(particles, {
+        behavior: {
+          name: 'orbiting',
+          config: {
+            mass: {
+              g: 1,
+              orbiter: 10,
+              attractor: 30,
+            },
+            distance: {
+              min: 50,
+              max: 250,
             },
           },
-          bounding: 'centerScaling',
-          radius: SIMULATION_RADIUS,
-          maxSpeed: 1,
-        })
-        .then(() => (workersReadyRef.current = true))
+        },
+        bounding: 'centerScaling',
+        radius: SIMULATION_RADIUS,
+        maxSpeed: 1,
+      })
     })
+
+    // Mark workers as ready to tick, after init
+    void Promise.all(initPromises).then(() => (workersReadyRef.current = true))
+
     return () => {
+      // Release workers on dismount
       workers.forEach((worker) => worker[releaseProxy]())
     }
   }, [particlesByDimension, workers])
 
+  /**
+   * Tick simulation workers & update store data each frame
+   */
+
+  const updateSimulations = useSimulationsStore(
+    (state) => state.updateSimulations,
+  )
+  const tickWorkers = async () => {
+    const updates = await Promise.all(workers.map((worker) => worker.tick()))
+    updateSimulations(updates)
+  }
   useFrame(() => workersReadyRef.current && void tickWorkers())
+
+  /**
+   * Render scene
+   */
 
   return <Dots simulationIndex={3} />
 }
 
-const createParticlesByDimension = () => {
+const createParticlesByDimension = (dimensionCount: number) => {
   const particlesByDimension: Particle[][] = []
-  for (let dimension = 0; dimension < DIMENSION_COUNT; dimension++) {
+  for (let dimension = 0; dimension < dimensionCount; dimension++) {
     // Prefill next dimension with previous values, if available
     const prevParticles = particlesByDimension[dimension - 1]
     const nextParticles = prevParticles
@@ -118,5 +136,5 @@ const createParticlesByDimension = () => {
   return particlesByDimension
 }
 
-const createWorkers = () =>
-  times(DIMENSION_COUNT, () => wrap<Simulation>(new SimulationWorker()))
+const createWorkers = (dimensionCount: number) =>
+  times(dimensionCount, () => wrap<Simulation>(new SimulationWorker()))
