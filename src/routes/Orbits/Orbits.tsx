@@ -110,7 +110,19 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
    * Render scene
    */
 
-  return <Dots simulationIndex={3} useSimulationsStore={useSimulationsStore} />
+  return (
+    <>
+      {times(DIMENSION_COUNT, (i) => (
+        <group
+          key={i}
+          position={[0, 85 - i * (3.5 * 12), 0]}
+          rotation={[0, 0, -Math.PI / 2]}
+        >
+          <Dots simulationIndex={i} useSimulationsStore={useSimulationsStore} />
+        </group>
+      ))}
+    </>
+  )
 }
 
 const createParticlesByDimension = (dimensionCount: number) => {
