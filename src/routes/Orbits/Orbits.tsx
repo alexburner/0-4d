@@ -2,6 +2,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy } from 'comlink'
 import { times } from 'lodash'
 import { FC, useEffect, useMemo, useRef } from 'react'
+import { Group, Vector3 } from 'three'
 import { createWorkers } from '../../simulation/createWorkers'
 import { makeParticlesThroughDimensions } from '../../simulation/particles'
 import { HashRoute } from '../../util/hashRoute'
@@ -114,23 +115,45 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
     <>
       {times(DIMENSION_COUNT, (i) => (
         <group key={i} position={[0, 85 - i * (3.5 * 12), 0]}>
-          <group position={[-110, 0, 0]} rotation={[0, 0, -Math.PI / 2]}>
-            <Dots
-              simulationIndex={i}
-              useSimulationsStore={useSimulationsStore}
-            />
-          </group>
-          <group
-            position={[-70, 0, 0]}
-            rotation={[Math.PI / 2, 0, -Math.PI / 2]}
-          >
-            <Dots
-              simulationIndex={i}
-              useSimulationsStore={useSimulationsStore}
-            />
-          </group>
+          <SpaceCell simulationIndex={i} />
+          <TimeCell simulationIndex={i} />
         </group>
       ))}
     </>
+  )
+}
+
+const xAxis = new Vector3(1, 0, 0)
+const zAxis = new Vector3(0, 0, 1)
+const rightAngle = Math.PI / 2
+
+const SpaceCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
+  const groupRef = useRef<Group>(null)
+  useEffect(() => {
+    groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
+  }, [])
+  return (
+    <group ref={groupRef} position={[-110, 0, 0]}>
+      <Dots
+        simulationIndex={simulationIndex}
+        useSimulationsStore={useSimulationsStore}
+      />
+    </group>
+  )
+}
+
+const TimeCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
+  const groupRef = useRef<Group>(null)
+  useEffect(() => {
+    groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
+    groupRef.current?.rotateOnAxis(xAxis, rightAngle)
+  }, [])
+  return (
+    <group ref={groupRef} position={[-70, 0, 0]}>
+      <Dots
+        simulationIndex={simulationIndex}
+        useSimulationsStore={useSimulationsStore}
+      />
+    </group>
   )
 }
