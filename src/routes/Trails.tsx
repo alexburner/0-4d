@@ -1,12 +1,13 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy } from 'comlink'
-import { times } from 'lodash'
+import { isNumber, times } from 'lodash'
 import { FC, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
 import { SquarePlane } from '../components/Plane'
 import { SpaceTrails } from '../components/SpaceTrails'
 import { TimeTrails } from '../components/TimeTrails'
+import { behaviors, isBehaviorName, isBounding } from '../simulation/configs'
 import { createWorkers } from '../simulation/createWorkers'
 import { makeParticlesThroughDimensions } from '../simulation/particles'
 import { useSimulationsStore } from '../stores/simulationStore'
@@ -19,13 +20,15 @@ const NEAR = 1
 const FAR = 5000
 const ZOOM = 7
 
-const PARTICLE_COUNT = 12
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
 
-const SPIN = 0.0125 / 2
+const DEFAULT_PARTICLE_COUNT = 12
+const DEFAULT_SPIN = 0.0125 / 2
+const DEFAULT_BEHAVIOR_NAME = 'orbiting'
+const DEFAULT_BOUNDING = 'centerScaling'
 
-export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
+export const Trails: FC<{ route: HashRoute }> = ({ route }) => (
   <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px`, margin: 'auto' }}>
     <Canvas
       camera={{
@@ -36,13 +39,29 @@ export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
         position: [0, 0, 40 * ZOOM],
       }}
     >
-      <OrbitsR3F route={route} />
+      <TrailsR3F route={route} />
     </Canvas>
   </div>
 )
 
-const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
-  console.log(route) // TODO allow route-based params
+const TrailsR3F: FC<{ route: HashRoute }> = ({ route }) => {
+  /**
+   * Extract any URL params
+   */
+
+  const particleCount = isNumber(route.params['particles'])
+    ? route.params['particles']
+    : DEFAULT_PARTICLE_COUNT
+  const spin = isNumber(route.params['spin'])
+    ? route.params['spin']
+    : DEFAULT_SPIN
+  const behaviorName = isBehaviorName(route.params['behavior'])
+    ? route.params['behavior']
+    : DEFAULT_BEHAVIOR_NAME
+  const behavior = behaviors[behaviorName]
+  const bounding = isBounding(route.params['bounding'])
+    ? route.params['bounding']
+    : DEFAULT_BOUNDING
 
   /**
    * Create simulation particles
@@ -52,10 +71,10 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
     () =>
       makeParticlesThroughDimensions(
         DIMENSION_COUNT,
-        PARTICLE_COUNT,
+        particleCount,
         SIMULATION_RADIUS,
       ),
-    [],
+    [particleCount],
   )
 
   /**
@@ -70,21 +89,8 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
       const particles = particlesByDimension[i]
       if (!particles) throw new Error('Unreachable')
       return worker.init(particles, {
-        behavior: {
-          name: 'orbiting',
-          config: {
-            mass: {
-              g: 1,
-              orbiter: 10,
-              attractor: 30,
-            },
-            distance: {
-              min: 50,
-              max: 250,
-            },
-          },
-        },
-        bounding: 'centerScaling',
+        behavior,
+        bounding,
         radius: SIMULATION_RADIUS,
         maxSpeed: 1,
       })
@@ -97,7 +103,7 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
       // Release workers on dismount
       workers.forEach((worker) => worker[releaseProxy]())
     }
-  }, [particlesByDimension, workers])
+  }, [particlesByDimension, workers, behavior, bounding])
 
   /**
    * Each frame, tick simulation workers & update store
@@ -120,8 +126,8 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
     <>
       {times(DIMENSION_COUNT, (i) => (
         <group key={i} position={[0, 85 - i * (3.5 * 12), 0]}>
-          <SpaceCell simulationIndex={i} />
-          <TimeCell simulationIndex={i} />
+          <SpaceCell simulationIndex={i} spin={spin} />
+          <TimeCell simulationIndex={i} spin={spin} />
         </group>
       ))}
     </>
@@ -132,7 +138,10 @@ const xAxis = new Vector3(1, 0, 0)
 const zAxis = new Vector3(0, 0, 1)
 const rightAngle = Math.PI / 2
 
-const SpaceCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
+const SpaceCell: FC<{ simulationIndex: number; spin: number }> = ({
+  simulationIndex,
+  spin,
+}) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -141,7 +150,7 @@ const SpaceCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
   useFrame(() => {
     // Spin rotation
     if (simulationIndex < 3) return
-    groupRef.current?.rotateOnAxis(xAxis, SPIN)
+    groupRef.current?.rotateOnAxis(xAxis, spin)
   })
   return (
     <group ref={groupRef} position={[-110, 0, 0]}>
@@ -158,7 +167,10 @@ const SpaceCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
   )
 }
 
-const TimeCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
+const TimeCell: FC<{ simulationIndex: number; spin: number }> = ({
+  simulationIndex,
+  spin,
+}) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -168,7 +180,7 @@ const TimeCell: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
   useFrame(() => {
     // Spin rotation
     if (simulationIndex < 2) return
-    groupRef.current?.rotateOnAxis(zAxis, SPIN)
+    groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
     <group ref={groupRef} position={[-70, 0, 0]}>

@@ -20,6 +20,14 @@ a:visited {
   color: #efefef;
 }
 
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 .page {
   width: 600px;
   margin: 4% auto;

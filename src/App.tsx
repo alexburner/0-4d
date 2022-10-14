@@ -2,8 +2,7 @@ import { FC } from 'react'
 import { useHash } from 'react-use'
 import { Home } from './routes/Home'
 import { NotFound } from './routes/NotFound'
-import { Orbits } from './routes/Orbits'
-import { SpinningBox } from './routes/SpinningBox'
+import { Trails } from './routes/Trails'
 import { parseHashRoute } from './util/hashRoute'
 
 export const App: FC = () => {
@@ -12,10 +11,8 @@ export const App: FC = () => {
   switch (route.path) {
     case '':
       return <Home />
-    case 'spinningBox':
-      return <SpinningBox />
-    case 'orbits':
-      return <Orbits route={route} />
+    case 'trails':
+      return <Trails route={route} />
     default:
       return <NotFound route={route} />
   }
