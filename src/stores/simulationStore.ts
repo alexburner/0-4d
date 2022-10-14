@@ -6,9 +6,10 @@ interface SimulationStore {
   updateSimulations: (next: SimulationData[]) => void
 }
 
-export const useSimulationsStore = create<SimulationStore>((set) => ({
-  simulations: undefined,
-  updateSimulations: (next) => set({ simulations: next }),
-}))
+export const createUseSimulationsStore = () =>
+  create<SimulationStore>((set) => ({
+    simulations: undefined,
+    updateSimulations: (next) => set({ simulations: next }),
+  }))
 
-export type UseSimulationsStore = typeof useSimulationsStore
+export type UseSimulationsStore = ReturnType<typeof createUseSimulationsStore>

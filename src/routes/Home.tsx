@@ -3,20 +3,12 @@ import { Page } from '../components/Page'
 
 const links = [
   {
-    text: 'Trails — Orbits [ center-scaling ]',
-    href: '#trails?behavior=orbits&bounding=centerScaling',
+    text: 'Trails — Orbits',
+    href: '#trails?behavior=orbits',
   },
   {
-    text: 'Trails — Orbits [ edge-binding ]',
-    href: '#trails?behavior=orbits&bounding=edgeBinding',
-  },
-  {
-    text: 'Trails — Wandering [ center-scaling ]',
-    href: '#trails?behavior=wandering&bounding=centerScaling',
-  },
-  {
-    text: 'Trails — Wandering [ edge-binding ]',
-    href: '#trails?behavior=wandering&bounding=edgeBinding',
+    text: 'Trails — Wandering',
+    href: '#trails?behavior=wandering',
   },
 ]
 

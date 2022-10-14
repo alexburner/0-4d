@@ -7,10 +7,14 @@ import { Dots } from '../components/Dots'
 import { SquarePlane } from '../components/Plane'
 import { SpaceTrails } from '../components/SpaceTrails'
 import { TimeTrails } from '../components/TimeTrails'
-import { behaviors, isBehaviorName, isBounding } from '../simulation/configs'
+import { Bounding } from '../simulation/boundings'
+import { behaviors, isBehaviorName } from '../simulation/configs'
 import { createWorkers } from '../simulation/createWorkers'
 import { makeParticlesThroughDimensions } from '../simulation/particles'
-import { useSimulationsStore } from '../stores/simulationStore'
+import {
+  createUseSimulationsStore,
+  UseSimulationsStore,
+} from '../stores/simulationStore'
 import { HashRoute } from '../util/hashRoute'
 
 const WIDTH = 1080
@@ -18,7 +22,7 @@ const HEIGHT = 920
 const VIEWANGLE = 45
 const NEAR = 1
 const FAR = 5000
-const ZOOM = 7
+const ZOOM = 7.5
 
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
@@ -26,25 +30,57 @@ const DIMENSION_COUNT = 5
 const DEFAULT_PARTICLE_COUNT = 12
 const DEFAULT_SPIN = 0.0125 / 2
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
-const DEFAULT_BOUNDING = 'centerScaling'
+
+const useStore1 = createUseSimulationsStore()
+const useStore2 = createUseSimulationsStore()
 
 export const Trails: FC<{ route: HashRoute }> = ({ route }) => (
-  <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px`, margin: 'auto' }}>
-    <Canvas
-      camera={{
-        fov: VIEWANGLE,
-        aspect: WIDTH / HEIGHT,
-        near: NEAR,
-        far: FAR,
-        position: [0, 0, 40 * ZOOM],
-      }}
-    >
-      <TrailsR3F route={route} />
-    </Canvas>
-  </div>
+  <>
+    <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px`, margin: 'auto' }}>
+      <Canvas
+        resize={{ scroll: false }}
+        camera={{
+          fov: VIEWANGLE,
+          aspect: WIDTH / HEIGHT,
+          near: NEAR,
+          far: FAR,
+          position: [0, 0, 40 * ZOOM],
+        }}
+        style={{ background: '#333' }}
+      >
+        <TrailsR3F
+          route={route}
+          bounding="centerScaling"
+          useSimulationsStore={useStore1}
+        />
+      </Canvas>
+    </div>
+    <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px`, margin: 'auto' }}>
+      <Canvas
+        camera={{
+          fov: VIEWANGLE,
+          aspect: WIDTH / HEIGHT,
+          near: NEAR,
+          far: FAR,
+          position: [0, 0, 40 * ZOOM],
+        }}
+        style={{ background: '#333' }}
+      >
+        <TrailsR3F
+          route={route}
+          bounding="edgeBinding"
+          useSimulationsStore={useStore2}
+        />
+      </Canvas>
+    </div>
+  </>
 )
 
-const TrailsR3F: FC<{ route: HashRoute }> = ({ route }) => {
+const TrailsR3F: FC<{
+  route: HashRoute
+  bounding: Bounding
+  useSimulationsStore: UseSimulationsStore
+}> = ({ route, bounding, useSimulationsStore }) => {
   /**
    * Extract any URL params
    */
@@ -59,9 +95,6 @@ const TrailsR3F: FC<{ route: HashRoute }> = ({ route }) => {
     ? route.params['behavior']
     : DEFAULT_BEHAVIOR_NAME
   const behavior = behaviors[behaviorName]
-  const bounding = isBounding(route.params['bounding'])
-    ? route.params['bounding']
-    : DEFAULT_BOUNDING
 
   /**
    * Create simulation particles
@@ -126,8 +159,16 @@ const TrailsR3F: FC<{ route: HashRoute }> = ({ route }) => {
     <>
       {times(DIMENSION_COUNT, (i) => (
         <group key={i} position={[0, 85 - i * (3.5 * 12), 0]}>
-          <SpaceCell simulationIndex={i} spin={spin} />
-          <TimeCell simulationIndex={i} spin={spin} />
+          <SpaceCell
+            useSimulationsStore={useSimulationsStore}
+            simulationIndex={i}
+            spin={spin}
+          />
+          <TimeCell
+            useSimulationsStore={useSimulationsStore}
+            simulationIndex={i}
+            spin={spin}
+          />
         </group>
       ))}
     </>
@@ -138,10 +179,11 @@ const xAxis = new Vector3(1, 0, 0)
 const zAxis = new Vector3(0, 0, 1)
 const rightAngle = Math.PI / 2
 
-const SpaceCell: FC<{ simulationIndex: number; spin: number }> = ({
-  simulationIndex,
-  spin,
-}) => {
+const SpaceCell: FC<{
+  useSimulationsStore: UseSimulationsStore
+  simulationIndex: number
+  spin: number
+}> = ({ useSimulationsStore, simulationIndex, spin }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -167,10 +209,11 @@ const SpaceCell: FC<{ simulationIndex: number; spin: number }> = ({
   )
 }
 
-const TimeCell: FC<{ simulationIndex: number; spin: number }> = ({
-  simulationIndex,
-  spin,
-}) => {
+const TimeCell: FC<{
+  useSimulationsStore: UseSimulationsStore
+  simulationIndex: number
+  spin: number
+}> = ({ useSimulationsStore, simulationIndex, spin }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation

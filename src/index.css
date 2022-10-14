@@ -1,5 +1,5 @@
 :root {
-  background: #161616;
+  background: #ccc;
   color: #efefef;
   font-family: sans-serif;
 }
@@ -31,4 +31,6 @@ a:hover {
 .page {
   width: 600px;
   margin: 4% auto;
+  padding: 2em 3em 3em;
+  background-color: #333;
 }
