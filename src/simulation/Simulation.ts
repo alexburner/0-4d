@@ -21,6 +21,9 @@ export class Simulation {
   private particles: Particle[] = []
   private neighborhood: Neighborhood = []
 
+  // Note: why init instead of constructor?
+  // Because Comlink expose() doesn't allow passing args
+  // So we have to construct this class in a vacuum
   init(particles: Particle[], config: SimulationConfig) {
     this.config = config
     this.particles = particles
