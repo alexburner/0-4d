@@ -30,6 +30,8 @@ const NEAR = 1
 const FAR = 5000
 const ZOOM = 7.5
 
+const BACKGROUND_COLOR = '#222'
+
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
 
@@ -37,8 +39,11 @@ const DEFAULT_PARTICLE_COUNT = 12
 const DEFAULT_SPIN = 0.0125 / 2
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
-const useStore1 = createUseSimulationsStore()
-const useStore2 = createUseSimulationsStore()
+const boundings = ['edgeBinding', 'centerScaling'] as const
+const useStores = [
+  createUseSimulationsStore(),
+  createUseSimulationsStore(),
+] as const
 
 export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
   const particleCount = isNumber(route.params['particles'])
@@ -57,7 +62,7 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
       style={{
         width: `${TOTAL_WIDTH}px`,
         height: `${TOTAL_HEIGHT}px`,
-        background: '#333',
+        background: BACKGROUND_COLOR,
         margin: 'auto',
       }}
     >
@@ -69,57 +74,39 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
           paddingTop: `${CANVAS_MARGIN}px`,
         }}
       >
-        <div
-          style={{
-            width: `${CANVAS_WIDTH}px`,
-            height: `${CANVAS_HEIGHT}px`,
-          }}
-        >
-          <Canvas
-            resize={{ scroll: false }}
-            camera={{
-              fov: VIEWANGLE,
-              aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
-              near: NEAR,
-              far: FAR,
-              position: [0, 0, 40 * ZOOM],
-            }}
-            style={{ background: '#333' }}
-          >
-            <TrailsR3F
-              particleCount={particleCount}
-              spin={spin}
-              behavior={behavior}
-              bounding="edgeBinding"
-              useSimulationsStore={useStore1}
-            />
-          </Canvas>
-        </div>
-        <div
-          style={{
-            width: `${CANVAS_WIDTH}px`,
-            height: `${CANVAS_HEIGHT}px`,
-          }}
-        >
-          <Canvas
-            camera={{
-              fov: VIEWANGLE,
-              aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
-              near: NEAR,
-              far: FAR,
-              position: [0, 0, 40 * ZOOM],
-            }}
-            style={{ background: '#333' }}
-          >
-            <TrailsR3F
-              particleCount={particleCount}
-              spin={spin}
-              behavior={behavior}
-              bounding="centerScaling"
-              useSimulationsStore={useStore2}
-            />
-          </Canvas>
-        </div>
+        {boundings.map((bounding, i) => {
+          const useStore = useStores[i]
+          if (!useStore) throw new Error('Unreachable')
+          return (
+            <div
+              key={bounding}
+              style={{
+                width: `${CANVAS_WIDTH}px`,
+                height: `${CANVAS_HEIGHT}px`,
+              }}
+            >
+              <Canvas
+                resize={{ scroll: false }}
+                camera={{
+                  fov: VIEWANGLE,
+                  aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
+                  near: NEAR,
+                  far: FAR,
+                  position: [0, 0, 40 * ZOOM],
+                }}
+                style={{ background: BACKGROUND_COLOR }}
+              >
+                <TrailsR3F
+                  particleCount={particleCount}
+                  spin={spin}
+                  behavior={behavior}
+                  bounding={bounding}
+                  useSimulationsStore={useStore}
+                />
+              </Canvas>
+            </div>
+          )
+        })}
       </div>
       <div
         style={{
