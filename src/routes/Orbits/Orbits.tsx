@@ -13,6 +13,13 @@ import SimulationWorker from '../../simulation/SimulationWorker?worker'
 import { HashRoute } from '../../util/hashRoute'
 import { Dots } from './Dots'
 
+const WIDTH = 1080
+const HEIGHT = 920
+const VIEWANGLE = 45
+const NEAR = 1
+const FAR = 5000
+const ZOOM = 7
+
 const PARTICLE_COUNT = 12
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
@@ -28,8 +35,16 @@ export const useSimulationsStore = create<SimulationStore>((set) => ({
 }))
 
 export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
-  <div style={{ width: '1080px', height: '960px', margin: 'auto' }}>
-    <Canvas>
+  <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px`, margin: 'auto' }}>
+    <Canvas
+      camera={{
+        fov: VIEWANGLE,
+        aspect: WIDTH / HEIGHT,
+        near: NEAR,
+        far: FAR,
+        position: [50, 0, 40 * ZOOM],
+      }}
+    >
       <OrbitsR3F route={route} />
     </Canvas>
   </div>
