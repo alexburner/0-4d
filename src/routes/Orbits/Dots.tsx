@@ -7,12 +7,15 @@ import {
   DynamicDrawUsage,
   PointsMaterial,
 } from 'three'
-import { useSimulationsStore } from './Orbits'
+import { UseSimulationsStore } from './store'
 
 const MAX_POINTS = 1000
 const DOT_SIZE = 4
 
-export const Dots: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
+export const Dots: FC<{
+  simulationIndex: number
+  useSimulationsStore: UseSimulationsStore
+}> = ({ simulationIndex, useSimulationsStore }) => {
   const positions = useMemo(() => new Float32Array(MAX_POINTS * 3), [])
   const attribute = useMemo(() => createAttribute(positions), [positions])
   const geometry = useMemo(() => createGeometry(attribute), [attribute])
@@ -31,7 +34,7 @@ export const Dots: FC<{ simulationIndex: number }> = ({ simulationIndex }) => {
       geometry.setDrawRange(0, particles.length)
       attribute.needsUpdate = true
     })
-  }, [simulationIndex, attribute, geometry, positions])
+  }, [simulationIndex, useSimulationsStore, attribute, geometry, positions])
 
   return <points geometry={geometry} material={material} />
 }

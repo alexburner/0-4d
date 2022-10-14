@@ -2,16 +2,16 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy, wrap } from 'comlink'
 import { times } from 'lodash'
 import { FC, useEffect, useMemo, useRef } from 'react'
-import create from 'zustand'
 import {
   makeFilledParticles,
   makeFreshParticles,
   Particle,
 } from '../../simulation/particles'
-import { Simulation, SimulationData } from '../../simulation/Simulation'
+import { Simulation } from '../../simulation/Simulation'
 import SimulationWorker from '../../simulation/SimulationWorker?worker'
 import { HashRoute } from '../../util/hashRoute'
 import { Dots } from './Dots'
+import { useSimulationsStore } from './store'
 
 const WIDTH = 1080
 const HEIGHT = 920
@@ -23,16 +23,6 @@ const ZOOM = 7
 const PARTICLE_COUNT = 12
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
-
-interface SimulationStore {
-  simulations: SimulationData[] | undefined
-  updateSimulations: (next: SimulationData[]) => void
-}
-
-export const useSimulationsStore = create<SimulationStore>((set) => ({
-  simulations: undefined,
-  updateSimulations: (next) => set({ simulations: next }),
-}))
 
 export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
   <div style={{ width: `${WIDTH}px`, height: `${HEIGHT}px`, margin: 'auto' }}>
@@ -51,7 +41,7 @@ export const Orbits: FC<{ route: HashRoute }> = ({ route }) => (
 )
 
 const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
-  console.log(route)
+  console.log(route) // TODO allow route-based params
 
   /**
    * Initialize simulation particles
@@ -120,7 +110,7 @@ const OrbitsR3F: FC<{ route: HashRoute }> = ({ route }) => {
    * Render scene
    */
 
-  return <Dots simulationIndex={3} />
+  return <Dots simulationIndex={3} useSimulationsStore={useSimulationsStore} />
 }
 
 const createParticlesByDimension = (dimensionCount: number) => {
