@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { SimulationData } from '../../simulation/Simulation'
+import { SimulationData } from '../simulation/Simulation'
 
 interface SimulationStore {
   simulations: SimulationData[] | undefined

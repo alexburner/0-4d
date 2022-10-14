@@ -7,9 +7,9 @@ import {
   DynamicDrawUsage,
   PointsMaterial,
 } from 'three'
-import { cloneParticle, Particle } from '../../simulation/particles'
-import { RecentQueue } from '../../util/RecentQueue'
-import { UseSimulationsStore } from './store'
+import { cloneParticle, Particle } from '../simulation/particles'
+import { UseSimulationsStore } from '../stores/simulationStore'
+import { RecentQueue } from '../util/RecentQueue'
 
 const TRAIL_LENGTH = 800
 const MAX_POINTS = TRAIL_LENGTH * 100

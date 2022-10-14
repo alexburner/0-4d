@@ -7,12 +7,15 @@ import {
   DynamicDrawUsage,
   PointsMaterial,
 } from 'three'
-import { UseSimulationsStore } from './store'
+import { cloneParticle, Particle } from '../simulation/particles'
+import { UseSimulationsStore } from '../stores/simulationStore'
+import { RecentQueue } from '../util/RecentQueue'
 
-const MAX_POINTS = 1000
-const DOT_SIZE = 4
+const TRAIL_LENGTH = 200
+const MAX_POINTS = TRAIL_LENGTH * 100
+const DOT_SIZE = 1
 
-export const Dots: FC<{
+export const SpaceTrails: FC<{
   simulationIndex: number
   useSimulationsStore: UseSimulationsStore
 }> = ({ simulationIndex, useSimulationsStore }) => {
@@ -21,20 +24,51 @@ export const Dots: FC<{
   const geometry = useMemo(() => createGeometry(attribute), [attribute])
   const texture = useMemo(() => createTexture(), [])
   const material = useMemo(() => createMaterial(texture), [texture])
+  const trailQueues = useMemo<RecentQueue<Particle>[]>(() => [], [])
 
   useEffect(() => {
     useSimulationsStore.subscribe((state) => {
       const particles = state.simulations?.[simulationIndex]?.particles
       if (!particles) return
-      particles.forEach((particle, i) => {
-        positions[i * 3 + 0] = particle.position[0] ?? 0
-        positions[i * 3 + 1] = particle.position[1] ?? 0
-        positions[i * 3 + 2] = particle.position[2] ?? 0
+
+      // (maybe) Add queues to fit
+      while (trailQueues.length < particles.length) {
+        trailQueues.push(new RecentQueue(TRAIL_LENGTH))
+      }
+
+      // (maybe) Remove queues to fit
+      while (trailQueues.length > particles.length) {
+        trailQueues.pop()
+      }
+
+      // Add new particles to queues
+      trailQueues.forEach((trailQueue, i) => {
+        const particle = particles[i]
+        if (!particle) throw new Error('Unreachable')
+        trailQueue.add(cloneParticle(particle))
       })
-      geometry.setDrawRange(0, particles.length)
+
+      // Update rendered positions
+      let drawCount = 0
+      trailQueues.forEach((trailQueue) => {
+        trailQueue.values().forEach((particle) => {
+          positions[drawCount * 3 + 0] = particle.position[0] ?? 0
+          positions[drawCount * 3 + 1] = particle.position[1] ?? 0
+          positions[drawCount * 3 + 2] = particle.position[2] ?? 0
+          drawCount++
+        })
+      })
+      geometry.setDrawRange(0, drawCount)
       attribute.needsUpdate = true
     })
-  }, [simulationIndex, useSimulationsStore, attribute, geometry, positions])
+  }, [
+    simulationIndex,
+    useSimulationsStore,
+    attribute,
+    geometry,
+    positions,
+    trailQueues,
+  ])
 
   return <points geometry={geometry} material={material} />
 }
