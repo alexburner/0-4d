@@ -20,15 +20,13 @@ import { HashRoute } from '../util/hashRoute'
 
 const TOTAL_WIDTH = 1840
 const TOTAL_HEIGHT = 1080
-const TITLE_HEIGHT = 200
-const TITLE_WIDTH = TOTAL_WIDTH
 const CANVAS_MARGIN = 40
-const CANVAS_WIDTH = TOTAL_WIDTH / 2 - CANVAS_MARGIN * 3
-const CANVAS_HEIGHT = TOTAL_HEIGHT - TITLE_HEIGHT
+const CANVAS_WIDTH = 800
+const CANVAS_HEIGHT = 800
 const VIEWANGLE = 45
 const NEAR = 1
 const FAR = 5000
-const ZOOM = 7.5
+const ZOOM = 6.5
 
 const BACKGROUND_COLOR = '#222'
 
@@ -62,8 +60,11 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
       style={{
         width: `${TOTAL_WIDTH}px`,
         height: `${TOTAL_HEIGHT}px`,
+        padding: `${CANVAS_MARGIN * 1.5}px 0 ${CANVAS_MARGIN * 0.5}px`,
         background: BACKGROUND_COLOR,
         margin: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <div
@@ -71,7 +72,6 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
           display: 'flex',
           justifyContent: 'space-evenly',
           height: `${CANVAS_HEIGHT}px`,
-          paddingTop: `${CANVAS_MARGIN}px`,
         }}
       >
         {boundings.map((bounding, i) => {
@@ -110,11 +110,10 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
       </div>
       <div
         style={{
-          width: `${TITLE_WIDTH}px`,
-          height: `${TITLE_HEIGHT - CANVAS_MARGIN}px`,
           display: 'flex',
           justifyContent: 'space-around',
-          alignItems: 'top',
+          alignItems: 'center',
+          flexGrow: 1,
         }}
       >
         {boundings.map((bounding) => (
@@ -197,7 +196,7 @@ const TrailsR3F: FC<{
   return (
     <>
       {times(DIMENSION_COUNT, (i) => (
-        <group key={i} position={[0, 95 - i * (3.5 * 12), 0]}>
+        <group key={i} position={[0, 85 - i * (3.5 * 12), 0]}>
           <SpaceCell
             useSimulationsStore={useSimulationsStore}
             simulationIndex={i}
