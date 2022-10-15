@@ -20,20 +20,23 @@ export const cloneParticle = ({
   acceleration: [...acceleration],
 })
 
-export const makeFreshParticles = (
+const makeFreshParticles = (
   dimensions: number,
   radius: number,
   count: number,
 ): Particle[] => times(count, () => makeFreshParticle(dimensions, radius))
 
-export const makeFilledParticles = (
+const makeFilledParticles = (
   dimensions: number,
   radius: number,
   oldParticles: Particle[],
 ): Particle[] =>
   oldParticles.map((oldP) => makeFilledParticle(dimensions, radius, oldP))
 
-const makeFreshParticle = (dimensions: number, radius: number): Particle => ({
+export const makeFreshParticle = (
+  dimensions: number,
+  radius: number,
+): Particle => ({
   dimensions,
   position: radialRandomVector(dimensions, radius / 2),
   velocity: radialRandomVector(dimensions, 0.5),

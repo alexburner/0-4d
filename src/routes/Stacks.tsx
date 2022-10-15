@@ -152,6 +152,15 @@ const StacksR3F: FC<{
    * Create simulation workers
    */
 
+  const simulationConfig = useMemo(
+    () => ({
+      behavior,
+      bounding,
+      radius: SIMULATION_RADIUS,
+      maxSpeed: 1,
+    }),
+    [behavior, bounding],
+  )
   const workers = useMemo(() => createWorkers(DIMENSION_COUNT), [])
   const workersReadyRef = useRef(false)
   useEffect(() => {
@@ -159,12 +168,7 @@ const StacksR3F: FC<{
     const initPromises = workers.map((worker, i) => {
       const particles = particlesByDimension[i]
       if (!particles) throw new Error('Unreachable')
-      return worker.init(particles, {
-        behavior,
-        bounding,
-        radius: SIMULATION_RADIUS,
-        maxSpeed: 1,
-      })
+      return worker.init(particles, simulationConfig)
     })
 
     // Mark workers as ready to tick, after init
@@ -174,7 +178,7 @@ const StacksR3F: FC<{
       // Release workers on dismount
       workers.forEach((worker) => worker[releaseProxy]())
     }
-  }, [particlesByDimension, workers, behavior, bounding])
+  }, [particlesByDimension, workers, behavior, bounding, simulationConfig])
 
   /**
    * Each frame, tick simulation workers & update store
