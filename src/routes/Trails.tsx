@@ -1,6 +1,6 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy } from 'comlink'
-import { isNumber, times, upperFirst } from 'lodash'
+import { isNumber, lowerCase, times } from 'lodash'
 import { FC, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
@@ -39,7 +39,7 @@ const DEFAULT_PARTICLE_COUNT = 12
 const DEFAULT_SPIN = 0.0125 / 2
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
-const boundings = ['edgeBinding', 'centerScaling'] as const
+const boundings = ['centerScaling', 'edgeBinding'] as const
 const useStores = [
   createUseSimulationsStore(),
   createUseSimulationsStore(),
@@ -111,13 +111,18 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
       <div
         style={{
           width: `${TITLE_WIDTH}px`,
-          height: `${TITLE_HEIGHT / 2}px`,
+          height: `${TITLE_HEIGHT - CANVAS_MARGIN}px`,
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          justifyContent: 'space-around',
+          alignItems: 'top',
         }}
       >
-        <h1>Trails — {upperFirst(behaviorName)}</h1>
+        {boundings.map((bounding) => (
+          <div key={bounding} style={{ textAlign: 'center' }}>
+            <h2 style={{ margin: 0 }}>{behaviorName} trails</h2>
+            <p>( {lowerCase(bounding)} )</p>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -226,7 +231,7 @@ const SpaceCell: FC<{
   }, [])
   useFrame(() => {
     // Spin rotation
-    if (simulationIndex < 3) return
+    // if (simulationIndex < 3) return
     groupRef.current?.rotateOnAxis(xAxis, spin)
   })
   return (
@@ -257,7 +262,7 @@ const TimeCell: FC<{
   }, [])
   useFrame(() => {
     // Spin rotation
-    if (simulationIndex < 2) return
+    // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
