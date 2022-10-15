@@ -10,6 +10,10 @@ const links = [
     text: 'Trails — Wandering',
     href: '#trails?behavior=wandering',
   },
+  {
+    text: 'Stacks — Diffusion',
+    href: '#stacks?behavior=diffusion',
+  },
 ]
 
 export const Home: FC = () => (

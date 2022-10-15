@@ -59,8 +59,8 @@ const Plane: FC<{ vectors: Vector[] }> = ({ vectors }) => {
       positions[posIndex++] = target[2]
       lineCount++
     })
-    attribute.needsUpdate = true
     geometry.setDrawRange(0, lineCount * 2)
+    attribute.needsUpdate = true
   }, [attribute, geometry, positions, vectors])
 
   return <lineSegments geometry={geometry} material={material} />
@@ -75,7 +75,6 @@ const createAttribute = (positions: Float32Array) => {
 const createGeometry = (attribute: BufferAttribute) => {
   const geometry = new BufferGeometry()
   geometry.setAttribute('position', attribute)
-  // geometry.computeBoundingSphere()
   geometry.setDrawRange(0, 0)
   return geometry
 }
@@ -83,9 +82,9 @@ const createGeometry = (attribute: BufferAttribute) => {
 const createMaterial = () => {
   return new LineBasicMaterial({
     blending: AdditiveBlending,
-    transparent: true,
     color: 0x309bff,
-    opacity: 0.4,
     depthTest: false,
+    opacity: 0.4,
+    transparent: true,
   })
 }
