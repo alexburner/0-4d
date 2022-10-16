@@ -82,6 +82,8 @@ export const diffusion = (
   particles: Particle[],
   neighborhood: Neighborhood,
   config: DiffusionBehavior['config'],
+  radius: number,
+  pinFirst?: boolean,
 ) => {
   // Only works if more than 1 particle
   if (particles.length < 1) return
@@ -91,6 +93,16 @@ export const diffusion = (
   const countSq = count * count
   const chargeSq = config.charge * config.charge
   particles.forEach((particle, i) => {
+    if (pinFirst && i === 0) {
+      // Pin first particle to base
+      particle.velocity = multiply(particle.velocity, 0)
+      particle.acceleration = multiply(particle.acceleration, 0)
+      particle.position = multiply(particle.position, 0)
+      if (particle.position.length > 0) {
+        particle.position[0] = radius
+      }
+      return
+    }
     const neighbors = neighborhood[i]
     if (!neighbors) return
     const nearestNeighbor = neighbors[0]

@@ -70,7 +70,8 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-evenly',
+          justifyContent: 'center',
+          gap: `${CANVAS_MARGIN / 2}px`,
           height: `${CANVAS_HEIGHT}px`,
         }}
       >
@@ -115,7 +116,7 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-around',
+          justifyContent: 'space-evenly',
           alignItems: 'center',
           flexGrow: 1,
         }}

@@ -25,7 +25,7 @@ export const behaviors: Record<Behavior['name'], Behavior> = {
   diffusion: {
     name: 'diffusion',
     config: {
-      charge: 0.0000000001,
+      charge: 50,
     },
   },
 }

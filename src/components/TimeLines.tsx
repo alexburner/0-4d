@@ -11,7 +11,7 @@ import { UseSimulationsStore } from '../stores/simulationStore'
 import { RecentQueue } from '../util/RecentQueue'
 
 const MAX_NEIGHBORS = 100
-const STACK_GAP = 20
+const STACK_GAP = 10
 const STACK_COUNT = 400 / STACK_GAP
 const POINT_COUNT = MAX_NEIGHBORS * STACK_COUNT * 3
 

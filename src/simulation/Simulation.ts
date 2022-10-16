@@ -1,4 +1,4 @@
-import { Behavior, orbiting, wandering } from './behaviors'
+import { Behavior, diffusion, orbiting, wandering } from './behaviors'
 import { Bounding, centerScaling, edgeBinding, edgeWrapping } from './boundings'
 import { getNeighborhood, Neighborhood } from './neighborhood'
 import { Particle } from './particles'
@@ -47,6 +47,15 @@ export class Simulation {
         case 'wandering':
           wandering(this.particles, this.config.behavior.config)
           break
+        case 'diffusion':
+          diffusion(
+            this.particles,
+            this.neighborhood,
+            this.config.behavior.config,
+            this.config.radius,
+            true,
+          )
+          break
       }
 
       // Update positions
@@ -68,10 +77,10 @@ export class Simulation {
           edgeWrapping(this.particles, this.config.radius)
           break
       }
-    }
 
-    // Re-calculate particle relations
-    this.neighborhood = getNeighborhood(this.particles)
+      // Re-calculate particle relations
+      this.neighborhood = getNeighborhood(this.particles)
+    }
 
     // Return new data
     return {

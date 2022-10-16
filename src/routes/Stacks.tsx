@@ -1,7 +1,7 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy } from 'comlink'
 import { isNumber, lowerCase, times } from 'lodash'
-import { FC, useEffect, useMemo, useRef } from 'react'
+import { FC, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
 import { SquarePlane } from '../components/Plane'
@@ -11,7 +11,10 @@ import { Behavior } from '../simulation/behaviors'
 import { Bounding } from '../simulation/boundings'
 import { behaviors, isBehaviorName } from '../simulation/configs'
 import { createWorkers } from '../simulation/createWorkers'
-import { makeParticlesThroughDimensions } from '../simulation/particles'
+import {
+  makeFreshParticle,
+  makeParticlesThroughDimensions,
+} from '../simulation/particles'
 import {
   createUseSimulationsStore,
   UseSimulationsStore,
@@ -33,7 +36,9 @@ const BACKGROUND_COLOR = '#222'
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
 
-const DEFAULT_PARTICLE_COUNT = 12
+const INIT_PARTICLE_COUNT = 0
+const MAX_PARTICLE_COUNT = 24
+
 const DEFAULT_SPIN = 0.0125 / 2
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
@@ -44,9 +49,9 @@ const useStores = [
 ] as const
 
 export const Stacks: FC<{ route: HashRoute }> = ({ route }) => {
-  const particleCount = isNumber(route.params['particles'])
+  const initParticleCount = isNumber(route.params['particles'])
     ? route.params['particles']
-    : DEFAULT_PARTICLE_COUNT
+    : INIT_PARTICLE_COUNT
   const spin = isNumber(route.params['spin'])
     ? route.params['spin']
     : DEFAULT_SPIN
@@ -97,7 +102,7 @@ export const Stacks: FC<{ route: HashRoute }> = ({ route }) => {
                 style={{ background: BACKGROUND_COLOR }}
               >
                 <StacksR3F
-                  particleCount={particleCount}
+                  initParticleCount={initParticleCount}
                   spin={spin}
                   behavior={behavior}
                   bounding={bounding}
@@ -128,12 +133,12 @@ export const Stacks: FC<{ route: HashRoute }> = ({ route }) => {
 }
 
 const StacksR3F: FC<{
-  particleCount: number
+  initParticleCount: number
   spin: number
   behavior: Behavior
   bounding: Bounding
   useSimulationsStore: UseSimulationsStore
-}> = ({ particleCount, spin, behavior, bounding, useSimulationsStore }) => {
+}> = ({ initParticleCount, spin, behavior, bounding, useSimulationsStore }) => {
   /**
    * Create simulation particles
    */
@@ -142,10 +147,10 @@ const StacksR3F: FC<{
     () =>
       makeParticlesThroughDimensions(
         DIMENSION_COUNT,
-        particleCount,
+        initParticleCount,
         SIMULATION_RADIUS,
       ),
-    [particleCount],
+    [initParticleCount],
   )
 
   /**
@@ -181,17 +186,57 @@ const StacksR3F: FC<{
   }, [particlesByDimension, workers, behavior, bounding, simulationConfig])
 
   /**
-   * Each frame, tick simulation workers & update store
+   * Every 1 second, add a particle & tick simulations 1000 times
    */
 
+  const isAddingRef = useRef(true)
   const updateSimulations = useSimulationsStore(
     (state) => state.updateSimulations,
   )
-  const tickWorkers = async () => {
-    const updates = await Promise.all(workers.map((worker) => worker.tick()))
+  const tickWorkers = useCallback(async () => {
+    // Decide whether to add or remove
+    {
+      const sampleParticles = particlesByDimension[0]
+      if (!sampleParticles) throw new Error('Unreachable')
+      if (
+        isAddingRef.current &&
+        sampleParticles.length === MAX_PARTICLE_COUNT
+      ) {
+        // We're adding, but we're at max, start removing
+        isAddingRef.current = false
+      } else if (!isAddingRef.current && sampleParticles.length === 0) {
+        // We're removing, but we're at zero, start adding
+        isAddingRef.current = true
+      }
+    }
+    // Add or remove a new particle to each dimension simulation
+    particlesByDimension.forEach((particles, i) => {
+      isAddingRef.current
+        ? particles.push(makeFreshParticle(i, SIMULATION_RADIUS))
+        : particles.pop()
+    })
+    // Re-init workers with new particles
+    await Promise.all(
+      workers.map((worker, i) => {
+        const particles = particlesByDimension[i]
+        if (!particles) throw new Error('Unreachable')
+        return worker.init(particles, simulationConfig)
+      }),
+    )
+    // Batch tick workers
+    const updates = await Promise.all(
+      workers.map((worker) => worker.tick(1000)),
+    )
+    // Update store
     updateSimulations(updates)
-  }
-  useFrame(() => workersReadyRef.current && void tickWorkers())
+  }, [updateSimulations, workers, particlesByDimension, simulationConfig])
+  useEffect(() => {
+    const interval = setInterval(
+      () => workersReadyRef.current && void tickWorkers(),
+      1000,
+    )
+    return () => clearInterval(interval)
+  }, [tickWorkers])
 
   /**
    * Render scene
@@ -209,7 +254,8 @@ const StacksR3F: FC<{
           <TimeCell
             useSimulationsStore={useSimulationsStore}
             simulationIndex={i}
-            spin={spin}
+            // spin={spin}
+            spin={0}
           />
         </group>
       ))}
@@ -234,7 +280,7 @@ const SpaceCell: FC<{
   }, [])
   useFrame(() => {
     // Spin rotation
-    // if (simulationIndex < 3) return
+    if (simulationIndex < 3) return
     groupRef.current?.rotateOnAxis(xAxis, spin)
   })
   return (
