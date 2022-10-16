@@ -97,9 +97,11 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
                 style={{ background: BACKGROUND_COLOR }}
               >
                 <group rotation={i > 0 ? [0, rightAngle * 2, 0] : [0, 0, 0]}>
+                  {/* <group> */}
                   <TrailsR3F
                     particleCount={particleCount}
                     spin={i > 0 ? -spin : spin}
+                    // spin={spin}
                     behavior={behavior}
                     bounding={bounding}
                     useSimulationsStore={useStore}
@@ -120,8 +122,8 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
       >
         {boundings.map((bounding) => (
           <div key={bounding} style={{ textAlign: 'center' }}>
-            <h2 style={{ margin: 0 }}>{behaviorName} trails</h2>
-            <p>( {lowerCase(bounding)} )</p>
+            <h3 style={{ margin: '0 0 0.5em' }}>{behaviorName} trails</h3>
+            <i>( {lowerCase(bounding)} )</i>
           </div>
         ))}
       </div>
@@ -232,7 +234,7 @@ const SpaceCell: FC<{
   }, [])
   useFrame(() => {
     // Spin rotation
-    // if (simulationIndex < 3) return
+    if (simulationIndex < 3) return
     groupRef.current?.rotateOnAxis(xAxis, spin)
   })
   return (
@@ -263,11 +265,15 @@ const TimeCell: FC<{
   }, [])
   useFrame(() => {
     // Spin rotation
-    // if (simulationIndex < 2) return
+    if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
-    <group ref={groupRef} position={[leftStart + 5, 0, 0]}>
+    <group
+      ref={groupRef}
+      position={[leftStart + 5, 0, 0]}
+      // rotation={[0.125, 0.75, 0]}
+    >
       <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}

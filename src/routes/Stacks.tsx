@@ -269,7 +269,11 @@ const TimeCell: FC<{
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
-    <group ref={groupRef} position={[leftStart, 0, 0]}>
+    <group
+      ref={groupRef}
+      position={[leftStart, 0, 0]}
+      rotation={[0.25, 0.5, 0]}
+    >
       <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
