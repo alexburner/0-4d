@@ -10,16 +10,17 @@ import { SimulationData } from '../simulation/Simulation'
 import { UseSimulationsStore } from '../stores/simulationStore'
 import { RecentQueue } from '../util/RecentQueue'
 
-const MAX_NEIGHBORS = 100
+const MAX_POINTS = 24
+const MAX_LINES = MAX_POINTS * MAX_POINTS
 const STACK_GAP = 10
-const STACK_COUNT = 400 / STACK_GAP
-const POINT_COUNT = MAX_NEIGHBORS * STACK_COUNT * 3
+const STACK_COUNT = 22
+const POSITION_COUNT = MAX_LINES * 2 * STACK_COUNT * 3
 
 export const TimeLines: FC<{
   simulationIndex: number
   useSimulationsStore: UseSimulationsStore
 }> = ({ simulationIndex, useSimulationsStore }) => {
-  const positions = useMemo(() => new Float32Array(POINT_COUNT), [])
+  const positions = useMemo(() => new Float32Array(POSITION_COUNT), [])
   const attribute = useMemo(() => createAttribute(positions), [positions])
   const geometry = useMemo(() => createGeometry(attribute), [attribute])
   const material = useMemo(() => createMaterial(), [])
