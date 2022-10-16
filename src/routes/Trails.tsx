@@ -96,13 +96,15 @@ export const Trails: FC<{ route: HashRoute }> = ({ route }) => {
                 }}
                 style={{ background: BACKGROUND_COLOR }}
               >
-                <TrailsR3F
-                  particleCount={particleCount}
-                  spin={spin}
-                  behavior={behavior}
-                  bounding={bounding}
-                  useSimulationsStore={useStore}
-                />
+                <group rotation={i > 0 ? [0, rightAngle * 2, 0] : [0, 0, 0]}>
+                  <TrailsR3F
+                    particleCount={particleCount}
+                    spin={i > 0 ? -spin : spin}
+                    behavior={behavior}
+                    bounding={bounding}
+                    useSimulationsStore={useStore}
+                  />
+                </group>
               </Canvas>
             </div>
           )
@@ -265,7 +267,7 @@ const TimeCell: FC<{
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
-    <group ref={groupRef} position={[leftStart, 0, 0]}>
+    <group ref={groupRef} position={[leftStart + 5, 0, 0]}>
       <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}

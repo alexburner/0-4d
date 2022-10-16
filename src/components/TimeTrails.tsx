@@ -11,7 +11,7 @@ import { cloneParticle, Particle } from '../simulation/particles'
 import { UseSimulationsStore } from '../stores/simulationStore'
 import { RecentQueue } from '../util/RecentQueue'
 
-const TRAIL_LENGTH = 600
+const TRAIL_LENGTH = 560
 const MAX_POINTS = TRAIL_LENGTH * 100
 const TRAIL_GAP = 1 / 4
 const DOT_SIZE = 1
