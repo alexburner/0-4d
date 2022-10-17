@@ -46,6 +46,9 @@ export const SpaceLines: FC<{
     })
   }, [simulationIndex, useSimulationsStore, attribute, geometry, positions])
 
+  // TODO useFrame animation prev/next simulation damp
+  // https://github.com/pmndrs/maath#easing
+
   return <lineSegments geometry={geometry} material={material} />
 }
 

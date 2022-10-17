@@ -75,6 +75,9 @@ export const TimeLines: FC<{
     simulationQueue,
   ])
 
+  // TODO useFrame animation prev/next simulation damp
+  // https://github.com/pmndrs/maath#easing
+
   return <lineSegments geometry={geometry} material={material} />
 }
 
