@@ -235,7 +235,7 @@ const SpaceCell: FC<{
   }, [])
   useFrame(() => {
     // Spin rotation
-    if (simulationIndex < 3) return
+    // if (simulationIndex < 3) return
     groupRef.current?.rotateOnAxis(xAxis, spin)
   })
   return (
@@ -266,7 +266,7 @@ const TimeCell: FC<{
   }, [])
   useFrame(() => {
     // Spin rotation
-    if (simulationIndex < 2) return
+    // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
