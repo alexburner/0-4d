@@ -34,7 +34,7 @@ const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 5
 
 const DEFAULT_PARTICLE_COUNT = 12
-const DEFAULT_SPIN = 0.0125 / 2
+const DEFAULT_SPIN = 0.00125
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
 const boundings = ['centerScaling', 'edgeBinding'] as const

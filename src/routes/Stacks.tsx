@@ -320,10 +320,10 @@ const TimeCell: FC<{
       position={[leftStart, 0, 0]}
       rotation={[0.25, 0.5, 0]}
     >
-      <Dots
+      {/* <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
-      />
+      /> */}
       <TimeLines
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
