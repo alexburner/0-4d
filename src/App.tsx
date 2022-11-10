@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { useHash } from 'react-use'
+import { Columns } from './routes/Columns'
 import { Home } from './routes/Home'
 import { NotFound } from './routes/NotFound'
 import { Stacks } from './routes/Stacks'
@@ -14,6 +15,8 @@ export const App: FC = () => {
       return <Home />
     case 'trails':
       return <Trails route={route} />
+    case 'columns':
+      return <Columns route={route} />
     case 'stacks':
       return <Stacks route={route} />
     default:
