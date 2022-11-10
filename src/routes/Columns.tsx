@@ -9,7 +9,7 @@ import { SpaceTrails } from '../components/SpaceTrails'
 import { TimeTrails } from '../components/TimeTrails'
 import { Behavior } from '../simulation/behaviors'
 import { Bounding } from '../simulation/boundings'
-import { behaviors, isBehaviorName } from '../simulation/configs'
+import { behaviors, isBehaviorName, isBounding } from '../simulation/configs'
 import { createWorkers } from '../simulation/createWorkers'
 import { makeParticlesThroughDimensions } from '../simulation/particles'
 import {
@@ -36,11 +36,9 @@ const DIMENSION_COUNT = 5
 const DEFAULT_PARTICLE_COUNT = 12
 const DEFAULT_SPIN = 0.00215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
+const DEFAULT_BOUNDING = 'centerScaling'
 
-const useStores = [
-  createUseSimulationsStore(),
-  createUseSimulationsStore(),
-] as const
+const useStore = createUseSimulationsStore()
 
 export const Columns: FC<{ route: HashRoute }> = ({ route }) => {
   const particleCount = isNumber(route.params['particles'])
@@ -53,8 +51,9 @@ export const Columns: FC<{ route: HashRoute }> = ({ route }) => {
     ? route.params['behavior']
     : DEFAULT_BEHAVIOR_NAME
   const behavior = behaviors[behaviorName]
-
-  const boundings: Bounding[] = ['edgeBinding', 'centerScaling']
+  const bounding = isBounding(route.params['bounding'])
+    ? route.params['bounding']
+    : DEFAULT_BOUNDING
 
   return (
     <div
@@ -76,42 +75,32 @@ export const Columns: FC<{ route: HashRoute }> = ({ route }) => {
           height: `${CANVAS_HEIGHT}px`,
         }}
       >
-        {boundings.map((bounding, i) => {
-          const useStore = useStores[i]
-          if (!useStore) throw new Error('Unreachable')
-          return (
-            <div
-              key={bounding}
-              style={{
-                width: `${CANVAS_WIDTH}px`,
-                height: `${CANVAS_HEIGHT}px`,
-              }}
-            >
-              <Canvas
-                resize={{ scroll: false }}
-                camera={{
-                  fov: VIEWANGLE,
-                  aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
-                  near: NEAR,
-                  far: FAR,
-                  position: [0, 0, 40 * ZOOM],
-                }}
-                style={{ background: BACKGROUND_COLOR }}
-              >
-                {/* <group rotation={i > 0 ? [0, rightAngle * 2, 0] : [0, 0, 0]}> */}
-                <TrailsR3F
-                  particleCount={particleCount}
-                  // spin={i > 0 ? -spin : spin}
-                  spin={spin}
-                  behavior={behavior}
-                  bounding={bounding}
-                  useSimulationsStore={useStore}
-                />
-                {/* </group> */}
-              </Canvas>
-            </div>
-          )
-        })}
+        <div
+          style={{
+            width: `${CANVAS_WIDTH}px`,
+            height: `${CANVAS_HEIGHT}px`,
+          }}
+        >
+          <Canvas
+            resize={{ scroll: false }}
+            camera={{
+              fov: VIEWANGLE,
+              aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
+              near: NEAR,
+              far: FAR,
+              position: [0, 0, 40 * ZOOM],
+            }}
+            style={{ background: BACKGROUND_COLOR }}
+          >
+            <TrailsR3F
+              particleCount={particleCount}
+              spin={spin}
+              behavior={behavior}
+              bounding={bounding}
+              useSimulationsStore={useStore}
+            />
+          </Canvas>
+        </div>
       </div>
       <div
         style={{
@@ -121,12 +110,12 @@ export const Columns: FC<{ route: HashRoute }> = ({ route }) => {
           flexGrow: 1,
         }}
       >
-        {boundings.map((bounding) => (
+        {/* {boundings.map((bounding) => (
           <div key={bounding} style={{ textAlign: 'center' }}>
             <h3 style={{ margin: '0 0 0.5em' }}>{behaviorName} trails</h3>
             <i>( {lowerCase(bounding)} )</i>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   )
