@@ -249,6 +249,7 @@ const SpaceCell: FC<{
       ref={groupRef}
       position={[leftStart - 40 + 10, 0, 5]}
       // rotation={[0, -0.25, 0]}
+      rotation={[0, -0.25, 0]}
     >
       <Dots
         simulationIndex={simulationIndex}
