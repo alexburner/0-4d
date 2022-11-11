@@ -1,6 +1,6 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy } from 'comlink'
-import { isNumber, lowerCase, times } from 'lodash'
+import { isNumber, times } from 'lodash'
 import { FC, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
@@ -190,7 +190,7 @@ const TrailsR3F: FC<{
   return (
     <>
       {times(DIMENSION_COUNT, (i) => (
-        <group key={i} position={[0, 84 - i * (3.5 * 12), 0]}>
+        <group key={i} position={[84 - i * (3.5 * 12), 0, 0]}>
           <SpaceCell
             useSimulationsStore={useSimulationsStore}
             simulationIndex={i}
@@ -208,6 +208,7 @@ const TrailsR3F: FC<{
 }
 
 const xAxis = new Vector3(1, 0, 0)
+const yAxis = new Vector3(0, 1, 0)
 const zAxis = new Vector3(0, 0, 1)
 const rightAngle = Math.PI / 2
 const leftStart = -50
@@ -263,6 +264,7 @@ const TimeCell: FC<{
     // Initial rotation
     groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
     groupRef.current?.rotateOnAxis(xAxis, rightAngle)
+    groupRef.current?.rotateOnAxis(yAxis, rightAngle)
   }, [])
   useFrame(() => {
     // Spin rotation
