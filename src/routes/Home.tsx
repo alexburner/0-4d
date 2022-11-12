@@ -14,6 +14,14 @@ const links = [
     text: 'Stacks — Diffusion',
     href: '#stacks?behavior=diffusion',
   },
+  {
+    text: 'Trail Columns — Interior Orbits',
+    href: '#columns?behavior=orbiting&bounding=centerScaling',
+  },
+  {
+    text: 'Trail Columns — Exterior Orbits',
+    href: '#columns?behavior=orbiting&bounding=edgeBinding',
+  },
 ]
 
 export const Home: FC = () => (

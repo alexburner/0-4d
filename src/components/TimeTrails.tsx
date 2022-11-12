@@ -11,16 +11,21 @@ import { cloneParticle, Particle } from '../simulation/particles'
 import { UseSimulationsStore } from '../stores/simulationStore'
 import { RecentQueue } from '../util/RecentQueue'
 
-const TRAIL_LENGTH = 480
-const MAX_POINTS = TRAIL_LENGTH * 100
-const TRAIL_GAP = 1 / 4
 const DOT_SIZE = 1
 
 export const TimeTrails: FC<{
   simulationIndex: number
   useSimulationsStore: UseSimulationsStore
-}> = ({ simulationIndex, useSimulationsStore }) => {
-  const positions = useMemo(() => new Float32Array(MAX_POINTS * 3), [])
+  trailLength?: number
+}> = ({ simulationIndex, useSimulationsStore, trailLength }) => {
+  const TRAIL_LENGTH = trailLength ?? 480
+  const MAX_POINTS = TRAIL_LENGTH * 100
+  const TRAIL_GAP = 1 / 4
+
+  const positions = useMemo(
+    () => new Float32Array(MAX_POINTS * 3),
+    [MAX_POINTS],
+  )
   const attribute = useMemo(() => createAttribute(positions), [positions])
   const geometry = useMemo(() => createGeometry(attribute), [attribute])
   const texture = useMemo(() => createTexture(), [])
@@ -77,6 +82,8 @@ export const TimeTrails: FC<{
     geometry,
     positions,
     trailQueues,
+    TRAIL_GAP,
+    TRAIL_LENGTH,
   ])
 
   return <points geometry={geometry} material={material} />

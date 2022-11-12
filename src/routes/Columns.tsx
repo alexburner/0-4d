@@ -67,6 +67,8 @@ export const Columns: FC<{ route: HashRoute }> = ({ route }) => {
         style={{
           width: `${WIDTH}px`,
           height: `${HEIGHT}px`,
+          position: 'relative',
+          top: '-150px',
         }}
       >
         <Canvas
@@ -88,21 +90,24 @@ export const Columns: FC<{ route: HashRoute }> = ({ route }) => {
             useSimulationsStore={useStore}
           />
         </Canvas>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          flexGrow: 1,
-        }}
-      >
-        {/* {boundings.map((bounding) => (
-          <div key={bounding} style={{ textAlign: 'center' }}>
-            <h3 style={{ margin: '0 0 0.5em' }}>{behaviorName} trails</h3>
-            <i>( {lowerCase(bounding)} )</i>
-          </div>
-        ))} */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            flexGrow: 1,
+            position: 'absolute',
+            bottom: '-60px',
+            left: '100px',
+            right: '100px',
+          }}
+        >
+          {new Array(DIMENSION_COUNT).fill(null).map((_, i) => (
+            <div key={i} style={{ textAlign: 'center' }}>
+              <h3 style={{ fontWeight: 'normal' }}>{i}d</h3>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -273,6 +278,7 @@ const TimeCell: FC<{
       <TimeTrails
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
+        trailLength={660}
       />
       <SquarePlane radius={SIMULATION_RADIUS} />
     </group>
