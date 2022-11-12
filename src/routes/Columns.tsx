@@ -18,20 +18,17 @@ import {
 } from '../stores/simulationStore'
 import { HashRoute } from '../util/hashRoute'
 
-const TOTAL_WIDTH = 1840
-const TOTAL_HEIGHT = 1080
-const CANVAS_MARGIN = 40
-const CANVAS_WIDTH = 800
-const CANVAS_HEIGHT = 800
+const WIDTH = 1840
+const HEIGHT = 1080
 const VIEWANGLE = 45
 const NEAR = 1
 const FAR = 5000
-const ZOOM = 6.5
+const ZOOM = 9
 
 const BACKGROUND_COLOR = '#222'
 
 const SIMULATION_RADIUS = 14
-const DIMENSION_COUNT = 5
+const DIMENSION_COUNT = 9
 
 const DEFAULT_PARTICLE_COUNT = 12
 const DEFAULT_SPIN = 0.00215
@@ -58,9 +55,8 @@ export const Columns: FC<{ route: HashRoute }> = ({ route }) => {
   return (
     <div
       style={{
-        width: `${TOTAL_WIDTH}px`,
-        height: `${TOTAL_HEIGHT}px`,
-        padding: `${CANVAS_MARGIN * 1.5}px 0 ${CANVAS_MARGIN * 0.5}px`,
+        width: `${WIDTH}px`,
+        height: `${HEIGHT}px`,
         background: BACKGROUND_COLOR,
         margin: 'auto',
         display: 'flex',
@@ -69,38 +65,29 @@ export const Columns: FC<{ route: HashRoute }> = ({ route }) => {
     >
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: `${CANVAS_MARGIN / 2}px`,
-          height: `${CANVAS_HEIGHT}px`,
+          width: `${WIDTH}px`,
+          height: `${HEIGHT}px`,
         }}
       >
-        <div
-          style={{
-            width: `${CANVAS_WIDTH}px`,
-            height: `${CANVAS_HEIGHT}px`,
+        <Canvas
+          resize={{ scroll: false }}
+          camera={{
+            fov: VIEWANGLE,
+            aspect: WIDTH / HEIGHT,
+            near: NEAR,
+            far: FAR,
+            position: [0, 0, 40 * ZOOM],
           }}
+          style={{ background: BACKGROUND_COLOR }}
         >
-          <Canvas
-            resize={{ scroll: false }}
-            camera={{
-              fov: VIEWANGLE,
-              aspect: CANVAS_WIDTH / CANVAS_HEIGHT,
-              near: NEAR,
-              far: FAR,
-              position: [0, 0, 40 * ZOOM],
-            }}
-            style={{ background: BACKGROUND_COLOR }}
-          >
-            <TrailsR3F
-              particleCount={particleCount}
-              spin={spin}
-              behavior={behavior}
-              bounding={bounding}
-              useSimulationsStore={useStore}
-            />
-          </Canvas>
-        </div>
+          <TrailsR3F
+            particleCount={particleCount}
+            spin={spin}
+            behavior={behavior}
+            bounding={bounding}
+            useSimulationsStore={useStore}
+          />
+        </Canvas>
       </div>
       <div
         style={{
@@ -190,7 +177,7 @@ const TrailsR3F: FC<{
   return (
     <>
       {times(DIMENSION_COUNT, (i) => (
-        <group key={i} position={[84 - i * (3.5 * 12), 0, 0]}>
+        <group key={i} position={[-200 + i * 50, -120, 0]}>
           <SpaceCell
             useSimulationsStore={useSimulationsStore}
             simulationIndex={i}
@@ -211,7 +198,7 @@ const xAxis = new Vector3(1, 0, 0)
 const yAxis = new Vector3(0, 1, 0)
 const zAxis = new Vector3(0, 0, 1)
 const rightAngle = Math.PI / 2
-const leftStart = -50
+// const leftStart = -50
 
 const SpaceCell: FC<{
   useSimulationsStore: UseSimulationsStore
@@ -221,7 +208,7 @@ const SpaceCell: FC<{
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
-    groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
+    // groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
     groupRef.current?.rotateOnAxis(xAxis, rightAngle)
   }, [])
   // useFrame(() => {
@@ -237,9 +224,9 @@ const SpaceCell: FC<{
   return (
     <group
       ref={groupRef}
-      position={[leftStart - 40 + 10, 0, 5]}
+      // position={[leftStart - 40 + 10, 0, 5]}
       // rotation={[0, -0.25, 0]}
-      rotation={[0, -0.25, 0]}
+      // rotation={[0, -0.25, 0]}
     >
       <Dots
         simulationIndex={simulationIndex}
@@ -274,9 +261,10 @@ const TimeCell: FC<{
   return (
     <group
       ref={groupRef}
-      position={[leftStart + 5, 0, 0]}
+      position={[0, 40, 0]}
+      // position={[leftStart + 5, 0, 0]}
       // rotation={[0.125, 0.75, 0]}
-      rotation={[0, -0.25, 0]}
+      // rotation={[0, -0.25, 0]}
     >
       <Dots
         simulationIndex={simulationIndex}
