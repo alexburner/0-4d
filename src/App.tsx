@@ -1,11 +1,12 @@
 import { FC } from 'react'
 import { useHash } from 'react-use'
-import { Columns } from './routes/Columns'
+import { TrailColumns } from './routes/TrailColumns'
 import { Home } from './routes/Home'
 import { NotFound } from './routes/NotFound'
 import { Stacks } from './routes/Stacks'
 import { Trails } from './routes/Trails'
 import { parseHashRoute } from './util/hashRoute'
+import { TrailsCombined } from './routes/TrailsCombined'
 
 export const App: FC = () => {
   const [hash] = useHash()
@@ -15,8 +16,10 @@ export const App: FC = () => {
       return <Home />
     case 'trails':
       return <Trails route={route} />
-    case 'columns':
-      return <Columns route={route} />
+    case 'trail-columns':
+      return <TrailColumns route={route} />
+    case 'trails-combined':
+      return <TrailsCombined route={route} />
     case 'stacks':
       return <Stacks route={route} />
     default:

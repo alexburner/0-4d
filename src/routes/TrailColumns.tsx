@@ -37,7 +37,7 @@ const DEFAULT_BOUNDING = 'centerScaling'
 
 const useStore = createUseSimulationsStore()
 
-export const Columns: FC<{ route: HashRoute }> = ({ route }) => {
+export const TrailColumns: FC<{ route: HashRoute }> = ({ route }) => {
   const particleCount = isNumber(route.params['particles'])
     ? route.params['particles']
     : DEFAULT_PARTICLE_COUNT
