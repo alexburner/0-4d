@@ -15,11 +15,12 @@ const DOT_SIZE = 4
 export const Dots: FC<{
   simulationIndex: number
   useSimulationsStore: UseSimulationsStore
-}> = ({ simulationIndex, useSimulationsStore }) => {
+  fillStyle?: string
+}> = ({ simulationIndex, useSimulationsStore, fillStyle }) => {
   const positions = useMemo(() => new Float32Array(MAX_POINTS * 3), [])
   const attribute = useMemo(() => createAttribute(positions), [positions])
   const geometry = useMemo(() => createGeometry(attribute), [attribute])
-  const texture = useMemo(() => createTexture(), [])
+  const texture = useMemo(() => createTexture(fillStyle), [fillStyle])
   const material = useMemo(() => createMaterial(texture), [texture])
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const createGeometry = (attribute: BufferAttribute) => {
   return geometry
 }
 
-const createTexture = () => {
+const createTexture = (fillStyle = 'rgba(255, 255, 255, 1)') => {
   const size = 256
   const padding = 4
   const radius = size / 2 - padding
@@ -64,7 +65,7 @@ const createTexture = () => {
   if (!context) throw new Error('Failed to get 2d canvas context')
   context.beginPath()
   context.arc(center, center, radius, 0, 2 * Math.PI)
-  context.fillStyle = 'rgba(255, 255, 255, 1)'
+  context.fillStyle = fillStyle
   context.fill()
   return new CanvasTexture(canvas)
 }

@@ -17,7 +17,8 @@ export const TimeTrails: FC<{
   simulationIndex: number
   useSimulationsStore: UseSimulationsStore
   trailLength?: number
-}> = ({ simulationIndex, useSimulationsStore, trailLength }) => {
+  fillStyle?: string
+}> = ({ simulationIndex, useSimulationsStore, trailLength, fillStyle }) => {
   const TRAIL_LENGTH = trailLength ?? 480
   const MAX_POINTS = TRAIL_LENGTH * 100
   const TRAIL_GAP = 1 / 4
@@ -28,7 +29,7 @@ export const TimeTrails: FC<{
   )
   const attribute = useMemo(() => createAttribute(positions), [positions])
   const geometry = useMemo(() => createGeometry(attribute), [attribute])
-  const texture = useMemo(() => createTexture(), [])
+  const texture = useMemo(() => createTexture(fillStyle), [fillStyle])
   const material = useMemo(() => createMaterial(texture), [texture])
   const trailQueues = useMemo<RecentQueue<Particle>[]>(() => [], [])
 
@@ -102,7 +103,7 @@ const createGeometry = (attribute: BufferAttribute) => {
   return geometry
 }
 
-const createTexture = () => {
+const createTexture = (fillStyle = 'rgba(255, 255, 255, 1)') => {
   const size = 256
   const padding = 4
   const radius = size / 2 - padding
@@ -114,7 +115,7 @@ const createTexture = () => {
   if (!context) throw new Error('Failed to get 2d canvas context')
   context.beginPath()
   context.arc(center, center, radius, 0, 2 * Math.PI)
-  context.fillStyle = 'rgba(255, 255, 255, 1)'
+  context.fillStyle = fillStyle
   context.fill()
   return new CanvasTexture(canvas)
 }

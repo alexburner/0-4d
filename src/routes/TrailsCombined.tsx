@@ -9,7 +9,7 @@ import { SpaceTrails } from '../components/SpaceTrails'
 import { TimeTrails } from '../components/TimeTrails'
 import { Behavior } from '../simulation/behaviors'
 import { Bounding } from '../simulation/boundings'
-import { behaviors, isBehaviorName, isBounding } from '../simulation/configs'
+import { behaviors, isBehaviorName } from '../simulation/configs'
 import { createWorkers } from '../simulation/createWorkers'
 import { makeParticlesThroughDimensions } from '../simulation/particles'
 import {
@@ -33,6 +33,8 @@ const DIMENSION_COUNT = 9
 const DEFAULT_PARTICLE_COUNT = 12
 const DEFAULT_SPIN = 0.00215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
+
+const INNER_FILL = 'rgba(255, 0, 255, 1)'
 
 const useStores = [
   createUseSimulationsStore(),
@@ -194,11 +196,13 @@ const TrailsR3F: FC<{
           <SpaceCell
             useSimulationsStore={useSimulationsStore}
             simulationIndex={i}
+            bounding={bounding}
             spin={spin}
           />
           <TimeCell
             useSimulationsStore={useSimulationsStore}
             simulationIndex={i}
+            bounding={bounding}
             spin={spin}
           />
         </group>
@@ -216,8 +220,9 @@ const rightAngle = Math.PI / 2
 const SpaceCell: FC<{
   useSimulationsStore: UseSimulationsStore
   simulationIndex: number
+  bounding: Bounding
   spin: number
-}> = ({ useSimulationsStore, simulationIndex, spin }) => {
+}> = ({ useSimulationsStore, simulationIndex, bounding, spin }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -244,10 +249,12 @@ const SpaceCell: FC<{
       <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
+        fillStyle={bounding === 'centerScaling' ? INNER_FILL : undefined}
       />
       <SpaceTrails
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
+        fillStyle={bounding === 'centerScaling' ? INNER_FILL : undefined}
       />
       <SquarePlane radius={SIMULATION_RADIUS} />
     </group>
@@ -257,8 +264,9 @@ const SpaceCell: FC<{
 const TimeCell: FC<{
   useSimulationsStore: UseSimulationsStore
   simulationIndex: number
+  bounding: Bounding
   spin: number
-}> = ({ useSimulationsStore, simulationIndex, spin }) => {
+}> = ({ useSimulationsStore, simulationIndex, bounding, spin }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -282,11 +290,13 @@ const TimeCell: FC<{
       <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
+        fillStyle={bounding === 'centerScaling' ? INNER_FILL : undefined}
       />
       <TimeTrails
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
         trailLength={660}
+        fillStyle={bounding === 'centerScaling' ? INNER_FILL : undefined}
       />
       <SquarePlane radius={SIMULATION_RADIUS} />
     </group>
