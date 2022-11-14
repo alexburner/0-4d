@@ -112,11 +112,16 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
             right: '100px',
           }}
         >
-          {new Array(DIMENSION_COUNT).fill(null).map((_, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <h3 style={{ fontWeight: 'normal' }}>{i}d</h3>
-            </div>
-          ))}
+          {new Array(DIMENSION_COUNT).fill(null).map((_, i) => {
+            const dimension = i - 1
+            return (
+              <div key={dimension} style={{ textAlign: 'center' }}>
+                <h3 style={{ fontWeight: 'normal' }}>
+                  {dimension === -1 ? '__' : `${dimension}d`}
+                </h3>
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>
@@ -191,22 +196,34 @@ const TrailsR3F: FC<{
 
   return (
     <>
-      {times(DIMENSION_COUNT, (i) => (
-        <group key={i} position={[-200 + i * 50, -120, 0]}>
-          <SpaceCell
-            useSimulationsStore={useSimulationsStore}
-            simulationIndex={i}
-            bounding={bounding}
-            spin={spin}
-          />
-          <TimeCell
-            useSimulationsStore={useSimulationsStore}
-            simulationIndex={i}
-            bounding={bounding}
-            spin={spin}
-          />
-        </group>
-      ))}
+      {times(DIMENSION_COUNT, (i) => {
+        const simulationIndex = i - 1
+        return (
+          <group key={i} position={[-200 + i * 50, -120, 0]}>
+            {simulationIndex === -1 ? (
+              <>
+                <EmptySpaceCell spin={spin} />
+                <EmptyTimeCell spin={spin} />
+              </>
+            ) : (
+              <>
+                <SpaceCell
+                  useSimulationsStore={useSimulationsStore}
+                  simulationIndex={simulationIndex}
+                  bounding={bounding}
+                  spin={spin}
+                />
+                <TimeCell
+                  useSimulationsStore={useSimulationsStore}
+                  simulationIndex={simulationIndex}
+                  bounding={bounding}
+                  spin={spin}
+                />
+              </>
+            )}
+          </group>
+        )
+      })}
     </>
   )
 }
@@ -298,6 +315,61 @@ const TimeCell: FC<{
         trailLength={660}
         fillStyle={bounding === 'centerScaling' ? INNER_FILL : undefined}
       />
+      <SquarePlane radius={SIMULATION_RADIUS} />
+    </group>
+  )
+}
+
+const EmptySpaceCell: FC<{ spin: number }> = ({ spin }) => {
+  const groupRef = useRef<Group>(null)
+  useEffect(() => {
+    // Initial rotation
+    // groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
+    groupRef.current?.rotateOnAxis(xAxis, rightAngle)
+  }, [])
+  // useFrame(() => {
+  //   // Spin rotation
+  //   // if (simulationIndex < 3) return
+  //   groupRef.current?.rotateOnAxis(xAxis, spin)
+  // })
+  useFrame(() => {
+    // Spin rotation
+    // if (simulationIndex < 2) return
+    groupRef.current?.rotateOnAxis(zAxis, spin)
+  })
+  return (
+    <group
+      ref={groupRef}
+      // position={[leftStart - 40 + 10, 0, 5]}
+      // rotation={[0, -0.25, 0]}
+      // rotation={[0, -0.25, 0]}
+    >
+      <SquarePlane radius={SIMULATION_RADIUS} />
+    </group>
+  )
+}
+
+const EmptyTimeCell: FC<{ spin: number }> = ({ spin }) => {
+  const groupRef = useRef<Group>(null)
+  useEffect(() => {
+    // Initial rotation
+    groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
+    groupRef.current?.rotateOnAxis(xAxis, rightAngle)
+    groupRef.current?.rotateOnAxis(yAxis, rightAngle)
+  }, [])
+  useFrame(() => {
+    // Spin rotation
+    // if (simulationIndex < 2) return
+    groupRef.current?.rotateOnAxis(zAxis, spin)
+  })
+  return (
+    <group
+      ref={groupRef}
+      position={[0, 40, 0]}
+      // position={[leftStart + 5, 0, 0]}
+      // rotation={[0.125, 0.75, 0]}
+      // rotation={[0, -0.25, 0]}
+    >
       <SquarePlane radius={SIMULATION_RADIUS} />
     </group>
   )
