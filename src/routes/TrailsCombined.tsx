@@ -5,6 +5,9 @@ import { FC, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
 import { SquarePlane } from '../components/Plane'
+import { RainbowDots } from '../components/RainbowDots'
+import { RainbowSpaceTrails } from '../components/RainbowSpaceTrails'
+import { RainbowTimeTrails } from '../components/RainbowTimeTrails'
 import { SpaceTrails } from '../components/SpaceTrails'
 import { TimeTrails } from '../components/TimeTrails'
 import { Behavior } from '../simulation/behaviors'
@@ -33,8 +36,6 @@ const DIMENSION_COUNT = 9
 const DEFAULT_PARTICLE_COUNT = 9
 const DEFAULT_SPIN = 0.00215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
-
-const INNER_FILL = 'rgba(255, 0, 255, 1)'
 
 const useStores = [
   createUseSimulationsStore(),
@@ -263,16 +264,31 @@ const SpaceCell: FC<{
       // rotation={[0, -0.25, 0]}
       // rotation={[0, -0.25, 0]}
     >
-      <Dots
-        simulationIndex={simulationIndex}
-        useSimulationsStore={useSimulationsStore}
-        fillStyle={bounding === 'centerScaling' ? INNER_FILL : undefined}
-      />
-      <SpaceTrails
-        simulationIndex={simulationIndex}
-        useSimulationsStore={useSimulationsStore}
-        fillStyle={bounding === 'centerScaling' ? INNER_FILL : undefined}
-      />
+      {bounding === 'centerScaling' ? (
+        <>
+          <RainbowDots
+            simulationIndex={simulationIndex}
+            simulationRadius={SIMULATION_RADIUS}
+            useSimulationsStore={useSimulationsStore}
+          />
+          <RainbowSpaceTrails
+            simulationIndex={simulationIndex}
+            simulationRadius={SIMULATION_RADIUS}
+            useSimulationsStore={useSimulationsStore}
+          />
+        </>
+      ) : (
+        <>
+          <Dots
+            simulationIndex={simulationIndex}
+            useSimulationsStore={useSimulationsStore}
+          />
+          <SpaceTrails
+            simulationIndex={simulationIndex}
+            useSimulationsStore={useSimulationsStore}
+          />
+        </>
+      )}
       <SquarePlane radius={SIMULATION_RADIUS} />
     </group>
   )
@@ -304,17 +320,33 @@ const TimeCell: FC<{
       // rotation={[0.125, 0.75, 0]}
       // rotation={[0, -0.25, 0]}
     >
-      <Dots
-        simulationIndex={simulationIndex}
-        useSimulationsStore={useSimulationsStore}
-        fillStyle={bounding === 'centerScaling' ? INNER_FILL : undefined}
-      />
-      <TimeTrails
-        simulationIndex={simulationIndex}
-        useSimulationsStore={useSimulationsStore}
-        trailLength={660}
-        fillStyle={bounding === 'centerScaling' ? INNER_FILL : undefined}
-      />
+      {bounding === 'centerScaling' ? (
+        <>
+          <RainbowDots
+            simulationIndex={simulationIndex}
+            simulationRadius={SIMULATION_RADIUS}
+            useSimulationsStore={useSimulationsStore}
+          />
+          <RainbowTimeTrails
+            simulationIndex={simulationIndex}
+            simulationRadius={SIMULATION_RADIUS}
+            useSimulationsStore={useSimulationsStore}
+            trailLength={660}
+          />
+        </>
+      ) : (
+        <>
+          <Dots
+            simulationIndex={simulationIndex}
+            useSimulationsStore={useSimulationsStore}
+          />
+          <TimeTrails
+            simulationIndex={simulationIndex}
+            useSimulationsStore={useSimulationsStore}
+            trailLength={660}
+          />
+        </>
+      )}
       <SquarePlane radius={SIMULATION_RADIUS} />
     </group>
   )
