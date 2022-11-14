@@ -19,6 +19,10 @@ const links = [
     href: '#trail-columns?behavior=orbiting&bounding=edgeBinding',
   },
   {
+    text: 'Trails Combined',
+    href: '#trails-combined?behavior=orbiting&particles=9',
+  },
+  {
     text: 'Stacks — Diffusion',
     href: '#stacks?behavior=diffusion',
   },
