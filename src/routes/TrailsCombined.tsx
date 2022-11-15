@@ -32,9 +32,10 @@ const BACKGROUND_COLOR = '#222'
 
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 9
+const TRAIL_LENGTH = 660
 
 const DEFAULT_PARTICLE_COUNT = 9
-const DEFAULT_SPIN = 0.00215
+const DEFAULT_SPIN = 0.0215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
 const useStores = [
@@ -331,7 +332,7 @@ const TimeCell: FC<{
             simulationIndex={simulationIndex}
             simulationRadius={SIMULATION_RADIUS}
             useSimulationsStore={useSimulationsStore}
-            trailLength={660}
+            trailLength={TRAIL_LENGTH}
           />
         </>
       ) : (
@@ -343,7 +344,7 @@ const TimeCell: FC<{
           <TimeTrails
             simulationIndex={simulationIndex}
             useSimulationsStore={useSimulationsStore}
-            trailLength={660}
+            trailLength={TRAIL_LENGTH}
           />
         </>
       )}

@@ -24,14 +24,14 @@ export const createGeometry = (args: {
   return geometry
 }
 
-export const createMaterial = (size: number) => {
+export const createMaterial = (size: number, opacity = 0.9) => {
   return new PointsMaterial({
     blending: AdditiveBlending,
     vertexColors: true,
     depthTest: false,
     depthWrite: false,
     transparent: true,
-    opacity: 0.9,
+    opacity,
     size,
   })
 }
