@@ -78,21 +78,6 @@ export const RainbowTimeTrails: FC<{
         trailQueue.add(cloneParticle(particle))
       })
 
-      /**
-       * Todo
-       *
-       * Decrease memory footprint
-       * Don't use queues
-       * just the positions array itself
-       * each update:
-       * (within trail length bounds)
-       * - increase z of each position 3el
-       * - copy positions values L downwind
-       * (L = length of incoming update values)
-       * - add update values to front of positions
-       * (overwrite any existing values in length range)
-       */
-
       // Update rendered particles
       let drawCount = 0
       trailQueues.forEach((trailQueue) => {
