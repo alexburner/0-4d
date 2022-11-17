@@ -1,6 +1,6 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy } from 'comlink'
-import { isNumber, lowerCase, times } from 'lodash'
+import { isNumber, times } from 'lodash'
 import { FC, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
@@ -277,7 +277,7 @@ const SpaceCell: FC<{
   }, [])
   useFrame(() => {
     // Spin rotation
-    if (simulationIndex < 3) return
+    // if (simulationIndex < 3) return
     groupRef.current?.rotateOnAxis(xAxis, spin)
   })
   return (

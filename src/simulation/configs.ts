@@ -36,6 +36,7 @@ export const isBehaviorName = (val: unknown): val is Behavior['name'] =>
 const boundings = new Set<Bounding>([
   'centerScaling',
   'edgeBinding',
+  'lengthBinding',
   'edgeWrapping',
 ])
 

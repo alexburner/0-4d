@@ -1,8 +1,13 @@
-import { max } from 'lodash'
+import { max, minBy } from 'lodash'
+import { Neighborhood } from './neighborhood'
 import { Particle } from './particles'
 import { getMagnitude, getMagnitudeSq, multiply, setMagnitude } from './vectorN'
 
-export type Bounding = 'centerScaling' | 'edgeBinding' | 'edgeWrapping'
+export type Bounding =
+  | 'centerScaling'
+  | 'edgeBinding'
+  | 'lengthBinding'
+  | 'edgeWrapping'
 
 /**
  * Scale all particle positions to be within radius of center
@@ -36,6 +41,21 @@ export const edgeBinding = (
   particles.forEach(
     (p) => (p.position = setMagnitude(p.position, targetRadius)),
   )
+}
+
+/**
+ * Scale shortest neighbor vector to consistent length
+ */
+export const lengthBinding = (
+  particles: Particle[],
+  neighborhood: Neighborhood,
+  targetLength: number,
+): void => {
+  if (particles.length < 2) return
+  const nearestNeighbor = minBy(neighborhood.flat(), 'delta')
+  if (!nearestNeighbor) throw new Error('Unreachable')
+  const targetScale = targetLength / nearestNeighbor.distance
+  particles.forEach((p) => (p.position = multiply(p.position, targetScale)))
 }
 
 /**

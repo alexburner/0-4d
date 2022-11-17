@@ -1,5 +1,12 @@
+import { hopeNever } from '../util/ts'
 import { Behavior, diffusion, orbiting, wandering } from './behaviors'
-import { Bounding, centerScaling, edgeBinding, edgeWrapping } from './boundings'
+import {
+  Bounding,
+  centerScaling,
+  edgeBinding,
+  edgeWrapping,
+  lengthBinding,
+} from './boundings'
 import { getNeighborhood, Neighborhood } from './neighborhood'
 import { Particle } from './particles'
 import { add, limitMagnitude, multiply } from './vectorN'
@@ -56,6 +63,8 @@ export class Simulation {
             true,
           )
           break
+        default:
+          hopeNever(this.config.behavior)
       }
 
       // Update positions
@@ -73,9 +82,18 @@ export class Simulation {
         case 'edgeBinding':
           edgeBinding(this.particles, this.config.radius)
           break
+        case 'lengthBinding':
+          lengthBinding(
+            this.particles,
+            this.neighborhood,
+            this.config.radius / 6,
+          )
+          break
         case 'edgeWrapping':
           edgeWrapping(this.particles, this.config.radius)
           break
+        default:
+          hopeNever(this.config.bounding)
       }
 
       // Re-calculate particle relations
