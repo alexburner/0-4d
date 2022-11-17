@@ -8,6 +8,9 @@ import {
   createGeometry,
   createHueScale,
   createMaterial,
+  RAINBOW_L,
+  RAINBOW_S,
+  ZERO_TOLERANCE,
 } from '../util/rainbowHelpers'
 import { RecentQueue } from '../util/RecentQueue'
 
@@ -94,11 +97,17 @@ export const RainbowTimeTrails: FC<{
             originalPosition = originalPosition.map((x) => x ?? 0)
           }
           const radiusSq = getMagnitudeSq(originalPosition)
-          const hue = hueScale(radiusSq)
-          color.setHSL(hue, 0.75, 0.15)
-          colors[drawCount * 3 + 0] = color.r
-          colors[drawCount * 3 + 1] = color.g
-          colors[drawCount * 3 + 2] = color.b
+          if (radiusSq < ZERO_TOLERANCE) {
+            colors[drawCount * 3 + 0] = 1
+            colors[drawCount * 3 + 1] = 1
+            colors[drawCount * 3 + 2] = 0
+          } else {
+            const hue = hueScale(radiusSq)
+            color.setHSL(hue, RAINBOW_S, RAINBOW_L)
+            colors[drawCount * 3 + 0] = color.r
+            colors[drawCount * 3 + 1] = color.g
+            colors[drawCount * 3 + 2] = color.b
+          }
           drawCount++
         })
       })

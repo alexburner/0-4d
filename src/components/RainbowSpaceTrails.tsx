@@ -8,6 +8,9 @@ import {
   createGeometry,
   createHueScale,
   createMaterial,
+  RAINBOW_L,
+  RAINBOW_S,
+  ZERO_TOLERANCE,
 } from '../util/rainbowHelpers'
 import { RecentQueue } from '../util/RecentQueue'
 
@@ -15,7 +18,7 @@ const TRAIL_LENGTH = 200
 const MAX_POINTS = TRAIL_LENGTH * 100
 const ATTR_LENGTH = MAX_POINTS * 3
 const DOT_SIZE = 1
-const DOT_OPACITY = 0.5
+const DOT_OPACITY = 0.3
 
 const color = new Color()
 
@@ -70,11 +73,17 @@ export const RainbowSpaceTrails: FC<{
           positions[drawCount * 3 + 1] = particle.position[1] ?? 0
           positions[drawCount * 3 + 2] = particle.position[2] ?? 0
           const radiusSq = getMagnitudeSq(particle.position)
-          const hue = hueScale(radiusSq)
-          color.setHSL(hue, 0.9, 0.2)
-          colors[drawCount * 3 + 0] = color.r
-          colors[drawCount * 3 + 1] = color.g
-          colors[drawCount * 3 + 2] = color.b
+          if (radiusSq < ZERO_TOLERANCE) {
+            colors[drawCount * 3 + 0] = 1
+            colors[drawCount * 3 + 1] = 1
+            colors[drawCount * 3 + 2] = 0
+          } else {
+            const hue = hueScale(radiusSq)
+            color.setHSL(hue, RAINBOW_S, RAINBOW_L)
+            colors[drawCount * 3 + 0] = color.r
+            colors[drawCount * 3 + 1] = color.g
+            colors[drawCount * 3 + 2] = color.b
+          }
           drawCount++
         })
       })

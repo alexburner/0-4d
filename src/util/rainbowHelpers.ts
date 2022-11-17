@@ -7,6 +7,11 @@ import {
   AdditiveBlending,
 } from 'three'
 
+export const RAINBOW_S = 0.7
+export const RAINBOW_L = 0.1
+
+export const ZERO_TOLERANCE = 0.5
+
 export const createBufferAttr = (values: Float32Array) => {
   const attribute = new BufferAttribute(values, 3)
   attribute.setUsage(DynamicDrawUsage)

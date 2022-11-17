@@ -38,6 +38,8 @@ const DEFAULT_PARTICLE_COUNT = 9
 const DEFAULT_SPIN = 0.0215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
+const BELOW_ZERO = 2
+
 const useStores = [
   createUseSimulationsStore(),
   createUseSimulationsStore(),
@@ -115,11 +117,15 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
           }}
         >
           {new Array(DIMENSION_COUNT).fill(null).map((_, i) => {
-            const dimension = i - 1
+            const dimension = i - BELOW_ZERO
             return (
               <div key={dimension} style={{ textAlign: 'center' }}>
                 <h3 style={{ fontWeight: 'normal' }}>
-                  {dimension === -1 ? '__' : `${dimension}d`}
+                  {dimension === -2
+                    ? ''
+                    : dimension === -1
+                    ? '__'
+                    : `${dimension}d`}
                 </h3>
               </div>
             )
@@ -199,10 +205,12 @@ const TrailsR3F: FC<{
   return (
     <>
       {times(DIMENSION_COUNT, (i) => {
-        const simulationIndex = i - 1
+        const simulationIndex = i - BELOW_ZERO
         return (
           <group key={i} position={[-200 + i * 50, -120, 0]}>
-            {simulationIndex === -1 ? (
+            {simulationIndex === -2 ? (
+              <></>
+            ) : simulationIndex === -1 ? (
               <>
                 <EmptySpaceCell spin={spin} />
                 <EmptyTimeCell spin={spin} />

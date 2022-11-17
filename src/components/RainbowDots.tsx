@@ -7,6 +7,9 @@ import {
   createGeometry,
   createHueScale,
   createMaterial,
+  RAINBOW_L,
+  RAINBOW_S,
+  ZERO_TOLERANCE,
 } from '../util/rainbowHelpers'
 
 const MAX_POINTS = 1000
@@ -43,11 +46,17 @@ export const RainbowDots: FC<{
         positions[i * 3 + 1] = particle.position[1] ?? 0
         positions[i * 3 + 2] = particle.position[2] ?? 0
         const radiusSq = getMagnitudeSq(particle.position)
-        const hue = hueScale(radiusSq)
-        color.setHSL(hue, 0.9, 0.2)
-        colors[i * 3 + 0] = color.r
-        colors[i * 3 + 1] = color.g
-        colors[i * 3 + 2] = color.b
+        if (radiusSq < ZERO_TOLERANCE) {
+          colors[i * 3 + 0] = 1
+          colors[i * 3 + 1] = 1
+          colors[i * 3 + 2] = 0
+        } else {
+          const hue = hueScale(radiusSq)
+          color.setHSL(hue, RAINBOW_S, RAINBOW_L)
+          colors[i * 3 + 0] = color.r
+          colors[i * 3 + 1] = color.g
+          colors[i * 3 + 2] = color.b
+        }
       })
       geometry.setDrawRange(0, particles.length)
       positionsAttr.needsUpdate = true
