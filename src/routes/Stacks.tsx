@@ -23,13 +23,13 @@ import { HashRoute } from '../util/hashRoute'
 
 const TOTAL_WIDTH = 1840
 const TOTAL_HEIGHT = 1080
-const CANVAS_MARGIN = 40
-const CANVAS_WIDTH = 800
-const CANVAS_HEIGHT = 800
+const CANVAS_MARGIN = 0
+const CANVAS_WIDTH = TOTAL_WIDTH
+const CANVAS_HEIGHT = TOTAL_HEIGHT
 const VIEWANGLE = 45
 const NEAR = 1
 const FAR = 5000
-const ZOOM = 6.5
+const ZOOM = 9
 
 const BACKGROUND_COLOR = '#222'
 
@@ -42,11 +42,8 @@ const MAX_PARTICLE_COUNT = 16
 const DEFAULT_SPIN = 0.0125 / 2
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
-const boundings = ['centerScaling', 'edgeBinding'] as const
-const useStores = [
-  createUseSimulationsStore(),
-  createUseSimulationsStore(),
-] as const
+const boundings = ['edgeBinding'] as const
+const useStores = [createUseSimulationsStore()] as const
 
 export const Stacks: FC<{ route: HashRoute }> = ({ route }) => {
   const initParticleCount = isNumber(route.params['particles'])
@@ -113,7 +110,7 @@ export const Stacks: FC<{ route: HashRoute }> = ({ route }) => {
           )
         })}
       </div>
-      <div
+      {/* <div
         style={{
           display: 'flex',
           justifyContent: 'space-around',
@@ -127,7 +124,7 @@ export const Stacks: FC<{ route: HashRoute }> = ({ route }) => {
             <p>( {lowerCase(bounding)} )</p>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }
@@ -243,7 +240,7 @@ const StacksR3F: FC<{
    */
 
   return (
-    <>
+    <group position={[-100, 0, 0]}>
       {times(DIMENSION_COUNT, (i) => (
         <group key={i} position={[0, 85 - i * (3.5 * 12), 0]}>
           <SpaceCell
@@ -259,7 +256,7 @@ const StacksR3F: FC<{
           />
         </group>
       ))}
-    </>
+    </group>
   )
 }
 
@@ -315,11 +312,7 @@ const TimeCell: FC<{
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
-    <group
-      ref={groupRef}
-      position={[leftStart, 0, 0]}
-      rotation={[0.25, 0.5, 0]}
-    >
+    <group ref={groupRef} position={[leftStart, 0, 0]} rotation={[0, 0.75, 0]}>
       {/* <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}

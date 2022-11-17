@@ -13,7 +13,7 @@ import { RecentQueue } from '../util/RecentQueue'
 const MAX_POINTS = 24
 const MAX_LINES = MAX_POINTS * MAX_POINTS
 const STACK_GAP = 10
-const STACK_COUNT = 22
+const STACK_COUNT = 44
 const POSITION_COUNT = MAX_LINES * 2 * STACK_COUNT * 3
 
 export const TimeLines: FC<{
