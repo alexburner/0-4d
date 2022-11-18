@@ -123,6 +123,7 @@ const createTexture = (fillStyle = 'rgba(255, 255, 255, 1)') => {
 const createMaterial = (texture: CanvasTexture) => {
   return new PointsMaterial({
     blending: AdditiveBlending,
+    sizeAttenuation: true,
     depthTest: false,
     depthWrite: false,
     transparent: true,

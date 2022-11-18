@@ -32,6 +32,7 @@ export const createGeometry = (args: {
 export const createMaterial = (size: number, opacity = 0.9) => {
   return new PointsMaterial({
     blending: AdditiveBlending,
+    sizeAttenuation: true,
     vertexColors: true,
     depthTest: false,
     depthWrite: false,
