@@ -226,6 +226,7 @@ const TrailsR3F: FC<{
                 <TimeCell
                   useSimulationsStore={useSimulationsStore}
                   simulationIndex={simulationIndex}
+                  particleCount={particleCount}
                   bounding={bounding}
                   spin={spin}
                 />
@@ -306,9 +307,16 @@ const SpaceCell: FC<{
 const TimeCell: FC<{
   useSimulationsStore: UseSimulationsStore
   simulationIndex: number
+  particleCount: number
   bounding: Bounding
   spin: number
-}> = ({ useSimulationsStore, simulationIndex, bounding, spin }) => {
+}> = ({
+  useSimulationsStore,
+  simulationIndex,
+  particleCount,
+  bounding,
+  spin,
+}) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -340,6 +348,7 @@ const TimeCell: FC<{
             simulationIndex={simulationIndex}
             simulationRadius={SIMULATION_RADIUS}
             useSimulationsStore={useSimulationsStore}
+            particleCount={particleCount}
             trailLength={TRAIL_LENGTH}
           />
         </>
