@@ -7,73 +7,69 @@ import {
   DynamicDrawUsage,
   PointsMaterial,
 } from 'three'
-import { cloneParticle, Particle } from '../simulation/particles'
 import { UseSimulationsStore } from '../stores/simulationStore'
-import { RecentQueue } from '../util/RecentQueue'
 
 const DOT_SIZE = 1
 
 export const TimeTrails: FC<{
   simulationIndex: number
   useSimulationsStore: UseSimulationsStore
+  particleCount: number
   trailLength?: number
   fillStyle?: string
-}> = ({ simulationIndex, useSimulationsStore, trailLength, fillStyle }) => {
+}> = ({
+  simulationIndex,
+  useSimulationsStore,
+  particleCount,
+  trailLength,
+  fillStyle,
+}) => {
   const TRAIL_LENGTH = trailLength ?? 480
-  const MAX_POINTS = TRAIL_LENGTH * 100
+  const MAX_POINTS = TRAIL_LENGTH * particleCount
+  const ATTR_LENGTH = MAX_POINTS * 3
   const TRAIL_GAP = 1 / 4
 
-  const positions = useMemo(
-    () => new Float32Array(MAX_POINTS * 3),
-    [MAX_POINTS],
-  )
+  const positions = useMemo(() => new Float32Array(ATTR_LENGTH), [ATTR_LENGTH])
   const attribute = useMemo(() => createAttribute(positions), [positions])
   const geometry = useMemo(() => createGeometry(attribute), [attribute])
   const texture = useMemo(() => createTexture(fillStyle), [fillStyle])
   const material = useMemo(() => createMaterial(texture), [texture])
-  const trailQueues = useMemo<RecentQueue<Particle>[]>(() => [], [])
 
   useEffect(() => {
     useSimulationsStore.subscribe((state) => {
       const particles = state.simulations?.[simulationIndex]?.particles
       if (!particles) return
-
-      // Give each existing particle a nudge in z space
-      trailQueues.forEach((trailQueue) => {
-        trailQueue.values().forEach((particle) => {
-          const z = particle.position[2] ?? 0
-          particle.position[2] = z - TRAIL_GAP
-        })
-      })
-
-      // (maybe) Add queues to fit
-      while (trailQueues.length < particles.length) {
-        trailQueues.push(new RecentQueue(TRAIL_LENGTH))
+      if (particles.length !== particleCount) {
+        throw new Error('Unexpected number of incoming particles')
       }
 
-      // (maybe) Remove queues to fit
-      while (trailQueues.length > particles.length) {
-        trailQueues.pop()
+      // Give each existing position a nudge in z-space
+      // Note: we only check every third (z) position
+      for (let i = 2; i < ATTR_LENGTH; i += 3) {
+        const zValue = positions[i]
+        if (zValue === undefined) break
+        positions[i] = zValue - TRAIL_GAP
       }
 
-      // Add new particles to queues
-      trailQueues.forEach((trailQueue, i) => {
+      // Shift each existing attribute down the line
+      const attrShift = particleCount * 3
+      const attrShiftStart = ATTR_LENGTH - 1 - attrShift
+      for (let i = attrShiftStart; i >= 0; i--) {
+        const positionValue = positions[i]
+        if (positionValue === undefined) throw new Error('Unreachable')
+        positions[i + attrShift] = positionValue
+      }
+
+      // Add incoming particles to attrs
+      for (let i = 0; i < particleCount; i++) {
         const particle = particles[i]
         if (!particle) throw new Error('Unreachable')
-        trailQueue.add(cloneParticle(particle))
-      })
+        positions[i * 3 + 0] = particle.position[0] ?? 0
+        positions[i * 3 + 1] = particle.position[1] ?? 0
+        positions[i * 3 + 2] = particle.position[2] ?? 0
+      }
 
-      // Update rendered positions
-      let drawCount = 0
-      trailQueues.forEach((trailQueue) => {
-        trailQueue.values().forEach((particle) => {
-          positions[drawCount * 3 + 0] = particle.position[0] ?? 0
-          positions[drawCount * 3 + 1] = particle.position[1] ?? 0
-          positions[drawCount * 3 + 2] = particle.position[2] ?? 0
-          drawCount++
-        })
-      })
-      geometry.setDrawRange(0, drawCount)
+      geometry.setDrawRange(0, MAX_POINTS)
       attribute.needsUpdate = true
     })
   }, [
@@ -82,9 +78,11 @@ export const TimeTrails: FC<{
     attribute,
     geometry,
     positions,
-    trailQueues,
     TRAIL_GAP,
     TRAIL_LENGTH,
+    ATTR_LENGTH,
+    MAX_POINTS,
+    particleCount,
   ])
 
   return <points geometry={geometry} material={material} />

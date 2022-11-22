@@ -191,6 +191,7 @@ const TrailsR3F: FC<{
           <TimeCell
             useSimulationsStore={useSimulationsStore}
             simulationIndex={i}
+            particleCount={particleCount}
             spin={spin}
           />
         </group>
@@ -249,8 +250,9 @@ const SpaceCell: FC<{
 const TimeCell: FC<{
   useSimulationsStore: UseSimulationsStore
   simulationIndex: number
+  particleCount: number
   spin: number
-}> = ({ useSimulationsStore, simulationIndex, spin }) => {
+}> = ({ useSimulationsStore, simulationIndex, particleCount, spin }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -278,6 +280,7 @@ const TimeCell: FC<{
       <TimeTrails
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
+        particleCount={particleCount}
         trailLength={660}
       />
       <SquarePlane radius={SIMULATION_RADIUS} />

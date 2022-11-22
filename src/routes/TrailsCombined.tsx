@@ -361,6 +361,7 @@ const TimeCell: FC<{
           <TimeTrails
             simulationIndex={simulationIndex}
             useSimulationsStore={useSimulationsStore}
+            particleCount={particleCount}
             trailLength={TRAIL_LENGTH}
           />
         </>

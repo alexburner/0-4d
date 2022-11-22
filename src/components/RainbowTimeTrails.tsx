@@ -64,25 +64,29 @@ export const RainbowTimeTrails: FC<{
         positions[i] = zValue - TRAIL_GAP
       }
 
-      // Nudge each existing position and color down the line
+      // Shift each existing attribute down the line
       const attrShift = particleCount * 3
       const attrShiftStart = ATTR_LENGTH - 1 - attrShift
       for (let i = attrShiftStart; i >= 0; i--) {
+        // Shift position
         const positionValue = positions[i]
         if (positionValue === undefined) throw new Error('Unreachable')
         positions[i + attrShift] = positionValue
+        // Shift color
         const colorValue = colors[i]
         if (colorValue === undefined) throw new Error('Unreachable')
         colors[i + attrShift] = colorValue
       }
 
-      // Add incoming particles to attr arrays
+      // Add incoming particles to attrs
       for (let i = 0; i < particleCount; i++) {
         const particle = particles[i]
         if (!particle) throw new Error('Unreachable')
+        // Add position
         positions[i * 3 + 0] = particle.position[0] ?? 0
         positions[i * 3 + 1] = particle.position[1] ?? 0
         positions[i * 3 + 2] = particle.position[2] ?? 0
+        // Add color
         const radiusSq = getMagnitudeSq(particle.position)
         if (radiusSq < ZERO_TOLERANCE) {
           colors[i * 3 + 0] = 1
