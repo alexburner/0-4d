@@ -1,20 +1,19 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy } from 'comlink'
 import { isNumber, times } from 'lodash'
-import { FC, useEffect, useMemo, useRef } from 'react'
+import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
 import { SquarePlane } from '../components/Plane'
 import { RainbowDots } from '../components/RainbowDots'
 import { RainbowSpaceTrails } from '../components/RainbowSpaceTrails'
-import { RainbowTimeTrails } from '../components/RainbowTimeTrails'
 import { SpaceTrails } from '../components/SpaceTrails'
-import { TimeTrails } from '../components/TimeTrails'
 import { Behavior } from '../simulation/behaviors'
 import { Bounding } from '../simulation/boundings'
 import { behaviors, isBehaviorName } from '../simulation/configs'
 import { createWorkers } from '../simulation/createWorkers'
 import { makeParticlesThroughDimensions } from '../simulation/particles'
+import { VectorN } from '../simulation/vectorN'
 import {
   createUseSimulationsStore,
   UseSimulationsStore,
@@ -32,7 +31,6 @@ const BACKGROUND_COLOR = '#222'
 
 const SIMULATION_RADIUS = 14
 const DIMENSION_COUNT = 9
-const TRAIL_LENGTH = 660
 
 const DEFAULT_PARTICLE_COUNT = 9
 const DEFAULT_SPIN = 0.01215
@@ -131,8 +129,62 @@ export const TrailsCombinedIntro: FC<{ route: HashRoute }> = ({ route }) => {
             )
           })}
         </div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'end',
+            alignItems: 'start',
+            flexGrow: 1,
+            position: 'absolute',
+            bottom: '300px',
+            right: '50px',
+          }}
+        >
+          <ValueLabels />
+        </div>
       </div>
     </div>
+  )
+}
+
+const VALUE_LABELS = ['x', 'y', 'z', 'w', 'v', 'u']
+
+const ValueLabels: FC = () => {
+  const [positions, setPositions] = useState<VectorN[]>([])
+
+  useEffect(() => {
+    useStores[1].subscribe((state) => {
+      const nextPositions = state.simulations?.map((simulation) => {
+        const particle = simulation.particles[0]
+        if (!particle) throw new Error('Unreachable')
+        return particle.position
+      })
+      if (!nextPositions) throw new Error('Unreachable')
+      setPositions(nextPositions)
+    })
+  }, [])
+
+  return (
+    <>
+      {new Array(DIMENSION_COUNT).fill(null).map((_, i) => {
+        const dimension = i - BELOW_ZERO
+        const position = dimension > 0 ? positions[dimension] : undefined
+        return (
+          <div
+            key={dimension}
+            style={{ width: '172px', textAlign: 'left', overflow: 'hidden' }}
+          >
+            <h3 style={{ fontWeight: 'normal' }}>
+              {position?.map((value, j) => (
+                <div key={j}>
+                  {VALUE_LABELS[j]} = {value.toFixed(3)}
+                </div>
+              ))}
+            </h3>
+          </div>
+        )
+      })}
+    </>
   )
 }
 
@@ -211,26 +263,14 @@ const TrailsR3F: FC<{
             {simulationIndex === -2 ? (
               <></>
             ) : simulationIndex === -1 ? (
-              <>
-                <EmptySpaceCell spin={spin} />
-                <EmptyTimeCell spin={spin} />
-              </>
+              <EmptySpaceCell spin={spin} />
             ) : (
-              <>
-                <SpaceCell
-                  useSimulationsStore={useSimulationsStore}
-                  simulationIndex={simulationIndex}
-                  bounding={bounding}
-                  spin={spin}
-                />
-                <TimeCell
-                  useSimulationsStore={useSimulationsStore}
-                  simulationIndex={simulationIndex}
-                  particleCount={particleCount}
-                  bounding={bounding}
-                  spin={spin}
-                />
-              </>
+              <SpaceCell
+                useSimulationsStore={useSimulationsStore}
+                simulationIndex={simulationIndex}
+                bounding={bounding}
+                spin={spin}
+              />
             )}
           </group>
         )
@@ -240,10 +280,9 @@ const TrailsR3F: FC<{
 }
 
 const xAxis = new Vector3(1, 0, 0)
-const yAxis = new Vector3(0, 1, 0)
+// const yAxis = new Vector3(0, 1, 0)
 const zAxis = new Vector3(0, 0, 1)
 const rightAngle = Math.PI / 2
-// const leftStart = -50
 
 const SpaceCell: FC<{
   useSimulationsStore: UseSimulationsStore
@@ -254,26 +293,14 @@ const SpaceCell: FC<{
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
-    // groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
     groupRef.current?.rotateOnAxis(xAxis, rightAngle)
   }, [])
-  // useFrame(() => {
-  //   // Spin rotation
-  //   // if (simulationIndex < 3) return
-  //   groupRef.current?.rotateOnAxis(xAxis, spin)
-  // })
   useFrame(() => {
     // Spin rotation
-    // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
-    <group
-      ref={groupRef}
-      // position={[leftStart - 40 + 10, 0, 5]}
-      // rotation={[0, -0.25, 0]}
-      // rotation={[0, -0.25, 0]}
-    >
+    <group ref={groupRef}>
       {bounding === 'centerScaling' ? (
         <>
           <RainbowDots
@@ -304,123 +331,18 @@ const SpaceCell: FC<{
   )
 }
 
-const TimeCell: FC<{
-  useSimulationsStore: UseSimulationsStore
-  simulationIndex: number
-  particleCount: number
-  bounding: Bounding
-  spin: number
-}> = ({
-  useSimulationsStore,
-  simulationIndex,
-  particleCount,
-  bounding,
-  spin,
-}) => {
-  const groupRef = useRef<Group>(null)
-  useEffect(() => {
-    // Initial rotation
-    groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
-    groupRef.current?.rotateOnAxis(xAxis, rightAngle)
-    groupRef.current?.rotateOnAxis(yAxis, rightAngle)
-  }, [])
-  useFrame(() => {
-    // Spin rotation
-    // if (simulationIndex < 2) return
-    groupRef.current?.rotateOnAxis(zAxis, spin)
-  })
-  return (
-    <group
-      ref={groupRef}
-      position={[0, 40, 0]}
-      // position={[leftStart + 5, 0, 0]}
-      // rotation={[0.125, 0.75, 0]}
-      // rotation={[0, -0.25, 0]}
-    >
-      {bounding === 'centerScaling' ? (
-        <>
-          <RainbowDots
-            simulationIndex={simulationIndex}
-            simulationRadius={SIMULATION_RADIUS}
-            useSimulationsStore={useSimulationsStore}
-          />
-          <RainbowTimeTrails
-            simulationIndex={simulationIndex}
-            simulationRadius={SIMULATION_RADIUS}
-            useSimulationsStore={useSimulationsStore}
-            particleCount={particleCount}
-            trailLength={TRAIL_LENGTH}
-          />
-        </>
-      ) : (
-        <>
-          <Dots
-            simulationIndex={simulationIndex}
-            useSimulationsStore={useSimulationsStore}
-          />
-          <TimeTrails
-            simulationIndex={simulationIndex}
-            useSimulationsStore={useSimulationsStore}
-            particleCount={particleCount}
-            trailLength={TRAIL_LENGTH}
-          />
-        </>
-      )}
-      <SquarePlane radius={SIMULATION_RADIUS} />
-    </group>
-  )
-}
-
 const EmptySpaceCell: FC<{ spin: number }> = ({ spin }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
-    // groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
     groupRef.current?.rotateOnAxis(xAxis, rightAngle)
-  }, [])
-  // useFrame(() => {
-  //   // Spin rotation
-  //   // if (simulationIndex < 3) return
-  //   groupRef.current?.rotateOnAxis(xAxis, spin)
-  // })
-  useFrame(() => {
-    // Spin rotation
-    // if (simulationIndex < 2) return
-    groupRef.current?.rotateOnAxis(zAxis, spin)
-  })
-  return (
-    <group
-      ref={groupRef}
-      // position={[leftStart - 40 + 10, 0, 5]}
-      // rotation={[0, -0.25, 0]}
-      // rotation={[0, -0.25, 0]}
-    >
-      <SquarePlane radius={SIMULATION_RADIUS} />
-    </group>
-  )
-}
-
-const EmptyTimeCell: FC<{ spin: number }> = ({ spin }) => {
-  const groupRef = useRef<Group>(null)
-  useEffect(() => {
-    // Initial rotation
-    groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
-    groupRef.current?.rotateOnAxis(xAxis, rightAngle)
-    groupRef.current?.rotateOnAxis(yAxis, rightAngle)
   }, [])
   useFrame(() => {
     // Spin rotation
-    // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
-    <group
-      ref={groupRef}
-      position={[0, 40, 0]}
-      // position={[leftStart + 5, 0, 0]}
-      // rotation={[0.125, 0.75, 0]}
-      // rotation={[0, -0.25, 0]}
-    >
+    <group ref={groupRef}>
       <SquarePlane radius={SIMULATION_RADIUS} />
     </group>
   )

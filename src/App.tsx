@@ -7,6 +7,7 @@ import { Stacks } from './routes/Stacks'
 import { Trails } from './routes/Trails'
 import { parseHashRoute } from './util/hashRoute'
 import { TrailsCombined } from './routes/TrailsCombined'
+import { TrailsCombinedIntro } from './routes/TrailsCombinedIntro'
 
 export const App: FC = () => {
   const [hash] = useHash()
@@ -20,6 +21,8 @@ export const App: FC = () => {
       return <TrailColumns route={route} />
     case 'trails-combined':
       return <TrailsCombined route={route} />
+    case 'trails-combined-intro':
+      return <TrailsCombinedIntro route={route} />
     case 'stacks':
       return <Stacks route={route} />
     default:
