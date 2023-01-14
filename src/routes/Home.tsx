@@ -26,6 +26,10 @@ const links = [
     text: 'Stacks — Diffusion',
     href: '#stacks?behavior=diffusion',
   },
+  {
+    text: 'Torus Test',
+    href: '#torus-test',
+  },
 ]
 
 export const Home: FC = () => (

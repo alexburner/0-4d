@@ -1,13 +1,14 @@
 import { FC } from 'react'
 import { useHash } from 'react-use'
-import { TrailColumns } from './routes/TrailColumns'
 import { Home } from './routes/Home'
 import { NotFound } from './routes/NotFound'
 import { Stacks } from './routes/Stacks'
+import { TorusTest } from './routes/TorusTest'
+import { TrailColumns } from './routes/TrailColumns'
 import { Trails } from './routes/Trails'
-import { parseHashRoute } from './util/hashRoute'
 import { TrailsCombined } from './routes/TrailsCombined'
 import { TrailsCombinedIntro } from './routes/TrailsCombinedIntro'
+import { parseHashRoute } from './util/hashRoute'
 
 export const App: FC = () => {
   const [hash] = useHash()
@@ -25,6 +26,8 @@ export const App: FC = () => {
       return <TrailsCombinedIntro route={route} />
     case 'stacks':
       return <Stacks route={route} />
+    case 'torus-test':
+      return <TorusTest />
     default:
       return <NotFound route={route} />
   }
