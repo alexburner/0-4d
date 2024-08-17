@@ -54,6 +54,33 @@ export const SquarePlane: FC<{
       [radius, 0, top],
       [-radius, 0, radius],
       [radius, 0, radius],
+      // top xy square
+      [radius, -radius, top],
+      [radius, radius, top],
+      [-radius, -radius, top],
+      [-radius, radius, top],
+      [-radius, -radius, top],
+      [radius, -radius, top],
+      [-radius, radius, top],
+      [radius, radius, top],
+      // bottom xy square
+      [radius, -radius, radius],
+      [radius, radius, radius],
+      [-radius, -radius, radius],
+      [-radius, radius, radius],
+      [-radius, -radius, radius],
+      [radius, -radius, radius],
+      [-radius, radius, radius],
+      [radius, radius, radius],
+      // xy corner z axes
+      [-radius, -radius, top],
+      [-radius, -radius, radius],
+      [radius, -radius, top],
+      [radius, -radius, radius],
+      [-radius, radius, top],
+      [-radius, radius, radius],
+      [radius, radius, top],
+      [radius, radius, radius],
     ],
     [radius, top],
   )
@@ -110,7 +137,7 @@ const createMaterial = () => {
     blending: AdditiveBlending,
     color: 0x309bff,
     depthTest: false,
-    opacity: 0.2,
+    opacity: 0.1,
     transparent: true,
   })
 }
