@@ -10,7 +10,12 @@ import {
 
 type Vector = [number, number, number]
 
-export const SquarePlane: FC<{ radius: number }> = ({ radius }) => {
+export const SquarePlane: FC<{
+  radius: number
+  time?: true
+}> = ({ radius }) => {
+  // const top = time ? -165 : -radius
+  const top = -radius
   const vectors = useMemo<Vector[]>(
     () => [
       // x axis
@@ -19,7 +24,10 @@ export const SquarePlane: FC<{ radius: number }> = ({ radius }) => {
       // y axis
       [0, -radius, 0],
       [0, radius, 0],
-      // square
+      // z axis
+      [0, 0, top],
+      [0, 0, radius],
+      // xy square
       [radius, -radius, 0],
       [radius, radius, 0],
       [-radius, -radius, 0],
@@ -28,8 +36,26 @@ export const SquarePlane: FC<{ radius: number }> = ({ radius }) => {
       [radius, -radius, 0],
       [-radius, radius, 0],
       [radius, radius, 0],
+      // yz square
+      [0, radius, top],
+      [0, radius, radius],
+      [0, -radius, top],
+      [0, -radius, radius],
+      [0, -radius, top],
+      [0, radius, top],
+      [0, -radius, radius],
+      [0, radius, radius],
+      // xz square
+      [radius, 0, top],
+      [radius, 0, radius],
+      [-radius, 0, top],
+      [-radius, 0, radius],
+      [-radius, 0, top],
+      [radius, 0, top],
+      [-radius, 0, radius],
+      [radius, 0, radius],
     ],
-    [radius],
+    [radius, top],
   )
   return <Plane vectors={vectors} />
 }
@@ -84,7 +110,7 @@ const createMaterial = () => {
     blending: AdditiveBlending,
     color: 0x309bff,
     depthTest: false,
-    opacity: 0.4,
+    opacity: 0.2,
     transparent: true,
   })
 }

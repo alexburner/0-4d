@@ -35,7 +35,7 @@ const DIMENSION_COUNT = 9
 const TRAIL_LENGTH = 660
 
 const DEFAULT_PARTICLE_COUNT = 9
-const DEFAULT_SPIN = 0.0051215
+const DEFAULT_SPIN = -0.0051215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
 const BELOW_ZERO = 2
@@ -366,7 +366,7 @@ const TimeCell: FC<{
           />
         </>
       )}
-      <SquarePlane radius={SIMULATION_RADIUS} />
+      <SquarePlane radius={SIMULATION_RADIUS} time />
     </group>
   )
 }
@@ -421,7 +421,7 @@ const EmptyTimeCell: FC<{ spin: number }> = ({ spin }) => {
       // rotation={[0.125, 0.75, 0]}
       // rotation={[0, -0.25, 0]}
     >
-      <SquarePlane radius={SIMULATION_RADIUS} />
+      <SquarePlane radius={SIMULATION_RADIUS} time />
     </group>
   )
 }
