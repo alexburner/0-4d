@@ -122,7 +122,7 @@ export const TrailsCombinedIntro: FC<{ route: HashRoute }> = ({ route }) => {
                   {dimension === -2
                     ? ''
                     : dimension === -1
-                    ? '__'
+                    ? '_d'
                     : `${dimension}d`}
                 </h3>
               </div>
