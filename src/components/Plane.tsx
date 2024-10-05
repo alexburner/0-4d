@@ -10,50 +10,55 @@ import {
 
 type Vector = [number, number, number]
 
-export const SquarePlane: FC<{
+export const SpaceGrid: FC<{
   radius: number
   time?: true
-}> = ({ radius }) => {
-  // const top = time ? -165 : -radius
-  const top = -radius
+}> = ({ radius, time }) => {
+  const top = time ? -163 - radius : -radius
+  // const top = -radius
   const vectors = useMemo<Vector[]>(
     () => [
-      // x axis
-      [-radius, 0, 0],
-      [radius, 0, 0],
-      // y axis
-      [0, -radius, 0],
-      [0, radius, 0],
-      // z axis
-      [0, 0, top],
-      [0, 0, radius],
-      // xy square
-      [radius, -radius, 0],
-      [radius, radius, 0],
-      [-radius, -radius, 0],
-      [-radius, radius, 0],
-      [-radius, -radius, 0],
-      [radius, -radius, 0],
-      [-radius, radius, 0],
-      [radius, radius, 0],
-      // yz square
-      [0, radius, top],
-      [0, radius, radius],
-      [0, -radius, top],
-      [0, -radius, radius],
-      [0, -radius, top],
-      [0, radius, top],
-      [0, -radius, radius],
-      [0, radius, radius],
-      // xz square
-      [radius, 0, top],
-      [radius, 0, radius],
-      [-radius, 0, top],
-      [-radius, 0, radius],
-      [-radius, 0, top],
-      [radius, 0, top],
-      [-radius, 0, radius],
-      [radius, 0, radius],
+      /* lines */
+      // // x axis
+      // [-radius, 0, 0],
+      // [radius, 0, 0],
+      // // y axis
+      // [0, -radius, 0],
+      // [0, radius, 0],
+      // // z axis
+      // [0, 0, top],
+      // [0, 0, radius],
+
+      /* squares */
+      // // xy square
+      // [radius, -radius, 0],
+      // [radius, radius, 0],
+      // [-radius, -radius, 0],
+      // [-radius, radius, 0],
+      // [-radius, -radius, 0],
+      // [radius, -radius, 0],
+      // [-radius, radius, 0],
+      // [radius, radius, 0],
+      // // yz square
+      // [0, radius, top],
+      // [0, radius, radius],
+      // [0, -radius, top],
+      // [0, -radius, radius],
+      // [0, -radius, top],
+      // [0, radius, top],
+      // [0, -radius, radius],
+      // [0, radius, radius],
+      // // xz square
+      // [radius, 0, top],
+      // [radius, 0, radius],
+      // [-radius, 0, top],
+      // [-radius, 0, radius],
+      // [-radius, 0, top],
+      // [radius, 0, top],
+      // [-radius, 0, radius],
+      // [radius, 0, radius],
+
+      /* cube */
       // top xy square
       [radius, -radius, top],
       [radius, radius, top],

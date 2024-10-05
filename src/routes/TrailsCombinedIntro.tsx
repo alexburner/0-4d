@@ -4,7 +4,7 @@ import { isNumber, times } from 'lodash'
 import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
-import { SquarePlane } from '../components/Plane'
+import { SpaceGrid } from '../components/Plane'
 import { RainbowDots } from '../components/RainbowDots'
 import { RainbowSpaceTrails } from '../components/RainbowSpaceTrails'
 import { SpaceTrails } from '../components/SpaceTrails'
@@ -326,7 +326,7 @@ const SpaceCell: FC<{
           />
         </>
       )}
-      <SquarePlane radius={SIMULATION_RADIUS} />
+      <SpaceGrid radius={SIMULATION_RADIUS} />
     </group>
   )
 }
@@ -343,7 +343,7 @@ const EmptySpaceCell: FC<{ spin: number }> = ({ spin }) => {
   })
   return (
     <group ref={groupRef}>
-      <SquarePlane radius={SIMULATION_RADIUS} />
+      <SpaceGrid radius={SIMULATION_RADIUS} />
     </group>
   )
 }

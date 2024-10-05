@@ -4,7 +4,7 @@ import { isNumber, times } from 'lodash'
 import { FC, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
-import { SquarePlane } from '../components/Plane'
+import { SpaceGrid } from '../components/Plane'
 import { SpaceLines } from '../components/SpaceLines'
 import { TimeLines } from '../components/TimeLines'
 import { Behavior } from '../simulation/behaviors'
@@ -290,7 +290,7 @@ const SpaceCell: FC<{
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
       />
-      <SquarePlane radius={SIMULATION_RADIUS} />
+      <SpaceGrid radius={SIMULATION_RADIUS} />
     </group>
   )
 }
@@ -321,7 +321,7 @@ const TimeCell: FC<{
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
       />
-      <SquarePlane radius={SIMULATION_RADIUS} />
+      <SpaceGrid radius={SIMULATION_RADIUS} />
     </group>
   )
 }

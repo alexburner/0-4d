@@ -4,7 +4,7 @@ import { isNumber, times } from 'lodash'
 import { FC, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
-import { SquarePlane } from '../components/Plane'
+import { SpaceGrid } from '../components/Plane'
 import { RainbowDots } from '../components/RainbowDots'
 import { RainbowSpaceTrails } from '../components/RainbowSpaceTrails'
 import { RainbowTimeTrails } from '../components/RainbowTimeTrails'
@@ -299,7 +299,7 @@ const SpaceCell: FC<{
           />
         </>
       )}
-      <SquarePlane radius={SIMULATION_RADIUS} />
+      <SpaceGrid radius={SIMULATION_RADIUS} />
     </group>
   )
 }
@@ -366,7 +366,7 @@ const TimeCell: FC<{
           />
         </>
       )}
-      <SquarePlane radius={SIMULATION_RADIUS} time />
+      <SpaceGrid radius={SIMULATION_RADIUS} time />
     </group>
   )
 }
@@ -395,7 +395,7 @@ const EmptySpaceCell: FC<{ spin: number }> = ({ spin }) => {
       // rotation={[0, -0.25, 0]}
       // rotation={[0, -0.25, 0]}
     >
-      <SquarePlane radius={SIMULATION_RADIUS} />
+      <SpaceGrid radius={SIMULATION_RADIUS} />
     </group>
   )
 }
@@ -421,7 +421,7 @@ const EmptyTimeCell: FC<{ spin: number }> = ({ spin }) => {
       // rotation={[0.125, 0.75, 0]}
       // rotation={[0, -0.25, 0]}
     >
-      <SquarePlane radius={SIMULATION_RADIUS} time />
+      <SpaceGrid radius={SIMULATION_RADIUS} time />
     </group>
   )
 }
