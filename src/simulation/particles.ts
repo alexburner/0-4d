@@ -67,6 +67,7 @@ const assign = (dst: VectorN, src: VectorN): VectorN =>
 
 /**
  * Makes a set of particles & upscales it through dimensions
+ * DEPRECATED: simple dimensionCount
  */
 export const makeParticlesThroughDimensions = (
   dimensionCount: number,
@@ -82,5 +83,26 @@ export const makeParticlesThroughDimensions = (
       : makeFreshParticles(dimension, radius, particleCount)
     particlesByDimension.push(nextParticles)
   }
+  return particlesByDimension
+}
+
+/**
+ * Makes a set of particles & upscales it through dimensions
+ * NEW: bespoke dimensions list
+ */
+export const makeParticlesThroughDimensions2 = (
+  dimensions: number[], // assumes 0+
+  particleCount: number,
+  radius: number,
+) => {
+  const particlesByDimension: Partial<Record<number, Particle[]>> = {}
+  dimensions.map((dimension) => {
+    // Prefill next dimension with previous values, if available
+    const prevParticles = particlesByDimension[dimension - 1]
+    const nextParticles = prevParticles
+      ? makeFilledParticles(dimension, radius, prevParticles)
+      : makeFreshParticles(dimension, radius, particleCount)
+    particlesByDimension[dimension] = nextParticles
+  })
   return particlesByDimension
 }

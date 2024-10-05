@@ -1,6 +1,6 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy } from 'comlink'
-import { isNumber, times } from 'lodash'
+import { isNumber } from 'lodash'
 import { FC, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
@@ -14,7 +14,7 @@ import { Behavior } from '../simulation/behaviors'
 import { Bounding } from '../simulation/boundings'
 import { behaviors, isBehaviorName } from '../simulation/configs'
 import { createWorkers } from '../simulation/createWorkers'
-import { makeParticlesThroughDimensions } from '../simulation/particles'
+import { makeParticlesThroughDimensions2 } from '../simulation/particles'
 import {
   createUseSimulationsStore,
   UseSimulationsStore,
@@ -31,14 +31,16 @@ const ZOOM = 9
 const BACKGROUND_COLOR = '#222'
 
 const SIMULATION_RADIUS = 14
-const DIMENSION_COUNT = 9
+
+const SUB_DIMENSIONS = [-2, -1]
+const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 12, 124]
+const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS]
+const DIMENSION_CHARS = ['x', 'y', 'z']
 const TRAIL_LENGTH = 660
 
 const DEFAULT_PARTICLE_COUNT = 9
 const DEFAULT_SPIN = -0.0051215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
-
-const BELOW_ZERO = 2
 
 const useStores = [
   createUseSimulationsStore(),
@@ -116,9 +118,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
             right: '100px',
           }}
         >
-          {new Array(DIMENSION_COUNT).fill(null).map((_, i) => {
-            const dimension = i - BELOW_ZERO
-            const DIMENSION_CHARS = ['x', 'y', 'z']
+          {DIMENSIONS.map((dimension) => {
             let vectorText: string | undefined = undefined
             if (dimension >= 0) {
               const localChars = DIMENSION_CHARS.slice(
@@ -190,8 +190,8 @@ const TrailsR3F: FC<{
 
   const particlesByDimension = useMemo(
     () =>
-      makeParticlesThroughDimensions(
-        DIMENSION_COUNT,
+      makeParticlesThroughDimensions2(
+        SIM_DIMENSIONS,
         particleCount,
         SIMULATION_RADIUS,
       ),
@@ -202,13 +202,15 @@ const TrailsR3F: FC<{
    * Create simulation workers
    */
 
-  const workers = useMemo(() => createWorkers(DIMENSION_COUNT), [])
+  const workers = useMemo(() => createWorkers(SIM_DIMENSIONS.length), [])
   const workersReadyRef = useRef(false)
   useEffect(() => {
     // Init workers on mount
     const initPromises = workers.map((worker, i) => {
-      const particles = particlesByDimension[i]
-      if (!particles) throw new Error('Unreachable')
+      const dimension = SIM_DIMENSIONS[i]
+      if (dimension === undefined) throw new Error('dimension === undefined')
+      const particles = particlesByDimension[dimension]
+      if (!particles) throw new Error('!particles')
       return worker.init(particles, {
         behavior,
         bounding,
@@ -245,13 +247,13 @@ const TrailsR3F: FC<{
 
   return (
     <>
-      {times(DIMENSION_COUNT, (i) => {
-        const simulationIndex = i - BELOW_ZERO
+      {DIMENSIONS.map((dimension, i) => {
+        const simulationIndex = i - SUB_DIMENSIONS.length
         return (
           <group key={i} position={[-200 + i * 50, -120, 0]}>
-            {simulationIndex === -2 ? (
+            {dimension === -2 ? (
               <></>
-            ) : simulationIndex === -1 ? (
+            ) : dimension === -1 ? (
               <>
                 <EmptySpaceCell spin={spin} />
                 <EmptyTimeCell spin={spin} />
