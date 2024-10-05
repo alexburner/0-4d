@@ -19,7 +19,7 @@ export const behaviors: Record<Behavior['name'], Behavior> = {
   wandering: {
     name: 'wandering',
     config: {
-      jitter: 0.3,
+      jitter: 0.2,
     },
   },
   diffusion: {

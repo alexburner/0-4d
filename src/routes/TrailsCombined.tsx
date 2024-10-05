@@ -32,9 +32,10 @@ const BACKGROUND_COLOR = '#222'
 
 const SIMULATION_RADIUS = 14
 
-const SUB_DIMENSIONS = [-2, -1]
-const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 12, 124]
-const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS]
+const SUB_DIMENSIONS: number[] = []
+const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 12, 24, 48]
+const SUP_DIMENSIONS = [Infinity]
+const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
 const DIMENSION_CHARS = ['x', 'y', 'z']
 const TRAIL_LENGTH = 660
 
@@ -128,6 +129,11 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
               vectorText = ` ${localChars.join(', ')}`
             }
             if (dimension > DIMENSION_CHARS.length) {
+              // const more =
+              //   dimension === Infinity
+              //     ? '∞'
+              //     : dimension - DIMENSION_CHARS.length
+              // vectorText += `, ...${more}`
               vectorText += ', ...'
             }
 
@@ -137,22 +143,21 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                 style={{ textAlign: 'center', width: '110px' }}
               >
                 <h3 style={{ fontWeight: 'normal' }}>
-                  {dimension === -2 ? (
-                    ''
-                  ) : dimension === -1 ? (
-                    <>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-                    </>
-                  ) : (
-                    `${dimension}d`
-                  )}
+                  {dimension === -2
+                    ? ''
+                    : dimension === -1
+                    ? ''
+                    : dimension === Infinity
+                    ? '∞ d'
+                    : `${dimension}d`}
                 </h3>
                 {
                   <h5
                     style={{
                       fontWeight: 'normal',
+                      fontFamily: 'Georgia',
                       marginTop: '-0.5em',
+                      opacity: 0.9,
                     }}
                   >
                     {vectorText ? (
@@ -257,6 +262,22 @@ const TrailsR3F: FC<{
               <>
                 <EmptySpaceCell spin={spin} />
                 <EmptyTimeCell spin={spin} />
+              </>
+            ) : dimension === Infinity ? (
+              <>
+                <SpaceCell
+                  useSimulationsStore={useSimulationsStore}
+                  simulationIndex={0}
+                  bounding={bounding}
+                  spin={spin}
+                />
+                <TimeCell
+                  useSimulationsStore={useSimulationsStore}
+                  simulationIndex={0}
+                  particleCount={particleCount}
+                  bounding={bounding}
+                  spin={spin}
+                />
               </>
             ) : (
               <>
