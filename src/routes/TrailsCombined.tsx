@@ -111,22 +111,63 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
             alignItems: 'center',
             flexGrow: 1,
             position: 'absolute',
-            bottom: '-60px',
+            bottom: '-70px',
             left: '100px',
             right: '100px',
           }}
         >
           {new Array(DIMENSION_COUNT).fill(null).map((_, i) => {
             const dimension = i - BELOW_ZERO
+            const DIMENSION_CHARS = ['x', 'y', 'z']
+            let vectorText: string | undefined = undefined
+            if (dimension >= 0) {
+              const localChars = DIMENSION_CHARS.slice(
+                0,
+                Math.min(dimension, DIMENSION_CHARS.length),
+              )
+              vectorText = ` ${localChars.join(', ')}`
+            }
+            if (dimension > DIMENSION_CHARS.length) {
+              vectorText += ', ...'
+            }
+
             return (
-              <div key={dimension} style={{ textAlign: 'center' }}>
+              <div
+                key={dimension}
+                style={{ textAlign: 'center', width: '110px' }}
+              >
                 <h3 style={{ fontWeight: 'normal' }}>
-                  {dimension === -2
-                    ? ''
-                    : dimension === -1
-                    ? '_d'
-                    : `${dimension}d`}
+                  {dimension === -2 ? (
+                    ''
+                  ) : dimension === -1 ? (
+                    <>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                    </>
+                  ) : (
+                    `${dimension}d`
+                  )}
                 </h3>
+                {
+                  <h5
+                    style={{
+                      fontWeight: 'normal',
+                      marginTop: '-0.5em',
+                    }}
+                  >
+                    {vectorText ? (
+                      <span style={{ color: '#777' }}>
+                        [{' '}
+                        <span style={{ color: '#CCC', padding: '0 2px' }}>
+                          {vectorText}
+                        </span>{' '}
+                        ]
+                      </span>
+                    ) : (
+                      <>&nbsp;</>
+                    )}
+                  </h5>
+                }
               </div>
             )
           })}
