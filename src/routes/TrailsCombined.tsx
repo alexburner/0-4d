@@ -32,8 +32,8 @@ const BACKGROUND_COLOR = '#222'
 
 const SIMULATION_RADIUS = 14
 
-const SUB_DIMENSIONS: number[] = []
-const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 12, 24, 48]
+const SUB_DIMENSIONS = [-1]
+const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 10, 100]
 const SUP_DIMENSIONS = [Infinity]
 const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
 const DIMENSION_CHARS = ['x', 'y', 'z']
@@ -148,7 +148,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                     : dimension === -1
                     ? ''
                     : dimension === Infinity
-                    ? '∞ d'
+                    ? '1000d'
                     : `${dimension}d`}
                 </h3>
                 {
