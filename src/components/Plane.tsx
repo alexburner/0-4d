@@ -13,7 +13,7 @@ type Vector = [number, number, number]
 export const SpaceGrid: FC<{
   radius: number
   time?: true
-}> = ({ radius, time }) => {
+}> = ({ radius }) => {
   // const top = time ? -163 - radius : -radius
   const top = -radius
   const vectors = useMemo(() => {
