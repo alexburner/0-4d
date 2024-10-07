@@ -14,10 +14,10 @@ export const SpaceGrid: FC<{
   radius: number
   time?: true
 }> = ({ radius, time }) => {
-  const top = time ? -163 - radius : -radius
-  // const top = -radius
-  const vectors = useMemo<Vector[]>(
-    () => [
+  // const top = time ? -163 - radius : -radius
+  const top = -radius
+  const vectors = useMemo(() => {
+    const v: Vector[] = [
       /* lines */
       // // x axis
       // [-radius, 0, 0],
@@ -77,6 +77,34 @@ export const SpaceGrid: FC<{
       [radius, -radius, radius],
       [-radius, radius, radius],
       [radius, radius, radius],
+    ]
+    // if (time) {
+    //   const topBottom = top + radius
+    //   const bottom = radius
+    //   const bottomTop = 0
+    //   const sides: Vector[] = [
+    //     // xy corner z axes — top
+    //     [-radius, -radius, top],
+    //     [-radius, -radius, topBottom],
+    //     [radius, -radius, top],
+    //     [radius, -radius, topBottom],
+    //     [-radius, radius, top],
+    //     [-radius, radius, topBottom],
+    //     [radius, radius, top],
+    //     [radius, radius, topBottom],
+    //     // xy corner z axes — bottom
+    //     [-radius, -radius, bottomTop],
+    //     [-radius, -radius, bottom],
+    //     [radius, -radius, bottomTop],
+    //     [radius, -radius, bottom],
+    //     [-radius, radius, bottomTop],
+    //     [-radius, radius, bottom],
+    //     [radius, radius, bottomTop],
+    //     [radius, radius, bottom],
+    //   ]
+    //   v.push(...sides)
+    // } else {
+    const sides: Vector[] = [
       // xy corner z axes
       [-radius, -radius, top],
       [-radius, -radius, radius],
@@ -86,9 +114,11 @@ export const SpaceGrid: FC<{
       [-radius, radius, radius],
       [radius, radius, top],
       [radius, radius, radius],
-    ],
-    [radius, top],
-  )
+    ]
+    v.push(...sides)
+    // }
+    return v
+  }, [radius, top])
   return <Plane vectors={vectors} />
 }
 
