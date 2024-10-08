@@ -148,7 +148,8 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                     : dimension === -1
                     ? ''
                     : dimension === Infinity
-                    ? '∞ d'
+                    ? // ? '∞ d'
+                      '10000d'
                     : `${dimension}d`}
                 </h3>
                 {
@@ -162,11 +163,11 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                   >
                     {vectorText ? (
                       <span style={{ color: '#777' }}>
-                        [{' '}
+                        {'( '}
                         <span style={{ color: '#CCC', padding: '0 2px' }}>
                           {vectorText}
-                        </span>{' '}
-                        ]
+                        </span>
+                        {' )'}
                       </span>
                     ) : (
                       <>&nbsp;</>
