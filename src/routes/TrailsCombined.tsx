@@ -21,8 +21,8 @@ import {
 } from '../stores/simulationStore'
 import { HashRoute } from '../util/hashRoute'
 
-const WIDTH = 3840
-const HEIGHT = 2160
+const WIDTH = 1840
+const HEIGHT = 1080
 const VIEWANGLE = 45
 const NEAR = 1
 const FAR = 5000
@@ -32,7 +32,7 @@ const BACKGROUND_COLOR = '#222'
 
 const SIMULATION_RADIUS = 14
 
-const SUB_DIMENSIONS: number[] = [-1]
+const SUB_DIMENSIONS: number[] = []
 const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 5, 10, 50]
 const SUP_DIMENSIONS = [Infinity]
 const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
@@ -140,9 +140,9 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
             return (
               <div
                 key={dimension}
-                style={{ textAlign: 'center', width: '150px' }}
+                style={{ textAlign: 'center', width: '110px' }}
               >
-                <h1 style={{ fontWeight: 'normal' }}>
+                <h3 style={{ fontWeight: 'normal' }}>
                   {dimension === -2
                     ? ''
                     : dimension === -1
@@ -150,9 +150,9 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                     : dimension === Infinity
                     ? '∞ d'
                     : `${dimension}d`}
-                </h1>
+                </h3>
                 {
-                  <h2
+                  <h5
                     style={{
                       fontWeight: 'normal',
                       fontFamily: 'Georgia',
@@ -162,16 +162,16 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                   >
                     {vectorText ? (
                       <span style={{ color: '#777' }}>
-                        ({' '}
+                        [{' '}
                         <span style={{ color: '#CCC', padding: '0 2px' }}>
                           {vectorText}
                         </span>{' '}
-                        )
+                        ]
                       </span>
                     ) : (
                       <>&nbsp;</>
                     )}
-                  </h2>
+                  </h5>
                 }
               </div>
             )
@@ -255,7 +255,7 @@ const TrailsR3F: FC<{
       {DIMENSIONS.map((dimension, i) => {
         const simulationIndex = i - SUB_DIMENSIONS.length
         return (
-          <group key={i} position={[-224 + i * 50, -120, 0]}>
+          <group key={i} position={[-200 + i * 50, -120, 0]}>
             {dimension === -2 ? (
               <></>
             ) : dimension === -1 ? (
