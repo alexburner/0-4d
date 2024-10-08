@@ -1,14 +1,14 @@
 import { scaleLinear } from 'd3-scale'
 import {
-  BufferAttribute,
-  DynamicDrawUsage,
-  BufferGeometry,
-  PointsMaterial,
   AdditiveBlending,
+  BufferAttribute,
+  BufferGeometry,
+  DynamicDrawUsage,
+  PointsMaterial,
 } from 'three'
 
-export const RAINBOW_S = 0.7
-export const RAINBOW_L = 0.1
+export const RAINBOW_S = 0.895
+export const RAINBOW_L = 0.295
 
 export const ZERO_TOLERANCE = 0.0
 

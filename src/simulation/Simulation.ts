@@ -1,9 +1,10 @@
 import { hopeNever } from '../util/ts'
-import { Behavior, diffusion, orbiting, wandering } from './behaviors'
+import { Behavior, diffusion, orbiting, rays, wandering } from './behaviors'
 import {
   Bounding,
   centerScaling,
   edgeBinding,
+  edgeReflecting,
   edgeWrapping,
   lengthBinding,
 } from './boundings'
@@ -35,6 +36,8 @@ export class Simulation {
     this.config = config
     this.particles = particles
     this.neighborhood = getNeighborhood(particles)
+
+    console.log(this.config)
   }
 
   tick(count = 1): SimulationData {
@@ -53,6 +56,9 @@ export class Simulation {
           break
         case 'wandering':
           wandering(this.particles, this.config.behavior.config)
+          break
+        case 'rays':
+          rays(this.particles, this.config.behavior.config)
           break
         case 'diffusion':
           diffusion(
@@ -91,6 +97,9 @@ export class Simulation {
           break
         case 'edgeWrapping':
           edgeWrapping(this.particles, this.config.radius)
+          break
+        case 'edgeReflecting':
+          edgeReflecting(this.particles, this.config.radius)
           break
         default:
           hopeNever(this.config.bounding)

@@ -48,6 +48,14 @@ const useStores = [
   createUseSimulationsStore(),
 ] as const
 
+type Bounds = [Bounding, Bounding] // inner, outer
+const boundsByBehavior: Record<Behavior['name'], Bounds> = {
+  orbiting: ['centerScaling', 'edgeBinding'],
+  wandering: ['centerScaling', 'edgeBinding'],
+  rays: ['edgeWrapping', 'edgeBinding'],
+  diffusion: ['centerScaling', 'edgeBinding'],
+}
+
 export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
   const particleCount = isNumber(route.params['particles'])
     ? route.params['particles']
@@ -59,9 +67,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
     ? route.params['behavior']
     : DEFAULT_BEHAVIOR_NAME
   const behavior = behaviors[behaviorName]
-
-  const boundings: Bounding[] = ['edgeBinding', 'centerScaling']
-
+  const bounds = boundsByBehavior[behaviorName]
   return (
     <div
       style={{
@@ -92,7 +98,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
           }}
           style={{ background: BACKGROUND_COLOR }}
         >
-          {boundings.map((bounding, i) => {
+          {bounds.map((bounding, i) => {
             const useStore = useStores[i]
             if (!useStore) throw new Error('Unreachable')
             return (
@@ -148,8 +154,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                     : dimension === -1
                     ? ''
                     : dimension === Infinity
-                    ? // ? '∞ d'
-                      '10000d'
+                    ? '10000d' // '∞ d'
                     : `${dimension}d`}
                 </h3>
                 {
@@ -339,7 +344,7 @@ const SpaceCell: FC<{
       // rotation={[0, -0.25, 0]}
       // rotation={[0, -0.25, 0]}
     >
-      {bounding === 'centerScaling' ? (
+      {['centerScaling', 'edgeWrapping'].includes(bounding) ? (
         <>
           <RainbowDots
             simulationIndex={simulationIndex}
@@ -402,7 +407,7 @@ const TimeCell: FC<{
       // rotation={[0.125, 0.75, 0]}
       // rotation={[0, -0.25, 0]}
     >
-      {bounding === 'centerScaling' ? (
+      {['centerScaling', 'edgeWrapping'].includes(bounding) ? (
         <>
           <RainbowDots
             simulationIndex={simulationIndex}

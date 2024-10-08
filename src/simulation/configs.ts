@@ -22,6 +22,12 @@ export const behaviors: Record<Behavior['name'], Behavior> = {
       jitter: 0.2,
     },
   },
+  rays: {
+    name: 'rays',
+    config: {
+      jitter: 0.2,
+    },
+  },
   diffusion: {
     name: 'diffusion',
     config: {

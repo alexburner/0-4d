@@ -10,7 +10,11 @@ import {
   setMagnitude,
 } from './vectorN'
 
-export type Behavior = OrbitingBehavior | WanderingBehavior | DiffusionBehavior
+export type Behavior =
+  | OrbitingBehavior
+  | WanderingBehavior
+  | RaysBehavior
+  | DiffusionBehavior
 
 /**
  * Orbiting
@@ -66,6 +70,28 @@ export const wandering = (
     // Generate random acceleration & add to particle
     const acceleration = randomVector(particle.dimensions, config.jitter)
     particle.acceleration = add(particle.acceleration, acceleration)
+  })
+}
+
+/**
+ * Rays
+ */
+
+interface RaysBehavior {
+  name: 'rays'
+  config: { jitter: number }
+}
+
+export const rays = (
+  particles: Particle[],
+  _config: RaysBehavior['config'],
+) => {
+  particles.forEach((particle) => {
+    // Generate random acceleration & add to particle
+    particle.acceleration = add(
+      particle.acceleration,
+      multiply(particle.velocity, 0),
+    )
   })
 }
 

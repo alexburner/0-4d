@@ -8,6 +8,7 @@ export type Bounding =
   | 'edgeBinding'
   | 'lengthBinding'
   | 'edgeWrapping'
+  | 'edgeReflecting'
 
 /**
  * Scale all particle positions to be within radius of center
@@ -66,6 +67,25 @@ export const edgeWrapping = (
   targetRadius: number,
 ): void => {
   particles.forEach((p) => {
+    const radius = getMagnitude(p.position)
+    if (radius > targetRadius) {
+      p.position = setMagnitude(p.position, targetRadius)
+      p.position = p.position.map((v) => -v)
+    }
+  })
+}
+
+/**
+ * Reflect particles back from radial edges
+ */
+export const edgeReflecting = (
+  particles: Particle[],
+  targetRadius: number,
+): void => {
+  particles.forEach((p) => {
+    /**
+     * oof this is gonna be a thing -> https://3dkingdoms.com/weekly/weekly.php?a=2
+     */
     const radius = getMagnitude(p.position)
     if (radius > targetRadius) {
       p.position = setMagnitude(p.position, targetRadius)
