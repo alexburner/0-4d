@@ -3,7 +3,6 @@ import { releaseProxy } from 'comlink'
 import { isNumber } from 'lodash'
 import { FC, Fragment, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
-import { Dots } from '../components/Dots'
 import { SpaceGrid } from '../components/Plane'
 import { RainbowDots } from '../components/RainbowDots'
 import { RainbowSpaceTrails } from '../components/RainbowSpaceTrails'
@@ -366,13 +365,13 @@ const SpaceCell: FC<{
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
         useSurface
-        fillStyle="rgba(255, 255, 255, 0.67)"
+        fillStyle="rgba(255, 255, 255, 0.2)"
       />
-      <Dots
+      {/* <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
         useSurface
-      />
+      /> */}
       <SpaceGrid radius={SIMULATION_RADIUS} />
     </group>
   )
@@ -410,18 +409,18 @@ const TimeCell: FC<{
         particleCount={particleCount}
         trailLength={TRAIL_LENGTH}
       />
-      <Dots
+      {/* <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
         useSurface
-      />
+      /> */}
       <TimeTrails
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
         particleCount={particleCount}
         trailLength={TRAIL_LENGTH}
         useSurface
-        fillStyle="rgba(255, 255, 255, 0.67)"
+        fillStyle="rgba(255, 255, 255, 0.3)"
       />
 
       <SpaceGrid radius={SIMULATION_RADIUS} time />
