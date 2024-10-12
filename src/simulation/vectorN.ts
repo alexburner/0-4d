@@ -34,6 +34,8 @@ export const subtract: VectorMath = curryMath((a, b) => a - b)
 export const multiply: VectorMath = curryMath((a, b) => a * b)
 export const divide: VectorMath = curryMath((a, b) => a / b)
 
+export const dotProduct = (a: VectorN, b: VectorN): number => {}
+
 export const getDistanceSq = (a: VectorN, b: VectorN): number => {
   const delta = subtract(a, b)
   return getMagnitudeSq(delta)
@@ -44,7 +46,10 @@ export const getDistance = (a: VectorN, b: VectorN): number =>
 
 export const getMagnitudeSq = (v: VectorN): number => {
   let magnitudeSq = 0
-  v.forEach((n) => (magnitudeSq += n * n))
+  for (let i = 0, l = v.length; i < l; i++) {
+    const n = v[i] ?? 0 // ?? 0 for TS
+    magnitudeSq += n * n
+  }
   return magnitudeSq
 }
 

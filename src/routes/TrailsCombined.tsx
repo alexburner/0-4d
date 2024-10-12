@@ -84,7 +84,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
           width: `${WIDTH}px`,
           height: `${HEIGHT}px`,
           position: 'relative',
-          top: '-150px',
+          top: '-130px',
         }}
       >
         <Canvas
@@ -106,7 +106,11 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                 key={bounding}
                 particleCount={particleCount}
                 spin={spin}
-                behavior={behavior}
+                behavior={
+                  i === 1 && behaviorName === 'rays'
+                    ? behaviors.orbiting
+                    : behavior
+                }
                 bounding={bounding}
                 useSimulationsStore={useStore}
               />
@@ -154,7 +158,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                     : dimension === -1
                     ? ''
                     : dimension === Infinity
-                    ? '10000d' // '∞ d'
+                    ? '100000d' // '∞ d'
                     : `${dimension}d`}
                 </h3>
                 {
