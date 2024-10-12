@@ -90,7 +90,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
           width: `${WIDTH}px`,
           height: `${HEIGHT}px`,
           position: 'relative',
-          top: '-104px',
+          top: '-101px',
         }}
       >
         <Canvas
@@ -346,7 +346,6 @@ const xAxis = new Vector3(1, 0, 0)
 const yAxis = new Vector3(0, 1, 0)
 const zAxis = new Vector3(0, 0, 1)
 const rightAngle = Math.PI / 2
-// const leftStart = -50
 
 const SpaceCell: FC<{
   useSimulationsStore: UseSimulationsStore

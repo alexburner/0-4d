@@ -10,6 +10,7 @@ import {
 } from './boundings'
 import { getNeighborhood, Neighborhood } from './neighborhood'
 import { Particle } from './particles'
+import { surfaceProjection } from './surface'
 import { add, limitMagnitude, multiply } from './vectorN'
 
 interface SimulationConfig {
@@ -23,6 +24,7 @@ interface SimulationConfig {
 export interface SimulationData {
   particles: Particle[]
   neighborhood: Neighborhood
+  surface?: Particle[]
 }
 
 export class Simulation {
@@ -115,9 +117,12 @@ export class Simulation {
       // Re-calculate particle relations
       this.neighborhood = getNeighborhood(this.particles)
 
-      // Project simulation surface
+      // Re-project simulation surface
       if (this.surfaceParticles) {
-        // this.surfaceParticles = getSurface(this.particles)
+        this.surfaceParticles = surfaceProjection(
+          this.particles,
+          this.config.radius,
+        )
       }
     }
 
@@ -125,6 +130,7 @@ export class Simulation {
     return {
       particles: this.particles,
       neighborhood: this.neighborhood,
+      surface: this.surfaceParticles,
     }
   }
 }

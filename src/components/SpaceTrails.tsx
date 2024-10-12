@@ -19,7 +19,8 @@ export const SpaceTrails: FC<{
   simulationIndex: number
   useSimulationsStore: UseSimulationsStore
   fillStyle?: string
-}> = ({ simulationIndex, useSimulationsStore, fillStyle }) => {
+  isSurface?: boolean
+}> = ({ simulationIndex, useSimulationsStore, fillStyle, isSurface }) => {
   const positions = useMemo(() => new Float32Array(MAX_POINTS * 3), [])
   const attribute = useMemo(() => createAttribute(positions), [positions])
   const geometry = useMemo(() => createGeometry(attribute), [attribute])
@@ -29,7 +30,8 @@ export const SpaceTrails: FC<{
 
   useEffect(() => {
     useSimulationsStore.subscribe((state) => {
-      const particles = state.simulations?.[simulationIndex]?.particles
+      const simulation = state.simulations?.[simulationIndex]
+      const particles = isSurface ? simulation?.surface : simulation?.particles
       if (!particles) return
 
       // (maybe) Add queues to fit
@@ -63,6 +65,7 @@ export const SpaceTrails: FC<{
       attribute.needsUpdate = true
     })
   }, [
+    isSurface,
     simulationIndex,
     useSimulationsStore,
     attribute,
