@@ -43,8 +43,6 @@ export class Simulation {
     this.particles = particles
     this.neighborhood = getNeighborhood(particles)
 
-    console.log(this.config)
-
     // presence indicates preference
     if (config.calcSurface) this.surfaceParticles = []
   }

@@ -26,14 +26,14 @@ const HEIGHT = 1080
 const VIEWANGLE = 45
 const NEAR = 1
 const FAR = 5000
-const ZOOM = 9
+const ZOOM = 9.3
 
 const BACKGROUND_COLOR = '#222'
 
 const SIMULATION_RADIUS = 14
 
-const SUB_DIMENSIONS: number[] = []
-const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 5, 10, 50]
+const SUB_DIMENSIONS: number[] = [-1]
+const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 5, 10, 33]
 const SUP_DIMENSIONS = [Infinity]
 const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
 const DIMENSION_CHARS = ['x', 'y', 'z']
@@ -132,8 +132,9 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
             flexGrow: 1,
             position: 'absolute',
             bottom: '-70px',
-            left: '100px',
-            right: '100px',
+            left: '38px',
+            right: '38px',
+            // border: '1px dashed #555',
           }}
         >
           {DIMENSIONS.map((dimension) => {
@@ -151,7 +152,11 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
             return (
               <div
                 key={dimension}
-                style={{ textAlign: 'center', width: '110px' }}
+                style={{
+                  textAlign: 'center',
+                  width: '110px',
+                  // border: '1px dashed #555',
+                }}
               >
                 <h3 style={{ fontWeight: 'normal' }}>
                   {dimension === -2
@@ -276,7 +281,7 @@ const TrailsR3F: FC<{
       {DIMENSIONS.map((dimension, i) => {
         const simulationIndex = i - SUB_DIMENSIONS.length
         return (
-          <group key={i} position={[-200 + i * 50, -120, 0]}>
+          <group key={i} position={[-225 + i * 50, -120, 0]}>
             {dimension === -2 ? (
               <></>
             ) : dimension === -1 ? (
