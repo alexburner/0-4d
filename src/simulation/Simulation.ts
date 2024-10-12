@@ -9,7 +9,7 @@ import {
   lengthBinding,
 } from './boundings'
 import { getNeighborhood, Neighborhood } from './neighborhood'
-import { Particle } from './particles'
+import { cloneParticle, Particle } from './particles'
 import { surfaceProjection } from './surface'
 import { add, limitMagnitude, multiply } from './vectorN'
 
@@ -46,7 +46,7 @@ export class Simulation {
     this.neighborhood = getNeighborhood(particles)
 
     // presence indicates preference
-    if (config.calcSurface) this.surfaceParticles = []
+    if (config.calcSurface) this.surfaceParticles = particles.map(cloneParticle)
   }
 
   tick(count = 1): SimulationData {
@@ -119,7 +119,8 @@ export class Simulation {
 
       // Re-project simulation surface
       if (this.surfaceParticles) {
-        this.surfaceParticles = surfaceProjection(
+        surfaceProjection(
+          this.surfaceParticles,
           this.particles,
           this.config.radius,
         )

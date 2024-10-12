@@ -17,12 +17,14 @@ export const TimeTrails: FC<{
   particleCount: number
   trailLength?: number
   fillStyle?: string
+  useSurface?: boolean
 }> = ({
   simulationIndex,
   useSimulationsStore,
   particleCount,
   trailLength,
   fillStyle,
+  useSurface,
 }) => {
   const TRAIL_LENGTH = trailLength ?? 480
   const MAX_POINTS = TRAIL_LENGTH * particleCount
@@ -37,7 +39,8 @@ export const TimeTrails: FC<{
 
   useEffect(() => {
     useSimulationsStore.subscribe((state) => {
-      const particles = state.simulations?.[simulationIndex]?.particles
+      const simulation = state.simulations?.[simulationIndex]
+      const particles = useSurface ? simulation?.surface : simulation?.particles
       if (!particles) return
       if (particles.length !== particleCount) {
         throw new Error('Unexpected number of incoming particles')
@@ -73,6 +76,7 @@ export const TimeTrails: FC<{
       attribute.needsUpdate = true
     })
   }, [
+    useSurface,
     simulationIndex,
     useSimulationsStore,
     attribute,

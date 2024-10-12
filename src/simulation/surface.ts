@@ -1,20 +1,19 @@
-import { cloneParticle, Particle } from './particles'
+import { Particle } from './particles'
 import { setMagnitude } from './vectorN'
 
 /**
  * Like edgeBinding, but returns a copy
  */
 export const surfaceProjection = (
+  surface: Particle[],
   particles: Particle[],
   targetRadius: number,
-): Particle[] => {
-  const surfaceParticles: Particle[] = []
+): void => {
   for (let i = 0, l = particles.length; i < l; i++) {
+    const s = surface[i]
     const p = particles[i]
-    if (!p) throw new Error('For TS')
-    const clone = cloneParticle(p)
-    clone.position = setMagnitude(clone.position, targetRadius)
-    surfaceParticles.push(clone)
+    if (!s || !p) throw new Error('For TS')
+    s.position = setMagnitude(p.position, targetRadius)
+    surface
   }
-  return surfaceParticles
 }

@@ -16,7 +16,8 @@ export const Dots: FC<{
   simulationIndex: number
   useSimulationsStore: UseSimulationsStore
   fillStyle?: string
-}> = ({ simulationIndex, useSimulationsStore, fillStyle }) => {
+  useSurface?: boolean
+}> = ({ simulationIndex, useSimulationsStore, fillStyle, useSurface }) => {
   const positions = useMemo(() => new Float32Array(MAX_POINTS * 3), [])
   const attribute = useMemo(() => createAttribute(positions), [positions])
   const geometry = useMemo(() => createGeometry(attribute), [attribute])
@@ -25,7 +26,8 @@ export const Dots: FC<{
 
   useEffect(() => {
     useSimulationsStore.subscribe((state) => {
-      const particles = state.simulations?.[simulationIndex]?.particles
+      const simulation = state.simulations?.[simulationIndex]
+      const particles = useSurface ? simulation?.surface : simulation?.particles
       if (!particles) return
       particles.forEach((particle, i) => {
         positions[i * 3 + 0] = particle.position[0] ?? 0
@@ -35,7 +37,14 @@ export const Dots: FC<{
       geometry.setDrawRange(0, particles.length)
       attribute.needsUpdate = true
     })
-  }, [simulationIndex, useSimulationsStore, attribute, geometry, positions])
+  }, [
+    useSurface,
+    simulationIndex,
+    useSimulationsStore,
+    attribute,
+    geometry,
+    positions,
+  ])
 
   return <points geometry={geometry} material={material} />
 }

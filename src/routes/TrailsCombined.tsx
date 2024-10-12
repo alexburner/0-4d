@@ -247,6 +247,7 @@ const TrailsR3F: FC<{
         bounding,
         radius: SIMULATION_RADIUS,
         maxSpeed: 1,
+        calcSurface: true,
       })
     })
 
@@ -339,7 +340,7 @@ const SpaceCell: FC<{
   simulationIndex: number
   bounding: Bounding
   spin: number
-}> = ({ useSimulationsStore, simulationIndex, bounding, spin }) => {
+}> = ({ useSimulationsStore, simulationIndex, spin }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -349,34 +350,29 @@ const SpaceCell: FC<{
     // Spin rotation
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
-  const isRainbow = true
   return (
     <group ref={groupRef}>
-      {isRainbow ? (
-        <>
-          <RainbowDots
-            simulationIndex={simulationIndex}
-            simulationRadius={SIMULATION_RADIUS}
-            useSimulationsStore={useSimulationsStore}
-          />
-          <RainbowSpaceTrails
-            simulationIndex={simulationIndex}
-            simulationRadius={SIMULATION_RADIUS}
-            useSimulationsStore={useSimulationsStore}
-          />
-        </>
-      ) : (
-        <>
-          <Dots
-            simulationIndex={simulationIndex}
-            useSimulationsStore={useSimulationsStore}
-          />
-          <SpaceTrails
-            simulationIndex={simulationIndex}
-            useSimulationsStore={useSimulationsStore}
-          />
-        </>
-      )}
+      <RainbowDots
+        simulationIndex={simulationIndex}
+        simulationRadius={SIMULATION_RADIUS}
+        useSimulationsStore={useSimulationsStore}
+      />
+      <RainbowSpaceTrails
+        simulationIndex={simulationIndex}
+        simulationRadius={SIMULATION_RADIUS}
+        useSimulationsStore={useSimulationsStore}
+      />
+      <SpaceTrails
+        simulationIndex={simulationIndex}
+        useSimulationsStore={useSimulationsStore}
+        useSurface
+        fillStyle="rgba(255, 255, 255, 0.67)"
+      />
+      <Dots
+        simulationIndex={simulationIndex}
+        useSimulationsStore={useSimulationsStore}
+        useSurface
+      />
       <SpaceGrid radius={SIMULATION_RADIUS} />
     </group>
   )
@@ -388,13 +384,7 @@ const TimeCell: FC<{
   particleCount: number
   bounding: Bounding
   spin: number
-}> = ({
-  useSimulationsStore,
-  simulationIndex,
-  particleCount,
-  bounding,
-  spin,
-}) => {
+}> = ({ useSimulationsStore, simulationIndex, particleCount, spin }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -406,38 +396,34 @@ const TimeCell: FC<{
     // Spin rotation
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
-  const isRainbow = true
   return (
     <group ref={groupRef} position={[0, 40, 0]}>
-      {isRainbow ? (
-        <>
-          <RainbowDots
-            simulationIndex={simulationIndex}
-            simulationRadius={SIMULATION_RADIUS}
-            useSimulationsStore={useSimulationsStore}
-          />
-          <RainbowTimeTrails
-            simulationIndex={simulationIndex}
-            simulationRadius={SIMULATION_RADIUS}
-            useSimulationsStore={useSimulationsStore}
-            particleCount={particleCount}
-            trailLength={TRAIL_LENGTH}
-          />
-        </>
-      ) : (
-        <>
-          <Dots
-            simulationIndex={simulationIndex}
-            useSimulationsStore={useSimulationsStore}
-          />
-          <TimeTrails
-            simulationIndex={simulationIndex}
-            useSimulationsStore={useSimulationsStore}
-            particleCount={particleCount}
-            trailLength={TRAIL_LENGTH}
-          />
-        </>
-      )}
+      <RainbowDots
+        simulationIndex={simulationIndex}
+        simulationRadius={SIMULATION_RADIUS}
+        useSimulationsStore={useSimulationsStore}
+      />
+      <RainbowTimeTrails
+        simulationIndex={simulationIndex}
+        simulationRadius={SIMULATION_RADIUS}
+        useSimulationsStore={useSimulationsStore}
+        particleCount={particleCount}
+        trailLength={TRAIL_LENGTH}
+      />
+      <Dots
+        simulationIndex={simulationIndex}
+        useSimulationsStore={useSimulationsStore}
+        useSurface
+      />
+      <TimeTrails
+        simulationIndex={simulationIndex}
+        useSimulationsStore={useSimulationsStore}
+        particleCount={particleCount}
+        trailLength={TRAIL_LENGTH}
+        useSurface
+        fillStyle="rgba(255, 255, 255, 0.67)"
+      />
+
       <SpaceGrid radius={SIMULATION_RADIUS} time />
     </group>
   )
