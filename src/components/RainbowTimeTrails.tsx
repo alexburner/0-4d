@@ -15,6 +15,7 @@ import {
 const DOT_SIZE = 1
 const DOT_OPACITY = 1
 
+const material = createMaterial(DOT_SIZE, DOT_OPACITY)
 const color = new Color()
 
 export const RainbowTimeTrails: FC<{
@@ -47,7 +48,6 @@ export const RainbowTimeTrails: FC<{
     () => createGeometry({ positionsAttr, colorsAttr }),
     [positionsAttr, colorsAttr],
   )
-  const material = useMemo(() => createMaterial(DOT_SIZE, DOT_OPACITY), [])
 
   useEffect(() => {
     useSimulationsStore.subscribe((state) => {

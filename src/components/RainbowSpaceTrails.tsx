@@ -14,12 +14,13 @@ import {
 } from '../util/rainbowHelpers'
 import { RecentQueue } from '../util/RecentQueue'
 
-const TRAIL_LENGTH = 100
+const TRAIL_LENGTH = 200
 const MAX_POINTS = TRAIL_LENGTH * 100
 const ATTR_LENGTH = MAX_POINTS * 3
 const DOT_SIZE = 1
-const DOT_OPACITY = 0.7
+const DOT_OPACITY = 0.6
 
+const material = createMaterial(DOT_SIZE, DOT_OPACITY)
 const color = new Color()
 
 export const RainbowSpaceTrails: FC<{
@@ -40,7 +41,6 @@ export const RainbowSpaceTrails: FC<{
     () => createGeometry({ positionsAttr, colorsAttr }),
     [positionsAttr, colorsAttr],
   )
-  const material = useMemo(() => createMaterial(DOT_SIZE, DOT_OPACITY), [])
   const trailQueues = useMemo<RecentQueue<Particle>[]>(() => [], [])
 
   useEffect(() => {
