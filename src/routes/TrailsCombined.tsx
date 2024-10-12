@@ -48,13 +48,19 @@ const useStores = [
   createUseSimulationsStore(),
 ] as const
 
-type Bounds = [Bounding, Bounding] // inner, outer
+type Bounds = [Bounding | null, Bounding | null] // inner, outer
 const boundsByBehavior: Record<Behavior['name'], Bounds> = {
   orbiting: ['centerScaling', 'edgeBinding'],
   wandering: ['centerScaling', 'edgeBinding'],
-  rays: ['edgeWrapping', 'edgeBinding'],
+  rays: ['edgeReflecting', null],
   diffusion: ['centerScaling', 'edgeBinding'],
 }
+
+const rainbowBounds = new Set([
+  'centerScaling',
+  'edgeWrapping',
+  'edgeReflecting',
+])
 
 export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
   const particleCount = isNumber(route.params['particles'])
@@ -99,6 +105,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
           style={{ background: BACKGROUND_COLOR }}
         >
           {bounds.map((bounding, i) => {
+            if (bounding === null) return null
             const useStore = useStores[i]
             if (!useStore) throw new Error('Unreachable')
             return (
@@ -341,6 +348,7 @@ const SpaceCell: FC<{
     // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
+  const isRainbow = useMemo(() => rainbowBounds.has(bounding), [bounding])
   return (
     <group
       ref={groupRef}
@@ -348,7 +356,7 @@ const SpaceCell: FC<{
       // rotation={[0, -0.25, 0]}
       // rotation={[0, -0.25, 0]}
     >
-      {['centerScaling', 'edgeWrapping'].includes(bounding) ? (
+      {isRainbow ? (
         <>
           <RainbowDots
             simulationIndex={simulationIndex}
@@ -403,6 +411,7 @@ const TimeCell: FC<{
     // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
+  const isRainbow = useMemo(() => rainbowBounds.has(bounding), [bounding])
   return (
     <group
       ref={groupRef}
@@ -411,7 +420,7 @@ const TimeCell: FC<{
       // rotation={[0.125, 0.75, 0]}
       // rotation={[0, -0.25, 0]}
     >
-      {['centerScaling', 'edgeWrapping'].includes(bounding) ? (
+      {isRainbow ? (
         <>
           <RainbowDots
             simulationIndex={simulationIndex}

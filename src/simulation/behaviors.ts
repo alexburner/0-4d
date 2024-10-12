@@ -83,16 +83,13 @@ interface RaysBehavior {
 }
 
 export const rays = (
-  particles: Particle[],
+  _particles: Particle[],
   _config: RaysBehavior['config'],
 ) => {
-  particles.forEach((particle) => {
-    // Generate random acceleration & add to particle
-    particle.acceleration = add(
-      particle.acceleration,
-      multiply(particle.velocity, 0),
-    )
-  })
+  // particles.forEach((particle) => {
+  //   // Carry on in a line
+  //   particle.acceleration = [...particle.velocity]
+  // })
 }
 
 /**

@@ -82,14 +82,22 @@ export const edgeReflecting = (
   particles: Particle[],
   targetRadius: number,
 ): void => {
-  particles.forEach((p) => {
-    /**
-     * oof this is gonna be a thing -> https://3dkingdoms.com/weekly/weekly.php?a=2
-     */
+  for (let i = 0, l = particles.length; i < l; i++) {
+    const p = particles[i]
+    if (!p) throw new Error('For TS')
     const radius = getMagnitude(p.position)
     if (radius > targetRadius) {
-      p.position = setMagnitude(p.position, targetRadius)
-      p.position = p.position.map((v) => -v)
+      // we've reached the edge, time to bounce
+      // formula = https://3dkingdoms.com/weekly/weekly.php?a=2
+      // const n = multiply(p.position, -1)
+      // const n = p.position
+      // const v = p.velocity
+      // const r = add(v, multiply(n, -2 * dotProduct(n, v)))
+      // const r = setMagnitude(multiply(n, dotProduct(n, v)), getMagnitude(v))
+      // p.velocity = r
+      p.velocity = multiply(p.velocity, -1)
+      // p.position = add(p.position, p.velocity)
+      // p.position = setMagnitude(p.position, targetRadius * 0.9)
     }
-  })
+  }
 }

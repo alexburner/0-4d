@@ -9,8 +9,8 @@ import { coinFlip, shuffle } from '../util/util'
 
 export type VectorN = number[]
 
-const createVectorN = (dimensions: number): VectorN =>
-  new Array<number>(dimensions).fill(0)
+const createVectorN = (dimensions: number, fill?: number): VectorN =>
+  new Array<number>(dimensions).fill(fill ?? 0)
 
 type VectorMath = (a: VectorN, b: VectorN | number) => VectorN
 type NumberMath = (a: number, b: number) => number
@@ -19,9 +19,9 @@ const curryMath =
   (a, b) => {
     // create new result vector
     const c = createVectorN(a.length)
-    // b is either VectorN or const n
+    // b is either VectorN or n
     const isNumB = typeof b === 'number'
-    // calc each n pair math
+    // calc each n pair
     for (let i = 0, l = a.length; i < l; i++) {
       const an = a[i] ?? 0
       const bn = isNumB ? b : b[i] ?? 0
