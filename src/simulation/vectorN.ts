@@ -71,7 +71,7 @@ export const getDistance = (a: VectorN, b: VectorN): number =>
 export const setMagnitude = (v: VectorN, magnitude: number): VectorN => {
   const prevMagnitude = getMagnitude(v)
   return prevMagnitude === 0
-    ? add(v, Math.sqrt(magnitude / v.length))
+    ? add(v, Math.sqrt(magnitude / v.length)) // ??
     : multiply(v, magnitude / prevMagnitude)
 }
 

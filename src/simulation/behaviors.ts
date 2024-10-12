@@ -86,10 +86,7 @@ export const rays = (
   _particles: Particle[],
   _config: RaysBehavior['config'],
 ) => {
-  // particles.forEach((particle) => {
-  //   // Carry on in a line
-  //   particle.acceleration = [...particle.velocity]
-  // })
+  // Shine on you crazy diamond
 }
 
 /**

@@ -159,7 +159,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                     : dimension === -1
                     ? ''
                     : dimension === Infinity
-                    ? '100000d' // '∞ d'
+                    ? '∞ d' // '100000d' '∞ d'
                     : `${dimension}d`}
                 </h3>
                 {

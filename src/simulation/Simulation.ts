@@ -17,6 +17,7 @@ interface SimulationConfig {
   bounding: Bounding
   radius: number
   maxSpeed: number
+  calcSurface?: boolean
 }
 
 export interface SimulationData {
@@ -29,15 +30,23 @@ export class Simulation {
   private particles: Particle[] = []
   private neighborhood: Neighborhood = []
 
+  // New optional surface calc
+  // - projected copy of current simulation
+  // - no impact on sim state
+  // - (unlike boundings)
+  private surfaceParticles?: Particle[]
+
   // Note: why init instead of constructor?
   // Because Comlink expose() doesn't allow passing args
-  // So we have to construct this class in a vacuum
   init(particles: Particle[], config: SimulationConfig) {
     this.config = config
     this.particles = particles
     this.neighborhood = getNeighborhood(particles)
 
     console.log(this.config)
+
+    // presence indicates preference
+    if (config.calcSurface) this.surfaceParticles = []
   }
 
   tick(count = 1): SimulationData {
@@ -107,6 +116,11 @@ export class Simulation {
 
       // Re-calculate particle relations
       this.neighborhood = getNeighborhood(this.particles)
+
+      // Project simulation surface
+      if (this.surfaceParticles) {
+        // this.surfaceParticles = getSurface(this.particles)
+      }
     }
 
     // Return new data
