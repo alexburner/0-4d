@@ -12,7 +12,7 @@ import { SpaceTrails } from '../components/SpaceTrails'
 import { TimeTrails } from '../components/TimeTrails'
 import { Behavior } from '../simulation/behaviors'
 import { Bounding } from '../simulation/boundings'
-import { behaviors, isBehaviorName } from '../simulation/configs'
+import { behaviors, isBehaviorName, isBounding } from '../simulation/configs'
 import { createWorkers } from '../simulation/createWorkers'
 import { makeParticlesThroughDimensions2 } from '../simulation/particles'
 import {
@@ -43,24 +43,14 @@ const DEFAULT_PARTICLE_COUNT = 9
 const DEFAULT_SPIN = -0.0051215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
-const useStores = [
-  createUseSimulationsStore(),
-  createUseSimulationsStore(),
-] as const
+const useStore = createUseSimulationsStore()
 
-type Bounds = [Bounding | null, Bounding | null] // inner, outer
-const boundsByBehavior: Record<Behavior['name'], Bounds> = {
-  orbiting: ['centerScaling', 'edgeBinding'],
-  wandering: ['centerScaling', 'edgeBinding'],
-  rays: ['edgeReflecting', null],
-  diffusion: ['centerScaling', 'edgeBinding'],
+const behaviorBoundings: Record<Behavior['name'], Bounding> = {
+  orbiting: 'centerScaling',
+  wandering: 'centerScaling',
+  rays: 'edgeReflecting',
+  diffusion: 'centerScaling',
 }
-
-const rainbowBounds = new Set([
-  'centerScaling',
-  'edgeWrapping',
-  'edgeReflecting',
-])
 
 export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
   const particleCount = isNumber(route.params['particles'])
@@ -72,8 +62,10 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
   const behaviorName = isBehaviorName(route.params['behavior'])
     ? route.params['behavior']
     : DEFAULT_BEHAVIOR_NAME
+  const bounding = isBounding(route.params['bounding'])
+    ? route.params['bounding']
+    : behaviorBoundings[behaviorName]
   const behavior = behaviors[behaviorName]
-  const bounds = boundsByBehavior[behaviorName]
   return (
     <div
       style={{
@@ -104,25 +96,14 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
           }}
           style={{ background: BACKGROUND_COLOR }}
         >
-          {bounds.map((bounding, i) => {
-            if (bounding === null) return null
-            const useStore = useStores[i]
-            if (!useStore) throw new Error('Unreachable')
-            return (
-              <TrailsR3F
-                key={bounding}
-                particleCount={particleCount}
-                spin={spin}
-                behavior={
-                  i === 1 && behaviorName === 'rays'
-                    ? behaviors.orbiting
-                    : behavior
-                }
-                bounding={bounding}
-                useSimulationsStore={useStore}
-              />
-            )
-          })}
+          <TrailsR3F
+            key={bounding}
+            particleCount={particleCount}
+            spin={spin}
+            behavior={behavior}
+            bounding={bounding}
+            useSimulationsStore={useStore}
+          />
         </Canvas>
         <div
           style={{
@@ -368,7 +349,7 @@ const SpaceCell: FC<{
     // Spin rotation
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
-  const isRainbow = useMemo(() => rainbowBounds.has(bounding), [bounding])
+  const isRainbow = true
   return (
     <group ref={groupRef}>
       {isRainbow ? (
@@ -425,7 +406,7 @@ const TimeCell: FC<{
     // Spin rotation
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
-  const isRainbow = useMemo(() => rainbowBounds.has(bounding), [bounding])
+  const isRainbow = true
   return (
     <group ref={groupRef} position={[0, 40, 0]}>
       {isRainbow ? (
