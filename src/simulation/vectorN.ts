@@ -17,13 +17,15 @@ type NumberMath = (a: number, b: number) => number
 const curryMath =
   (math: NumberMath): VectorMath =>
   (a, b) => {
+    // create new result vector
     const c = createVectorN(a.length)
+    // b is either VectorN or const n
     const isNumB = typeof b === 'number'
+    // calc each n pair math
     for (let i = 0, l = a.length; i < l; i++) {
-      const an = a[i]
-      const bn = isNumB ? b : b[i]
-      if (an === undefined) throw new Error('Unreachable')
-      if (bn === undefined) throw new Error('Unreachable')
+      const an = a[i] ?? 0
+      const bn = isNumB ? b : b[i] ?? 0
+      // write result to c
       c[i] = math(an, bn)
     }
     return c
@@ -34,15 +36,18 @@ export const subtract: VectorMath = curryMath((a, b) => a - b)
 export const multiply: VectorMath = curryMath((a, b) => a * b)
 export const divide: VectorMath = curryMath((a, b) => a / b)
 
-export const dotProduct = (a: VectorN, b: VectorN): number => {}
-
-export const getDistanceSq = (a: VectorN, b: VectorN): number => {
-  const delta = subtract(a, b)
-  return getMagnitudeSq(delta)
+export const dotProduct = (a: VectorN, b: VectorN): number => {
+  // "Algebraically, the dot product is the sum of the products
+  // of the corresponding entries of the two sequences of numbers"
+  // https://en.wikipedia.org/wiki/Dot_product
+  let sum = 0
+  for (let i = 0, l = a.length; i < l; i++) {
+    const an = a[i] ?? 0
+    const bn = b[i] ?? 0
+    sum += an * bn
+  }
+  return sum
 }
-
-export const getDistance = (a: VectorN, b: VectorN): number =>
-  Math.sqrt(getDistanceSq(a, b))
 
 export const getMagnitudeSq = (v: VectorN): number => {
   let magnitudeSq = 0
@@ -54,6 +59,14 @@ export const getMagnitudeSq = (v: VectorN): number => {
 }
 
 export const getMagnitude = (v: VectorN): number => Math.sqrt(getMagnitudeSq(v))
+
+export const getDistanceSq = (a: VectorN, b: VectorN): number => {
+  const delta = subtract(a, b)
+  return getMagnitudeSq(delta)
+}
+
+export const getDistance = (a: VectorN, b: VectorN): number =>
+  Math.sqrt(getDistanceSq(a, b))
 
 export const setMagnitude = (v: VectorN, magnitude: number): VectorN => {
   const prevMagnitude = getMagnitude(v)
@@ -82,7 +95,7 @@ export const radialRandomVector = (dimensions: number, radius = 1): VectorN => {
     const value = Math.random() * Math.sqrt(remainingRadiusSq)
     // Decrement the remaining radial space
     remainingRadiusSq -= value * value
-    // Randomly flip new value across +/- plane
+    // Randomly flip new value across +/-
     return coinFlip() ? value : -value
   })
   shuffle(result)
