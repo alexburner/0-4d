@@ -158,7 +158,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                   // border: '1px dashed #555',
                 }}
               >
-                <h3 style={{ fontWeight: 'normal' }}>
+                <h3 style={{ fontWeight: 'normal', position: 'relative' }}>
                   {dimension === -2
                     ? ''
                     : dimension === -1
@@ -166,6 +166,19 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                     : dimension === Infinity
                     ? '∞ d' // '100000d' '∞ d'
                     : `${dimension}d`}
+                  {dimension > 5 && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        left: '-38%',
+                        top: '2px',
+                        opacity: 0.25,
+                        fontSize: '1rem',
+                      }}
+                    >
+                      {'...'}
+                    </div>
+                  )}
                 </h3>
                 {
                   <h5
@@ -177,7 +190,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                     }}
                   >
                     {localChars ? (
-                      <span style={{ color: '#666' }}>
+                      <span style={{ color: '#555' }}>
                         {'( '}
                         <span style={{ padding: '0 2px' }}>
                           {localChars.map((char, i, l) => {
