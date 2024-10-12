@@ -33,7 +33,7 @@ const BACKGROUND_COLOR = '#222'
 const SIMULATION_RADIUS = 14
 
 const SUB_DIMENSIONS: number[] = [-1]
-const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 5, 12, 48]
+const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 5, 10, 33]
 const SUP_DIMENSIONS = [Infinity]
 const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
 const DIMENSION_CHARS = ['x', 'y', 'z']
