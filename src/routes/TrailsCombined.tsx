@@ -1,7 +1,7 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { releaseProxy } from 'comlink'
 import { isNumber } from 'lodash'
-import { FC, useEffect, useMemo, useRef } from 'react'
+import { FC, Fragment, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
 import { Dots } from '../components/Dots'
 import { SpaceGrid } from '../components/Plane'
@@ -137,21 +137,15 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
           }}
         >
           {DIMENSIONS.map((dimension) => {
-            let vectorText: string | undefined = undefined
+            let localChars: string[] | undefined = undefined
             if (dimension >= 0) {
-              const localChars = DIMENSION_CHARS.slice(
+              localChars = DIMENSION_CHARS.slice(
                 0,
                 Math.min(dimension, DIMENSION_CHARS.length),
               )
-              vectorText = ` ${localChars.join(', ')}`
             }
-            if (dimension > DIMENSION_CHARS.length) {
-              // const more =
-              //   dimension === Infinity
-              //     ? '∞'
-              //     : dimension - DIMENSION_CHARS.length
-              // vectorText += `, ...${more}`
-              vectorText += ', ...'
+            if (localChars && dimension > DIMENSION_CHARS.length) {
+              localChars.push('...')
             }
 
             return (
@@ -177,11 +171,21 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                       opacity: 0.9,
                     }}
                   >
-                    {vectorText ? (
-                      <span style={{ color: '#777' }}>
+                    {localChars ? (
+                      <span style={{ color: '#666' }}>
                         {'( '}
-                        <span style={{ color: '#CCC', padding: '0 2px' }}>
-                          {vectorText}
+                        <span style={{ padding: '0 2px' }}>
+                          {localChars.map((char, i, l) => {
+                            const isLast = i === l.length - 1
+                            return (
+                              <Fragment key={char}>
+                                <span style={{ color: '#BBB' }}>{char}</span>
+                                {!isLast && (
+                                  <span style={{ color: '#777' }}>, </span>
+                                )}
+                              </Fragment>
+                            )
+                          })}
                         </span>
                         {' )'}
                       </span>
@@ -335,27 +339,15 @@ const SpaceCell: FC<{
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
-    // groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
     groupRef.current?.rotateOnAxis(xAxis, rightAngle)
   }, [])
-  // useFrame(() => {
-  //   // Spin rotation
-  //   // if (simulationIndex < 3) return
-  //   groupRef.current?.rotateOnAxis(xAxis, spin)
-  // })
   useFrame(() => {
     // Spin rotation
-    // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   const isRainbow = useMemo(() => rainbowBounds.has(bounding), [bounding])
   return (
-    <group
-      ref={groupRef}
-      // position={[leftStart - 40 + 10, 0, 5]}
-      // rotation={[0, -0.25, 0]}
-      // rotation={[0, -0.25, 0]}
-    >
+    <group ref={groupRef}>
       {isRainbow ? (
         <>
           <RainbowDots
@@ -408,18 +400,11 @@ const TimeCell: FC<{
   }, [])
   useFrame(() => {
     // Spin rotation
-    // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   const isRainbow = useMemo(() => rainbowBounds.has(bounding), [bounding])
   return (
-    <group
-      ref={groupRef}
-      position={[0, 40, 0]}
-      // position={[leftStart + 5, 0, 0]}
-      // rotation={[0.125, 0.75, 0]}
-      // rotation={[0, -0.25, 0]}
-    >
+    <group ref={groupRef} position={[0, 40, 0]}>
       {isRainbow ? (
         <>
           <RainbowDots
@@ -458,26 +443,14 @@ const EmptySpaceCell: FC<{ spin: number }> = ({ spin }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
-    // groupRef.current?.rotateOnAxis(zAxis, -rightAngle)
     groupRef.current?.rotateOnAxis(xAxis, rightAngle)
   }, [])
-  // useFrame(() => {
-  //   // Spin rotation
-  //   // if (simulationIndex < 3) return
-  //   groupRef.current?.rotateOnAxis(xAxis, spin)
-  // })
   useFrame(() => {
     // Spin rotation
-    // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
-    <group
-      ref={groupRef}
-      // position={[leftStart - 40 + 10, 0, 5]}
-      // rotation={[0, -0.25, 0]}
-      // rotation={[0, -0.25, 0]}
-    >
+    <group ref={groupRef}>
       <SpaceGrid radius={SIMULATION_RADIUS} />
     </group>
   )
@@ -493,17 +466,10 @@ const EmptyTimeCell: FC<{ spin: number }> = ({ spin }) => {
   }, [])
   useFrame(() => {
     // Spin rotation
-    // if (simulationIndex < 2) return
     groupRef.current?.rotateOnAxis(zAxis, spin)
   })
   return (
-    <group
-      ref={groupRef}
-      position={[0, 40, 0]}
-      // position={[leftStart + 5, 0, 0]}
-      // rotation={[0.125, 0.75, 0]}
-      // rotation={[0, -0.25, 0]}
-    >
+    <group ref={groupRef} position={[0, 40, 0]}>
       <SpaceGrid radius={SIMULATION_RADIUS} time />
     </group>
   )
