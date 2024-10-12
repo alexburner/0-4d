@@ -90,7 +90,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
           width: `${WIDTH}px`,
           height: `${HEIGHT}px`,
           position: 'relative',
-          top: '-101px',
+          top: '-96px',
         }}
       >
         <Canvas
@@ -131,9 +131,9 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
             alignItems: 'center',
             flexGrow: 1,
             position: 'absolute',
-            bottom: '-70px',
-            left: '50px',
-            right: '50px',
+            bottom: '-57px',
+            left: '48px',
+            right: '48px',
             // border: '1px dashed #555',
           }}
         >
@@ -158,7 +158,13 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                   // border: '1px dashed #555',
                 }}
               >
-                <h3 style={{ fontWeight: 'normal', position: 'relative' }}>
+                <h3
+                  style={{
+                    fontWeight: 'normal',
+                    position: 'relative',
+                    opacity: 0.88,
+                  }}
+                >
                   {dimension === -2
                     ? ''
                     : dimension === -1
@@ -185,7 +191,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
                     style={{
                       fontWeight: 'normal',
                       fontFamily: 'Georgia',
-                      marginTop: '-0.5em',
+                      marginTop: '-0.9em',
                       opacity: 0.9,
                     }}
                   >
