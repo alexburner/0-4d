@@ -14,11 +14,11 @@ import {
 } from '../util/rainbowHelpers'
 import { RecentQueue } from '../util/RecentQueue'
 
-const TRAIL_LENGTH = 200
+const TRAIL_LENGTH = 100
 const MAX_POINTS = TRAIL_LENGTH * 100
 const ATTR_LENGTH = MAX_POINTS * 3
 const DOT_SIZE = 1
-const DOT_OPACITY = 0.3
+const DOT_OPACITY = 0.7
 
 const color = new Color()
 

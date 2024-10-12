@@ -13,6 +13,7 @@ import {
 } from '../util/rainbowHelpers'
 
 const DOT_SIZE = 1
+const DOT_OPACITY = 1
 
 const color = new Color()
 
@@ -46,7 +47,7 @@ export const RainbowTimeTrails: FC<{
     () => createGeometry({ positionsAttr, colorsAttr }),
     [positionsAttr, colorsAttr],
   )
-  const material = useMemo(() => createMaterial(DOT_SIZE), [])
+  const material = useMemo(() => createMaterial(DOT_SIZE, DOT_OPACITY), [])
 
   useEffect(() => {
     useSimulationsStore.subscribe((state) => {
@@ -70,18 +71,18 @@ export const RainbowTimeTrails: FC<{
       for (let i = attrShiftStart; i >= 0; i--) {
         // Shift position
         const positionValue = positions[i]
-        if (positionValue === undefined) throw new Error('Unreachable')
+        if (positionValue === undefined) throw new Error('For TS')
         positions[i + attrShift] = positionValue
         // Shift color
         const colorValue = colors[i]
-        if (colorValue === undefined) throw new Error('Unreachable')
+        if (colorValue === undefined) throw new Error('For TS')
         colors[i + attrShift] = colorValue
       }
 
       // Add incoming particles to attrs
       for (let i = 0; i < particleCount; i++) {
         const particle = particles[i]
-        if (!particle) throw new Error('Unreachable')
+        if (!particle) throw new Error('For TS')
         // Add position
         positions[i * 3 + 0] = particle.position[0] ?? 0
         positions[i * 3 + 1] = particle.position[1] ?? 0

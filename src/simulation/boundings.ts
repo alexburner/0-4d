@@ -1,7 +1,15 @@
 import { max, minBy } from 'lodash'
 import { Neighborhood } from './neighborhood'
 import { Particle } from './particles'
-import { getMagnitude, getMagnitudeSq, multiply, setMagnitude } from './vectorN'
+import {
+  add,
+  dotProduct,
+  getMagnitude,
+  getMagnitudeSq,
+  multiply,
+  setMagnitude,
+  subtract,
+} from './vectorN'
 
 export type Bounding =
   | 'centerScaling'
@@ -88,16 +96,12 @@ export const edgeReflecting = (
     const radius = getMagnitude(p.position)
     if (radius > targetRadius) {
       // we've reached the edge, time to bounce
-      // formula = https://3dkingdoms.com/weekly/weekly.php?a=2
-      // const n = multiply(p.position, -1)
-      // const n = p.position
-      // const v = p.velocity
-      // const r = add(v, multiply(n, -2 * dotProduct(n, v)))
-      // const r = setMagnitude(multiply(n, dotProduct(n, v)), getMagnitude(v))
-      // p.velocity = r
-      p.velocity = multiply(p.velocity, -1)
-      // p.position = add(p.position, p.velocity)
-      // p.position = setMagnitude(p.position, targetRadius * 0.9)
+      // formula = https://math.stackexchange.com/a/13263
+      const n = setMagnitude(p.position, 1)
+      const d = p.velocity
+      const r = subtract(d, multiply(n, 2 * dotProduct(d, n)))
+      p.velocity = r
+      p.position = add(p.position, p.velocity)
     }
   }
 }
