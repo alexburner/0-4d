@@ -267,7 +267,7 @@ const TrailsR3F: FC<{
       // Release workers on dismount
       workers.forEach((worker) => worker[releaseProxy]())
     }
-  }, [particlesByDimension, workers, behavior, bounding])
+  }, [particlesByDimension, workers, behavior, bounding, calcSurface])
 
   /**
    * Each frame, tick simulation workers & update store
