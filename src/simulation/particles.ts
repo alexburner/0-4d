@@ -1,4 +1,5 @@
 import { times } from 'lodash'
+import { centerScaling } from './boundings'
 import { radialRandomVector, VectorN } from './vectorN'
 
 export interface Particle {
@@ -102,6 +103,7 @@ export const makeParticlesThroughDimensions2 = (
     const nextParticles = prevParticles
       ? makeFilledParticles(dimension, radius, prevParticles)
       : makeFreshParticles(dimension, radius, particleCount)
+    centerScaling(nextParticles, radius)
     particlesByDimension[dimension] = nextParticles
   })
   return particlesByDimension
