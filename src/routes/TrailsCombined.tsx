@@ -39,7 +39,7 @@ const DIMENSION_CHARS = ['x', 'y', 'z']
 const TRAIL_LENGTH = 720
 
 const DEFAULT_PARTICLE_COUNT = 9
-const DEFAULT_SPIN = -0.0051215
+const DEFAULT_SPIN = -0.00351215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
 const useStore = createUseSimulationsStore()
@@ -245,7 +245,7 @@ const TrailsR3F: FC<{
         behavior,
         bounding,
         radius: SIMULATION_RADIUS,
-        maxSpeed: 1,
+        maxSpeed: 0.9,
         calcSurface: true,
       })
     })
@@ -365,7 +365,7 @@ const SpaceCell: FC<{
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
         useSurface
-        fillStyle="rgba(255, 255, 255, 0.2)"
+        fillStyle="rgba(255, 255, 255, 0.4)"
       />
       {/* <Dots
         simulationIndex={simulationIndex}
@@ -420,7 +420,7 @@ const TimeCell: FC<{
         particleCount={particleCount}
         trailLength={TRAIL_LENGTH}
         useSurface
-        fillStyle="rgba(255, 255, 255, 0.3)"
+        fillStyle="rgba(255, 255, 255, 0.6)"
       />
 
       <SpaceGrid radius={SIMULATION_RADIUS} time />
