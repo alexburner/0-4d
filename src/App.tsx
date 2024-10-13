@@ -8,6 +8,7 @@ import { TrailColumns } from './routes/TrailColumns'
 import { Trails } from './routes/Trails'
 import { TrailsCombined } from './routes/TrailsCombined'
 import { TrailsCombinedIntro } from './routes/TrailsCombinedIntro'
+import { TrailsSurface } from './routes/TrailsSurface'
 import { parseHashRoute } from './util/hashRoute'
 
 export const App: FC = () => {
@@ -24,6 +25,8 @@ export const App: FC = () => {
       return <TrailsCombined route={route} />
     case 'trails-combined-intro':
       return <TrailsCombinedIntro route={route} />
+    case 'trails-surface':
+      return <TrailsSurface route={route} />
     case 'stacks':
       return <Stacks route={route} />
     case 'torus-test':

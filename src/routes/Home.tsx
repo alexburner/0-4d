@@ -23,6 +23,10 @@ const links = [
     href: '#trails-combined?behavior=orbiting&particles=9',
   },
   {
+    text: 'Trails Surface',
+    href: '#trails-surface?behavior=orbiting&particles=9',
+  },
+  {
     text: 'Stacks — Diffusion',
     href: '#stacks?behavior=diffusion',
   },
