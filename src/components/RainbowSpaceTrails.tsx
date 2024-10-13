@@ -14,7 +14,7 @@ import {
 } from '../util/rainbowHelpers'
 import { RecentQueue } from '../util/RecentQueue'
 
-const TRAIL_LENGTH = 200
+const TRAIL_LENGTH = 222
 const MAX_POINTS = TRAIL_LENGTH * 100
 const ATTR_LENGTH = MAX_POINTS * 3
 const DOT_SIZE = 1

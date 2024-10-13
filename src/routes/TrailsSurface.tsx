@@ -3,7 +3,6 @@ import { releaseProxy } from 'comlink'
 import { isNumber } from 'lodash'
 import { FC, Fragment, useEffect, useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
-import { SpaceGrid } from '../components/Plane'
 import { RainbowDots } from '../components/RainbowDots'
 import { RainbowSpaceTrails } from '../components/RainbowSpaceTrails'
 import { RainbowTimeTrails } from '../components/RainbowTimeTrails'
@@ -29,17 +28,17 @@ const ZOOM = 9.4
 
 const BACKGROUND_COLOR = '#222'
 
-const SIMULATION_RADIUS = 14
-
 const SUB_DIMENSIONS: number[] = [-1]
-const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 5, 10, 33]
+const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 8, 16, 32]
 const SUP_DIMENSIONS = [Infinity]
 const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
 const DIMENSION_CHARS = ['x', 'y', 'z']
+
+const SIMULATION_RADIUS = 14
 const TRAIL_LENGTH = 720
 
 const DEFAULT_PARTICLE_COUNT = 9
-const DEFAULT_SPIN = -0.00351215
+const DEFAULT_SPIN = -0.0061215
 const DEFAULT_BEHAVIOR_NAME = 'orbiting'
 
 const useStore = createUseSimulationsStore()
@@ -131,6 +130,17 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
               localChars.push('...')
             }
 
+            const dText =
+              dimension === -2
+                ? ''
+                : dimension === -1
+                ? ''
+                : dimension === Infinity
+                ? '∞ d' // '100000d' '∞ d'
+                : `${dimension}d`
+
+            const nText = dText.split('d')[0]
+
             return (
               <div
                 key={dimension}
@@ -142,18 +152,18 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
               >
                 <h3
                   style={{
-                    fontWeight: 'normal',
+                    fontWeight: '100',
+                    fontSize: '16px',
                     position: 'relative',
-                    opacity: 0.88,
+                    // opacity: 0.7,
                   }}
                 >
-                  {dimension === -2
-                    ? ''
-                    : dimension === -1
-                    ? ''
-                    : dimension === Infinity
-                    ? '∞ d' // '100000d' '∞ d'
-                    : `${dimension}d`}
+                  {nText && (
+                    <span style={{ color: '#CCC' }}>
+                      {nText}
+                      <span style={{ color: '#BBB' }}>d</span>
+                    </span>
+                  )}
                   {dimension > 5 && (
                     <div
                       style={{
@@ -173,12 +183,12 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                     style={{
                       fontWeight: 'normal',
                       fontFamily: 'Georgia',
-                      marginTop: '-0.9em',
+                      marginTop: '-0.7em',
                       opacity: 0.9,
                     }}
                   >
                     {localChars ? (
-                      <span style={{ color: '#555' }}>
+                      <span style={{ color: '#777' }}>
                         {'( '}
                         <span style={{ padding: '0 2px' }}>
                           {localChars.map((char, i, l) => {
@@ -375,14 +385,14 @@ const SpaceCell: FC<{
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
         useSurface
-        fillStyle="rgba(255, 255, 255, 0.4)"
+        fillStyle="rgba(255, 255, 255, 0.15)"
       />
       {/* <Dots
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
         useSurface
       /> */}
-      <SpaceGrid radius={SIMULATION_RADIUS} />
+      {/* <SpaceGrid radius={SIMULATION_RADIUS} /> */}
     </group>
   )
 }
@@ -430,10 +440,10 @@ const TimeCell: FC<{
         particleCount={particleCount}
         trailLength={TRAIL_LENGTH}
         useSurface
-        fillStyle="rgba(255, 255, 255, 0.6)"
+        fillStyle="rgba(255, 255, 255, 0.2)"
       />
 
-      <SpaceGrid radius={SIMULATION_RADIUS} time />
+      {/* <SpaceGrid radius={SIMULATION_RADIUS} time /> */}
     </group>
   )
 }
@@ -450,7 +460,7 @@ const EmptySpaceCell: FC<{ spin: number }> = ({ spin }) => {
   })
   return (
     <group ref={groupRef}>
-      <SpaceGrid radius={SIMULATION_RADIUS} />
+      {/* <SpaceGrid radius={SIMULATION_RADIUS} /> */}
     </group>
   )
 }
@@ -469,7 +479,7 @@ const EmptyTimeCell: FC<{ spin: number }> = ({ spin }) => {
   })
   return (
     <group ref={groupRef} position={[0, 40, 0]}>
-      <SpaceGrid radius={SIMULATION_RADIUS} time />
+      {/* <SpaceGrid radius={SIMULATION_RADIUS} time /> */}
     </group>
   )
 }

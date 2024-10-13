@@ -23,8 +23,16 @@ const links = [
     href: '#trails-combined?behavior=orbiting&particles=9',
   },
   {
-    text: 'Trails Surface',
+    text: 'Trails Surface — orbiting',
     href: '#trails-surface?behavior=orbiting&particles=9',
+  },
+  {
+    text: 'Trails Surface — wandering',
+    href: '#trails-surface?behavior=wandering&particles=9',
+  },
+  {
+    text: 'Trails Surface — reflecting',
+    href: '#trails-surface?behavior=rays&particles=9',
   },
   {
     text: 'Stacks — Diffusion',
