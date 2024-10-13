@@ -37,7 +37,7 @@ const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 5, 10, 33]
 const SUP_DIMENSIONS = [Infinity]
 const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
 const DIMENSION_CHARS = ['x', 'y', 'z']
-const TRAIL_LENGTH = 725
+const TRAIL_LENGTH = 720
 
 const DEFAULT_PARTICLE_COUNT = 9
 const DEFAULT_SPIN = -0.0051215
@@ -90,7 +90,7 @@ export const TrailsCombined: FC<{ route: HashRoute }> = ({ route }) => {
           width: `${WIDTH}px`,
           height: `${HEIGHT}px`,
           position: 'relative',
-          top: '-96px',
+          top: '-98px',
         }}
       >
         <Canvas

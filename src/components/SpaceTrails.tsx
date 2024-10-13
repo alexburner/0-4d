@@ -90,7 +90,7 @@ const createGeometry = (attribute: BufferAttribute) => {
   return geometry
 }
 
-const createTexture = (fillStyle = 'rgba(255, 255, 255, 0.6)') => {
+const createTexture = (fillStyle = 'rgba(255, 255, 255, 0.7)') => {
   const size = 256
   const padding = 4
   const radius = size / 2 - padding
