@@ -491,7 +491,7 @@ const TimeCell: FC<{
         particleCount={particleCount}
         trailLength={TRAIL_LENGTH}
         useSurface
-        fillStyle="rgba(255, 255, 255, 0.3)"
+        fillStyle="rgba(255, 255, 255, 0.22)"
       />
 
       {/* <SpaceGrid radius={SIMULATION_RADIUS} time /> */}
