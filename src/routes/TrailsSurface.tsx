@@ -39,7 +39,7 @@ const DIMENSION_LABELS: Partial<Record<string, string>> = {
   '1': 'energy',
   '2': 'matter',
   '3': 'life',
-  '4': 'mind', // →
+  '4': '           mind     →', // →
   Infinity: 'beyond',
 }
 
@@ -148,6 +148,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                 : `${dimension}d`
             const nText = dText.split('d')[0]
             const dLabel = DIMENSION_LABELS[String(dimension)]
+            const isEdge = !SIM_DIMENSIONS.includes(dimension)
             return (
               <div
                 key={dimension}
@@ -162,7 +163,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                   <div
                     style={{
                       position: 'absolute',
-                      top: '-780px',
+                      top: '-930px',
                       left: '-20px',
                       right: '-20px',
                       textAlign: 'center',
@@ -170,14 +171,17 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                   >
                     <div
                       style={{
-                        background: 'rgba(34, 34, 34, 0.25)',
-                        color: '#DDD',
                         // border: '1px dotted #CCC',
+                        // background: 'rgba(34, 34, 34, 0.25)',
+                        color: isEdge ? '#888' : '#BBB',
+                        // color: '#AAA',
                         fontFamily: 'Georgia, serif',
                         fontSize: '0.67em',
                         fontWeight: 100,
-                        padding: '12px 0',
-                        backdropFilter: 'blur(3px)',
+                        fontStyle: isEdge ? 'italic' : undefined,
+                        // opacity: isEdge ? 0.5 : 1,
+                        // padding: '24px 0',
+                        // backdropFilter: 'blur(3px)',
                       }}
                     >
                       {dLabel}
@@ -193,9 +197,9 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                   }}
                 >
                   {nText ? (
-                    <span style={{ color: '#CCC' }}>
+                    <span style={{ color: '#DDD' }}>
                       {nText}
-                      <span style={{ color: '#BBB' }}>d</span>
+                      <span style={{ color: '#CCC' }}>d</span>
                     </span>
                   ) : (
                     <span>&nbsp;</span>
@@ -214,38 +218,48 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                     </div>
                   )}
                 </h3>
-                {
-                  <h5
-                    style={{
-                      fontWeight: 'normal',
-                      fontFamily: 'Georgia',
-                      marginTop: '-0.7em',
-                      opacity: 0.9,
-                    }}
-                  >
-                    {localChars ? (
-                      <span style={{ color: '#777' }}>
-                        <span style={{ fontSize: '0.9em' }}>{'( '}</span>
-                        <span style={{ padding: '0 2px' }}>
-                          {localChars.map((char, i, l) => {
-                            const isLast = i === l.length - 1
-                            return (
-                              <Fragment key={char}>
-                                <span style={{ color: '#BBB' }}>{char}</span>
-                                {!isLast && (
-                                  <span style={{ color: '#777' }}>, </span>
-                                )}
-                              </Fragment>
-                            )
-                          })}
-                        </span>
-                        <span style={{ fontSize: '0.9em' }}>{' )'}</span>
+                <h5
+                  style={{
+                    fontWeight: 'normal',
+                    fontFamily: 'Georgia',
+                    marginTop: '-0.7em',
+                    opacity: 0.9,
+                  }}
+                >
+                  {localChars ? (
+                    <span style={{ color: '#777' }}>
+                      <span style={{ fontSize: '0.9em' }}>{'( '}</span>
+                      <span style={{ padding: '0 2px' }}>
+                        {localChars.map((char, i, l) => {
+                          const isLast = i === l.length - 1
+                          return (
+                            <Fragment key={char}>
+                              <span style={{ color: '#BBB' }}>{char}</span>
+                              {!isLast && (
+                                <span style={{ color: '#777' }}>, </span>
+                              )}
+                            </Fragment>
+                          )
+                        })}
                       </span>
-                    ) : (
-                      <>&nbsp;</>
-                    )}
-                  </h5>
-                }
+                      <span style={{ fontSize: '0.9em' }}>{' )'}</span>
+                    </span>
+                  ) : (
+                    <>&nbsp;</>
+                  )}
+                </h5>
+                {/* <div
+                  style={{
+                    background: 'rgba(34, 34, 34, 0.25)',
+                    color: isEdge ? '#AAA' : '#DDD',
+                    fontFamily: 'Georgia, serif',
+                    fontSize: '0.67em',
+                    fontWeight: 100,
+                    fontStyle: isEdge ? 'italic' : undefined,
+                  }}
+                >
+                  {dLabel}
+                </div> */}
               </div>
             )
           })}
@@ -421,7 +435,7 @@ const SpaceCell: FC<{
         simulationIndex={simulationIndex}
         useSimulationsStore={useSimulationsStore}
         useSurface
-        fillStyle="rgba(255, 255, 255, 0.15)"
+        fillStyle="rgba(255, 255, 255, 0.18)"
       />
       {/* <Dots
         simulationIndex={simulationIndex}
