@@ -24,12 +24,14 @@ export const RainbowTimeTrails: FC<{
   useSimulationsStore: UseSimulationsStore
   particleCount: number
   trailLength?: number
+  isInfinity?: boolean
 }> = ({
   simulationIndex,
   simulationRadius,
   useSimulationsStore,
   particleCount,
   trailLength,
+  isInfinity,
 }) => {
   const hueScale = useMemo(
     () => createHueScale(simulationRadius),
@@ -94,7 +96,9 @@ export const RainbowTimeTrails: FC<{
           colors[i * 3 + 1] = 1
           colors[i * 3 + 2] = 0
         } else {
-          const hue = hueScale(radiusSq)
+          const hue = isInfinity
+            ? hueScale(simulationRadius * simulationRadius)
+            : hueScale(radiusSq)
           color.setHSL(hue, RAINBOW_S, RAINBOW_L)
           colors[i * 3 + 0] = color.r
           colors[i * 3 + 1] = color.g
@@ -108,6 +112,7 @@ export const RainbowTimeTrails: FC<{
     })
   }, [
     simulationIndex,
+    simulationRadius,
     useSimulationsStore,
     positionsAttr,
     geometry,
@@ -120,6 +125,7 @@ export const RainbowTimeTrails: FC<{
     ATTR_LENGTH,
     MAX_POINTS,
     particleCount,
+    isInfinity,
   ])
 
   return <points geometry={geometry} material={material} />

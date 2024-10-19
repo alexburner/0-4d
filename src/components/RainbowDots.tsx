@@ -22,7 +22,13 @@ export const RainbowDots: FC<{
   simulationIndex: number
   simulationRadius: number
   useSimulationsStore: UseSimulationsStore
-}> = ({ simulationIndex, simulationRadius, useSimulationsStore }) => {
+  isInfinity?: boolean
+}> = ({
+  simulationIndex,
+  simulationRadius,
+  useSimulationsStore,
+  isInfinity,
+}) => {
   const hueScale = useMemo(
     () => createHueScale(simulationRadius),
     [simulationRadius],
@@ -51,7 +57,9 @@ export const RainbowDots: FC<{
           colors[i * 3 + 1] = 1
           colors[i * 3 + 2] = 0
         } else {
-          const hue = hueScale(radiusSq)
+          const hue = isInfinity
+            ? hueScale(simulationRadius * simulationRadius)
+            : hueScale(radiusSq)
           color.setHSL(hue, RAINBOW_S, RAINBOW_L)
           colors[i * 3 + 0] = color.r
           colors[i * 3 + 1] = color.g
@@ -64,6 +72,7 @@ export const RainbowDots: FC<{
     })
   }, [
     simulationIndex,
+    simulationRadius,
     useSimulationsStore,
     positionsAttr,
     geometry,
@@ -71,6 +80,7 @@ export const RainbowDots: FC<{
     colors,
     colorsAttr,
     hueScale,
+    isInfinity,
   ])
 
   return <points geometry={geometry} material={material} />

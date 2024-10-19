@@ -367,6 +367,7 @@ const TrailsR3F: FC<{
                   simulationIndex={0}
                   bounding={bounding}
                   spin={spin}
+                  isInfinity
                 />
                 <TimeCell
                   useSimulationsStore={useSimulationsStore}
@@ -374,6 +375,7 @@ const TrailsR3F: FC<{
                   particleCount={particleCount}
                   bounding={bounding}
                   spin={spin}
+                  isInfinity
                 />
               </>
             ) : (
@@ -410,7 +412,8 @@ const SpaceCell: FC<{
   simulationIndex: number
   bounding: Bounding
   spin: number
-}> = ({ useSimulationsStore, simulationIndex, spin }) => {
+  isInfinity?: boolean
+}> = ({ useSimulationsStore, simulationIndex, spin, isInfinity }) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -426,11 +429,13 @@ const SpaceCell: FC<{
         simulationIndex={simulationIndex}
         simulationRadius={SIMULATION_RADIUS}
         useSimulationsStore={useSimulationsStore}
+        isInfinity={isInfinity}
       />
       <RainbowSpaceTrails
         simulationIndex={simulationIndex}
         simulationRadius={SIMULATION_RADIUS}
         useSimulationsStore={useSimulationsStore}
+        isInfinity={isInfinity}
       />
       <SpaceTrails
         simulationIndex={simulationIndex}
@@ -454,7 +459,14 @@ const TimeCell: FC<{
   particleCount: number
   bounding: Bounding
   spin: number
-}> = ({ useSimulationsStore, simulationIndex, particleCount, spin }) => {
+  isInfinity?: boolean
+}> = ({
+  useSimulationsStore,
+  simulationIndex,
+  particleCount,
+  spin,
+  isInfinity,
+}) => {
   const groupRef = useRef<Group>(null)
   useEffect(() => {
     // Initial rotation
@@ -472,6 +484,7 @@ const TimeCell: FC<{
         simulationIndex={simulationIndex}
         simulationRadius={SIMULATION_RADIUS}
         useSimulationsStore={useSimulationsStore}
+        isInfinity={isInfinity}
       />
       <RainbowTimeTrails
         simulationIndex={simulationIndex}
@@ -479,6 +492,7 @@ const TimeCell: FC<{
         useSimulationsStore={useSimulationsStore}
         particleCount={particleCount}
         trailLength={TRAIL_LENGTH}
+        isInfinity={isInfinity}
       />
       {/* <Dots
         simulationIndex={simulationIndex}

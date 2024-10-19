@@ -28,7 +28,13 @@ export const RainbowSpaceTrails: FC<{
   simulationRadius: number
   useSimulationsStore: UseSimulationsStore
   fillStyle?: string
-}> = ({ simulationIndex, simulationRadius, useSimulationsStore }) => {
+  isInfinity?: boolean
+}> = ({
+  simulationIndex,
+  simulationRadius,
+  useSimulationsStore,
+  isInfinity,
+}) => {
   const hueScale = useMemo(
     () => createHueScale(simulationRadius),
     [simulationRadius],
@@ -78,7 +84,9 @@ export const RainbowSpaceTrails: FC<{
             colors[drawCount * 3 + 1] = 1
             colors[drawCount * 3 + 2] = 0
           } else {
-            const hue = hueScale(radiusSq)
+            const hue = isInfinity
+              ? hueScale(simulationRadius * simulationRadius)
+              : hueScale(radiusSq)
             color.setHSL(hue, RAINBOW_S, RAINBOW_L)
             colors[drawCount * 3 + 0] = color.r
             colors[drawCount * 3 + 1] = color.g
@@ -93,6 +101,7 @@ export const RainbowSpaceTrails: FC<{
     })
   }, [
     simulationIndex,
+    simulationRadius,
     useSimulationsStore,
     positionsAttr,
     geometry,
@@ -101,6 +110,7 @@ export const RainbowSpaceTrails: FC<{
     colors,
     colorsAttr,
     hueScale,
+    isInfinity,
   ])
 
   return <points geometry={geometry} material={material} />
