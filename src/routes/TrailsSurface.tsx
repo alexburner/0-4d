@@ -29,7 +29,7 @@ const ZOOM = 9.4
 const BACKGROUND_COLOR = '#222'
 
 const SUB_DIMENSIONS: number[] = [-1]
-const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 8, 16, 32]
+const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 6, 12, 24]
 const SUP_DIMENSIONS = [Infinity]
 const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
 const DIMENSION_CHARS = ['x', 'y', 'z']
@@ -41,6 +41,12 @@ export const DIMENSION_LABELS: Partial<Record<string, string>> = {
   '3': 'life',
   '4': '           mind     →', // →
   Infinity: 'beyond',
+}
+const DIMENSION_FORMS: Partial<Record<string, string>> = {
+  '1': 'waves',
+  '2': 'spirals',
+  '3': 'tangles',
+  '4': 'hidden\nvariables', // →
 }
 
 const SIMULATION_RADIUS = 14
@@ -128,7 +134,9 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
             // border: '1px dashed #555',
           }}
         >
-          {DIMENSIONS.map((dimension) => {
+          {DIMENSIONS.map((dimension, dIndex) => {
+            const dPrev = DIMENSIONS[dIndex - 1]
+            const dDelta = dPrev === undefined ? Infinity : dimension - dPrev
             let localChars: string[] | undefined = undefined
             if (dimension >= 0) {
               localChars = DIMENSION_CHARS.slice(
@@ -205,7 +213,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                   ) : (
                     <span>&nbsp;</span>
                   )}
-                  {dimension > 5 && (
+                  {dDelta > 1 && (
                     <div
                       style={{
                         position: 'absolute',
