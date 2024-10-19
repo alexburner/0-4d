@@ -33,7 +33,7 @@ const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 8, 16, 32]
 const SUP_DIMENSIONS = [Infinity]
 const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
 const DIMENSION_CHARS = ['x', 'y', 'z']
-const DIMENSION_LABELS: Partial<Record<string, string>> = {
+export const DIMENSION_LABELS: Partial<Record<string, string>> = {
   '-1': 'nothing',
   '0': 'existence',
   '1': 'energy',
@@ -91,6 +91,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
           height: `${HEIGHT}px`,
           position: 'relative',
           top: '-100px',
+          left: '-85px',
         }}
       >
         <Canvas
@@ -147,8 +148,8 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                 ? '∞ d' // '100000d' '∞ d'
                 : `${dimension}d`
             const nText = dText.split('d')[0]
-            const dLabel = DIMENSION_LABELS[String(dimension)]
-            const isEdge = !SIM_DIMENSIONS.includes(dimension)
+            // const dLabel = DIMENSION_LABELS[String(dimension)]
+            // const isEdge = !SIM_DIMENSIONS.includes(dimension)
             return (
               <div
                 key={dimension}
@@ -159,7 +160,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                   position: 'relative',
                 }}
               >
-                {dLabel && (
+                {/* {dLabel && (
                   <div
                     style={{
                       position: 'absolute',
@@ -187,7 +188,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                       {dLabel}
                     </div>
                   </div>
-                )}
+                )} */}
                 <h3
                   style={{
                     fontWeight: '100',
