@@ -43,10 +43,24 @@ export const DIMENSION_LABELS: Partial<Record<string, string>> = {
   Infinity: 'beyond',
 }
 const DIMENSION_FORMS: Partial<Record<string, string>> = {
+  '0': 'being',
   '1': 'waves',
   '2': 'spirals',
   '3': 'tangles',
   '4': 'hidden\nvariables', // →
+}
+const DFC_S = '70%'
+const DFC_L = '70%'
+const DIMENSION_FORM_COLORS: Partial<Record<string, string>> = {
+  // '1': `hsl(187deg ${DFC_S} ${DFC_L})`,
+  // '2': `hsl(212deg ${DFC_S} ${DFC_L})`,
+  // '3': `hsl(235deg ${DFC_S} ${DFC_L})`,
+  // '4': `hsl(297deg ${DFC_S} ${DFC_L})`,
+  '0': `hsl(184deg 0% ${DFC_L})`,
+  '1': `hsl(194deg ${DFC_S} ${DFC_L})`,
+  '2': `hsl(214deg ${DFC_S} ${DFC_L})`,
+  '3': `hsl(232deg ${DFC_S} ${DFC_L})`,
+  '4': `hsl(272deg ${DFC_S} ${DFC_L})`,
 }
 
 const SIMULATION_RADIUS = 14
@@ -136,7 +150,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
         >
           {DIMENSIONS.map((dimension, dIndex) => {
             const dPrev = DIMENSIONS[dIndex - 1]
-            const dDelta = dPrev === undefined ? Infinity : dimension - dPrev
+            const dDelta = dPrev === undefined ? -Infinity : dimension - dPrev
             let localChars: string[] | undefined = undefined
             if (dimension >= 0) {
               localChars = DIMENSION_CHARS.slice(
@@ -158,6 +172,8 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
             const nText = dText.split('d')[0]
             // const dLabel = DIMENSION_LABELS[String(dimension)]
             // const isEdge = !SIM_DIMENSIONS.includes(dimension)
+            const dForm = DIMENSION_FORMS[String(dimension)]
+            const dColor = DIMENSION_FORM_COLORS[String(dimension)]
             return (
               <div
                 key={dimension}
@@ -168,6 +184,44 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                   position: 'relative',
                 }}
               >
+                {dForm && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      // bottom: '980px',
+                      top: '73px',
+                      left: '-20px',
+                      right: '-20px',
+                      textAlign: 'center',
+                      // border: '1px dotted #CCC',
+                      color: dColor ?? '#AAA',
+                      // fontFamily: 'Palantino',
+                      // fontStyle: 'italic',
+                      // textTransform: 'uppercase',
+                      letterSpacing: '0.11em',
+                      lineHeight: '1.33em',
+                      fontSize: '11px',
+                      fontWeight: 100,
+                      whiteSpace: 'pre',
+                    }}
+                  >
+                    {dForm}
+                    {/* {dimension === 4 && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          // top: '1px',
+                          // right: '30px',
+                          top: '3px',
+                          right: '22px',
+                          color: `hsl(282deg ${DFC_S} ${DFC_L})`,
+                        }}
+                      >
+                        →
+                      </span>
+                    )} */}
+                  </div>
+                )}
                 {/* {dLabel && (
                   <div
                     style={{
@@ -231,8 +285,8 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                   style={{
                     fontWeight: 'normal',
                     fontFamily: 'Georgia',
-                    marginTop: '-0.7em',
-                    opacity: 0.9,
+                    marginTop: '-0.67em',
+                    // opacity: 0.9,
                   }}
                 >
                   {localChars ? (
