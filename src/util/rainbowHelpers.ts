@@ -45,4 +45,4 @@ export const createMaterial = (size: number, opacity = 0.9) => {
 export const createHueScale = (radius: number) =>
   scaleLinear()
     .domain([0, radius * radius])
-    .range([1, 0.6])
+    .range([0.6, 0.8])

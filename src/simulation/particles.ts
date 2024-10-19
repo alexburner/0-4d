@@ -40,7 +40,7 @@ export const makeFreshParticle = (
 ): Particle => ({
   dimensions,
   position: radialRandomVector(dimensions, radius * 0.6),
-  velocity: radialRandomVector(dimensions, 0.45),
+  velocity: radialRandomVector(dimensions, 0.4),
   acceleration: radialRandomVector(dimensions, 0),
 })
 
