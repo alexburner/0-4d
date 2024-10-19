@@ -33,6 +33,15 @@ const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 8, 16, 32]
 const SUP_DIMENSIONS = [Infinity]
 const DIMENSIONS = [...SUB_DIMENSIONS, ...SIM_DIMENSIONS, ...SUP_DIMENSIONS]
 const DIMENSION_CHARS = ['x', 'y', 'z']
+const DIMENSION_LABELS: Partial<Record<string, string>> = {
+  '-1': 'nothing',
+  '0': 'existence',
+  '1': 'energy',
+  '2': 'matter',
+  '3': 'life',
+  '4': 'mind', // →
+  Infinity: 'beyond',
+}
 
 const SIMULATION_RADIUS = 14
 const TRAIL_LENGTH = 720
@@ -113,8 +122,8 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
             flexGrow: 1,
             position: 'absolute',
             bottom: '-57px',
-            left: '48px',
-            right: '48px',
+            left: '53px',
+            right: '53px',
             // border: '1px dashed #555',
           }}
         >
@@ -129,7 +138,6 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
             if (localChars && dimension > DIMENSION_CHARS.length) {
               localChars.push('...')
             }
-
             const dText =
               dimension === -2
                 ? ''
@@ -138,9 +146,8 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                 : dimension === Infinity
                 ? '∞ d' // '100000d' '∞ d'
                 : `${dimension}d`
-
             const nText = dText.split('d')[0]
-
+            const dLabel = DIMENSION_LABELS[String(dimension)]
             return (
               <div
                 key={dimension}
@@ -148,8 +155,35 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                   textAlign: 'center',
                   width: '110px',
                   // border: '1px dashed #555',
+                  position: 'relative',
                 }}
               >
+                {dLabel && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '-780px',
+                      left: '-20px',
+                      right: '-20px',
+                      textAlign: 'center',
+                    }}
+                  >
+                    <div
+                      style={{
+                        background: 'rgba(34, 34, 34, 0.25)',
+                        color: '#DDD',
+                        // border: '1px dotted #CCC',
+                        fontFamily: 'Georgia, serif',
+                        fontSize: '0.67em',
+                        fontWeight: 100,
+                        padding: '12px 0',
+                        backdropFilter: 'blur(3px)',
+                      }}
+                    >
+                      {dLabel}
+                    </div>
+                  </div>
+                )}
                 <h3
                   style={{
                     fontWeight: '100',
@@ -158,11 +192,13 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                     // opacity: 0.7,
                   }}
                 >
-                  {nText && (
+                  {nText ? (
                     <span style={{ color: '#CCC' }}>
                       {nText}
                       <span style={{ color: '#BBB' }}>d</span>
                     </span>
+                  ) : (
+                    <span>&nbsp;</span>
                   )}
                   {dimension > 5 && (
                     <div
@@ -189,7 +225,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                   >
                     {localChars ? (
                       <span style={{ color: '#777' }}>
-                        {'( '}
+                        <span style={{ fontSize: '0.9em' }}>{'( '}</span>
                         <span style={{ padding: '0 2px' }}>
                           {localChars.map((char, i, l) => {
                             const isLast = i === l.length - 1
@@ -203,7 +239,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                             )
                           })}
                         </span>
-                        {' )'}
+                        <span style={{ fontSize: '0.9em' }}>{' )'}</span>
                       </span>
                     ) : (
                       <>&nbsp;</>
