@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { useHash } from 'react-use'
-import { Home } from './routes/Home'
+import { Index, linksByHash } from './routes/Index'
 import { NotFound } from './routes/NotFound'
 import { Stacks } from './routes/Stacks'
 import { TorusTest } from './routes/TorusTest'
@@ -11,12 +11,16 @@ import { TrailsCombinedIntro } from './routes/TrailsCombinedIntro'
 import { TrailsSurface } from './routes/TrailsSurface'
 import { parseHashRoute } from './util/hashRoute'
 
-export const App: FC = () => {
+export const Router: FC = () => {
   const [hash] = useHash()
+
+  const link = linksByHash[hash]
+  if (link) document.title = `ndim | ${link.text}`
+
   const route = parseHashRoute(hash)
   switch (route.path) {
     case '':
-      return <Home />
+      return <Index />
     case 'trails':
       return <Trails route={route} />
     case 'trail-columns':
