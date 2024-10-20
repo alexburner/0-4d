@@ -32,8 +32,8 @@ export const TimeTrails: FC<{
   const TRAIL_GAP = 1 / 4
 
   const positions = useMemo(() => new Float32Array(ATTR_LENGTH), [ATTR_LENGTH])
-  const attribute = useMemo(() => createAttribute(positions), [positions])
-  const geometry = useMemo(() => createGeometry(attribute), [attribute])
+  const positionsAttr = useMemo(() => createAttribute(positions), [positions])
+  const geometry = useMemo(() => createGeometry(positionsAttr), [positionsAttr])
   const texture = useMemo(() => createTexture(fillStyle), [fillStyle])
   const material = useMemo(() => createMaterial(texture), [texture])
 
@@ -58,6 +58,7 @@ export const TimeTrails: FC<{
       const attrShift = particleCount * 3
       const attrShiftStart = ATTR_LENGTH - 1 - attrShift
       for (let i = attrShiftStart; i >= 0; i--) {
+        // Shift position
         const positionValue = positions[i]
         if (positionValue === undefined) throw new Error('Unreachable')
         positions[i + attrShift] = positionValue
@@ -67,19 +68,20 @@ export const TimeTrails: FC<{
       for (let i = 0; i < particleCount; i++) {
         const particle = particles[i]
         if (!particle) throw new Error('Unreachable')
+        // Add position
         positions[i * 3 + 0] = particle.position[0] ?? 0
         positions[i * 3 + 1] = particle.position[1] ?? 0
         positions[i * 3 + 2] = particle.position[2] ?? 0
       }
 
       geometry.setDrawRange(0, MAX_POINTS)
-      attribute.needsUpdate = true
+      positionsAttr.needsUpdate = true
     })
   }, [
     useSurface,
     simulationIndex,
     useSimulationsStore,
-    attribute,
+    positionsAttr,
     geometry,
     positions,
     TRAIL_GAP,
