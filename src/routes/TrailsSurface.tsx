@@ -43,7 +43,7 @@ export const DIMENSION_LABELS: Partial<Record<string, string>> = {
   Infinity: 'beyond',
 }
 const DIMENSION_FORMS: Partial<Record<string, string>> = {
-  '0': 'being',
+  // '0': 'being',
   '1': 'waves',
   '2': 'spirals',
   '3': 'tangles',
@@ -56,7 +56,7 @@ const DIMENSION_FORM_COLORS: Partial<Record<string, string>> = {
   // '2': `hsl(212deg ${DFC_S} ${DFC_L})`,
   // '3': `hsl(235deg ${DFC_S} ${DFC_L})`,
   // '4': `hsl(297deg ${DFC_S} ${DFC_L})`,
-  '0': `hsl(184deg 0% ${DFC_L})`,
+  // '0': `hsl(184deg 0% ${DFC_L})`,
   '1': `hsl(194deg ${DFC_S} ${DFC_L})`,
   '2': `hsl(214deg ${DFC_S} ${DFC_L})`,
   '3': `hsl(232deg ${DFC_S} ${DFC_L})`,
