@@ -1,6 +1,13 @@
-import { times } from 'lodash'
-import { centerScaling } from './boundings'
-import { radialRandomVector, VectorN } from './vectorN'
+import { random, times } from 'lodash'
+import {
+  assign,
+  createVectorN,
+  getMagnitudeSq,
+  matchMagnitude,
+  radialRandomVector,
+  setMagnitude,
+  VectorN,
+} from './vectorN'
 
 export interface Particle {
   dimensions: number
@@ -37,34 +44,43 @@ const makeFilledParticles = (
 export const makeFreshParticle = (
   dimensions: number,
   radius: number,
-): Particle => ({
-  dimensions,
-  position: radialRandomVector(dimensions, radius * 0.7),
-  velocity: radialRandomVector(dimensions, 0.4),
-  acceleration: radialRandomVector(dimensions, 0),
-})
+): Particle => {
+  const particle = {
+    dimensions,
+    position: radialRandomVector(dimensions, radius * 0.8),
+    velocity: radialRandomVector(dimensions, 0.6),
+    acceleration: createVectorN(dimensions, 0), // no init accel
+  }
+  // speed floor
+  const speedFloor = 0.2
+  const speedFloorSq = speedFloor * speedFloor
+  const speedSq = getMagnitudeSq(particle.velocity)
+  if (speedSq < speedFloorSq) {
+    const speed = Math.sqrt(speedSq)
+    const newSpeed = random(speed, speed + speedFloor)
+    particle.velocity = setMagnitude(particle.velocity, newSpeed)
+  }
+  return particle
+}
 
 const makeFilledParticle = (
   dimensions: number,
   radius: number,
   oldP: Particle,
 ): Particle => {
+  // make a new random particle
   const newP = makeFreshParticle(dimensions, radius)
-  newP.position = assign(newP.position, oldP.position)
-  newP.velocity = assign(newP.velocity, oldP.velocity)
-  newP.acceleration = assign(newP.acceleration, oldP.acceleration)
+  if (oldP.dimensions > 0) {
+    // overwrite any corresponding new vector values with old
+    newP.position = assign(newP.position, oldP.position)
+    newP.velocity = assign(newP.velocity, oldP.velocity)
+    // restore original magnitudes
+    newP.position = matchMagnitude(newP.position, oldP.position)
+    newP.velocity = matchMagnitude(newP.velocity, oldP.velocity)
+  }
+  // all done
   return newP
 }
-
-/**
- * Copies `src` values into `dst` values, if they exist
- * (allows copying between vectors of different dimensionality)
- */
-const assign = (dst: VectorN, src: VectorN): VectorN =>
-  dst.map((dstN, dimension) => {
-    const srcN = src[dimension]
-    return srcN !== undefined ? srcN : dstN
-  })
 
 /**
  * Makes a set of particles & upscales it through dimensions
@@ -103,7 +119,6 @@ export const makeParticlesThroughDimensions2 = (
     const nextParticles = prevParticles
       ? makeFilledParticles(dimension, radius, prevParticles)
       : makeFreshParticles(dimension, radius, particleCount)
-    centerScaling(nextParticles, radius)
     particlesByDimension[dimension] = nextParticles
   })
   return particlesByDimension

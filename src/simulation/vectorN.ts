@@ -9,7 +9,7 @@ import { coinFlip, shuffle } from '../util/util'
 
 export type VectorN = number[]
 
-const createVectorN = (dimensions: number, fill?: number): VectorN =>
+export const createVectorN = (dimensions: number, fill?: number): VectorN =>
   new Array<number>(dimensions).fill(fill ?? 0)
 
 type VectorMath = (a: VectorN, b: VectorN | number) => VectorN
@@ -100,4 +100,19 @@ export const radialRandomVector = (dimensions: number, radius = 1): VectorN => {
   })
   shuffle(result)
   return result
+}
+
+export const assign = (dst: VectorN, src: VectorN): VectorN =>
+  // Copies `src` values into `dst` values, if they exist
+  // (allows copying between vectors of different dimensionality)
+  dst.map((dstN, dimension) => {
+    const srcN = src[dimension]
+    return srcN === undefined ? dstN : srcN
+  })
+
+export const matchMagnitude = (dst: VectorN, src: VectorN): VectorN => {
+  // Sets `dst` magnitude to match `src` magnitude
+  // (useful for preserving magnitude of up-leveled particles)
+  const srcMagnitude = getMagnitude(src)
+  return setMagnitude(dst, srcMagnitude)
 }
