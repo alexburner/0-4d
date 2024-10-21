@@ -28,6 +28,22 @@ const ZOOM = 9.4
 
 const BACKGROUND_COLOR = '#222'
 
+const SIMULATION_RADIUS = 14
+const TRAIL_LENGTH = 720
+
+const DEFAULT_PARTICLE_COUNT = 9
+const DEFAULT_SPIN = -0.0061215
+const DEFAULT_BEHAVIOR_NAME = 'orbiting'
+
+const useStore = createUseSimulationsStore()
+
+const behaviorBoundings: Record<Behavior['name'], Bounding> = {
+  orbiting: 'centerScaling',
+  wandering: 'centerScaling',
+  rays: 'edgeReflecting',
+  diffusion: 'centerScaling',
+}
+
 const SUB_DIMENSIONS: number[] = [-1]
 const SIM_DIMENSIONS = [0, 1, 2, 3, 4, 6, 12, 24]
 const SUP_DIMENSIONS = [Infinity]
@@ -43,40 +59,24 @@ export const DIMENSION_LABELS: Partial<Record<string, string>> = {
   Infinity: 'beyond',
 }
 const DIMENSION_FORMS: Partial<Record<string, string>> = {
-  // '0': 'being',
+  '0': 'being',
   '1': 'waves',
   '2': 'spirals',
   '3': 'tangles',
   '4': 'hidden\nvariables', // →
 }
 const DFC_S = '70%'
-const DFC_L = '70%'
+const DFC_L = '65%'
 const DIMENSION_FORM_COLORS: Partial<Record<string, string>> = {
   // '1': `hsl(187deg ${DFC_S} ${DFC_L})`,
   // '2': `hsl(212deg ${DFC_S} ${DFC_L})`,
   // '3': `hsl(235deg ${DFC_S} ${DFC_L})`,
   // '4': `hsl(297deg ${DFC_S} ${DFC_L})`,
-  // '0': `hsl(184deg 0% ${DFC_L})`,
-  '1': `hsl(194deg ${DFC_S} ${DFC_L})`,
+  '0': `hsl(184deg 0% ${DFC_L})`,
+  '1': `hsl(194deg ${DFC_S} calc(${DFC_L} - 2%))`,
   '2': `hsl(214deg ${DFC_S} ${DFC_L})`,
   '3': `hsl(232deg ${DFC_S} ${DFC_L})`,
-  '4': `hsl(272deg ${DFC_S} ${DFC_L})`,
-}
-
-const SIMULATION_RADIUS = 14
-const TRAIL_LENGTH = 720
-
-const DEFAULT_PARTICLE_COUNT = 9
-const DEFAULT_SPIN = -0.0061215
-const DEFAULT_BEHAVIOR_NAME = 'orbiting'
-
-const useStore = createUseSimulationsStore()
-
-const behaviorBoundings: Record<Behavior['name'], Bounding> = {
-  orbiting: 'centerScaling',
-  wandering: 'centerScaling',
-  rays: 'edgeReflecting',
-  diffusion: 'centerScaling',
+  '4': `hsl(266deg ${DFC_S} ${DFC_L})`,
 }
 
 export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
@@ -172,8 +172,12 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
             const nText = dText.split('d')[0]
             // const dLabel = DIMENSION_LABELS[String(dimension)]
             // const isEdge = !SIM_DIMENSIONS.includes(dimension)
-            const dForm = DIMENSION_FORMS[String(dimension)]
-            const dColor = DIMENSION_FORM_COLORS[String(dimension)]
+            const dForm =
+              DIMENSION_FORMS[String(dimension)] ??
+              (dimension > 4 ? 'hv' : undefined)
+            const dColor =
+              DIMENSION_FORM_COLORS[String(dimension)] ??
+              (dimension > 4 ? DIMENSION_FORM_COLORS['4'] : undefined)
             return (
               <div
                 key={dimension}
@@ -189,7 +193,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
                     style={{
                       position: 'absolute',
                       // bottom: '980px',
-                      top: '73px',
+                      top: '75px',
                       left: '-20px',
                       right: '-20px',
                       textAlign: 'center',

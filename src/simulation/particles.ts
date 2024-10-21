@@ -43,22 +43,29 @@ const makeFilledParticles = (
 
 export const makeFreshParticle = (
   dimensions: number,
-  radius: number,
+  simulationRadius: number,
 ): Particle => {
   const particle = {
     dimensions,
-    position: radialRandomVector(dimensions, radius * 0.8),
+    position: radialRandomVector(dimensions, simulationRadius * 0.8),
     velocity: radialRandomVector(dimensions, 0.6),
     acceleration: createVectorN(dimensions, 0), // no init accel
   }
   // speed floor
-  const speedFloor = 0.2
-  const speedFloorSq = speedFloor * speedFloor
+  const speedFloor = 0.3
   const speedSq = getMagnitudeSq(particle.velocity)
-  if (speedSq < speedFloorSq) {
+  if (speedSq < speedFloor * speedFloor) {
     const speed = Math.sqrt(speedSq)
     const newSpeed = random(speed, speed + speedFloor)
     particle.velocity = setMagnitude(particle.velocity, newSpeed)
+  }
+  // radius floor
+  const radiusFloor = 0.1
+  const radiusSq = getMagnitudeSq(particle.position)
+  if (radiusSq < radiusFloor * radiusFloor) {
+    const radius = Math.sqrt(radiusSq)
+    const newRadius = random(radius, radius + radiusFloor)
+    particle.position = setMagnitude(particle.position, newRadius)
   }
   return particle
 }
