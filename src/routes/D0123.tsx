@@ -1,5 +1,6 @@
 import { Canvas, useFrame } from '@react-three/fiber'
-import { FC, useState } from 'react'
+import { times } from 'lodash'
+import { FC, useMemo, useState } from 'react'
 import { DoubleSide, MeshPhongMaterial, Plane, Vector3 } from 'three'
 
 const CANVAS_WIDTH = 1840
@@ -62,6 +63,24 @@ const D0123R3F: FC = () => {
   const growthSpeed = 0.05 // Radius increase per frame
   const fadeStartThreshold = 0.5 // Start fading at 95% of max radius
 
+  // Create reusable materials
+  const materials = useMemo(
+    () =>
+      times(
+        sphereStates.length,
+        () =>
+          new MeshPhongMaterial({
+            color: 0xffffff,
+            side: DoubleSide,
+            clipIntersection: true,
+            clippingPlanes: clipPlanes,
+            transparent: true,
+            opacity: 1,
+          }),
+      ),
+    [sphereStates.length],
+  )
+
   useFrame(() => {
     // Update sphere states
     setSphereStates((prevStates) => {
@@ -88,6 +107,11 @@ const D0123R3F: FC = () => {
         }
 
         newStates[index] = { radius: newRadius, opacity: newOpacity }
+
+        // Update the material opacity directly instead of creating new materials
+        const material = materials[index]
+        if (!material) throw new Error('Unreachable') // For TS
+        material.opacity = newOpacity
       }
       return newStates
     })
@@ -95,22 +119,11 @@ const D0123R3F: FC = () => {
 
   return (
     <group position={[0, 0, 0]}>
-      {sphereStates.map((state, index) => {
-        const material = new MeshPhongMaterial({
-          color: 0xffffff,
-          side: DoubleSide,
-          clipIntersection: true,
-          clippingPlanes: clipPlanes,
-          transparent: true,
-          opacity: state.opacity,
-        })
-
-        return (
-          <mesh key={index} material={material}>
-            <sphereGeometry args={[state.radius, 32, 32]} />
-          </mesh>
-        )
-      })}
+      {sphereStates.map((state, index) => (
+        <mesh key={index} material={materials[index]}>
+          <sphereGeometry args={[state.radius, 32, 32]} />
+        </mesh>
+      ))}
     </group>
   )
 }
