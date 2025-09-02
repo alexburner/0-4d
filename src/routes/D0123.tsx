@@ -55,34 +55,20 @@ const sphereMaterial = new MeshPhongMaterial({
 })
 
 const D0123R3F: FC = () => {
-  // const { camera } = useThree()
   const [sphereRadii, setSphereRadii] = useState<number[]>([0, 2, 4, 6, 8, 10])
   const maxRadius = 10
   const growthSpeed = 0.05 // Radius increase per frame
 
   useFrame(() => {
-    // // Orbit camera around the spheres in a circular path
-    // const rotationSpeed = 0.5 // radians per second
-    // const radius = 40 // distance from center
-    // const time = state.clock.elapsedTime * rotationSpeed
-
-    // // Calculate new camera position in circular orbit
-    // camera.position.x = Math.sin(time) * radius
-    // camera.position.z = Math.cos(time) * radius
-    // camera.position.y = 0
-
-    // // Keep camera pointed at the center
-    // camera.lookAt(0, 0, 0)
-
     // Update sphere radii
     setSphereRadii((prevRadii) => {
       const newRadii = [...prevRadii]
       for (let index = 0; index < newRadii.length; index++) {
-        if (newRadii[index] === undefined) throw new Error('Unreachable')
-        newRadii[index] += growthSpeed
-        if (newRadii[index] >= maxRadius) {
-          newRadii[index] = 0
-        }
+        let newRadius = newRadii[index]
+        if (newRadius === undefined) throw new Error('Unreachable')
+        newRadius += growthSpeed
+        if (newRadius > maxRadius) newRadius = 0
+        newRadii[index] = newRadius
       }
       return newRadii
     })
