@@ -49,6 +49,13 @@ const clipPlanes = [
 ]
 
 const D0123R3F: FC = () => {
+  /**
+   * TODO NEXT
+   * - split ExpandingSphere into its own component
+   * - run each (with init radius) to max radius, then dissapear
+   * - keep adding new ones "within", to prevent clip on first/last changeover
+   */
+
   const [sphereStates, setSphereStates] = useState<
     { radius: number; opacity: number }[]
   >([
