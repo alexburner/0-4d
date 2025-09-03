@@ -67,7 +67,7 @@ const D0123R3F: FC = () => {
     { radius: 10, opacity: 1 },
   ])
   const maxRadius = 10
-  const growthSpeed = 0.05 // Radius increase per frame
+  const growthSpeed = 0.01 // Radius increase per frame
   const fadeStartThreshold = 0.5 // Start fading at 95% of max radius
 
   // Create reusable materials
@@ -94,7 +94,7 @@ const D0123R3F: FC = () => {
       const newStates = [...prevStates]
       for (let index = 0; index < newStates.length; index++) {
         const currentState = newStates[index]
-        if (!currentState) continue
+        if (!currentState) continue // for TS
         let newRadius = currentState.radius + growthSpeed
         let newOpacity = currentState.opacity
 
@@ -117,7 +117,7 @@ const D0123R3F: FC = () => {
 
         // Update the material opacity directly instead of creating new materials
         const material = materials[index]
-        if (!material) throw new Error('Unreachable') // For TS
+        if (!material) continue // for TS
         material.opacity = newOpacity
       }
       return newStates
@@ -127,7 +127,11 @@ const D0123R3F: FC = () => {
   return (
     <group position={[0, 0, 0]}>
       {sphereStates.map((state, index) => (
-        <mesh key={index} material={materials[index]}>
+        <mesh
+          key={index}
+          material={materials[index]}
+          renderOrder={Math.ceil(100 * state.radius)}
+        >
           <sphereGeometry args={[state.radius, 32, 32]} />
         </mesh>
       ))}
