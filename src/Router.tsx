@@ -1,8 +1,9 @@
 import { FC } from 'react'
 import { useHash } from 'react-use'
-import { D0123 } from './routes/D0123'
 import { Index, linksByHash } from './routes/Index'
 import { NotFound } from './routes/NotFound'
+import { Spheres1 } from './routes/Spheres1'
+import { Spheres2 } from './routes/Spheres2'
 import { Stacks } from './routes/Stacks'
 import { TorusTest } from './routes/TorusTest'
 import { TrailColumns } from './routes/TrailColumns'
@@ -36,8 +37,10 @@ export const Router: FC = () => {
       return <Stacks route={route} />
     case 'torus-test':
       return <TorusTest />
-    case 'd0123':
-      return <D0123 />
+    case 'spheres-1':
+      return <Spheres1 />
+    case 'spheres-2':
+      return <Spheres2 />
     default:
       return <NotFound route={route} />
   }

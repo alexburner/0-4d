@@ -1,7 +1,7 @@
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { times } from 'lodash'
 import { FC, useMemo, useState } from 'react'
-import { DoubleSide, MeshPhongMaterial, Plane, Vector3 } from 'three'
+import { AdditiveBlending, Color, FrontSide, ShaderMaterial } from 'three'
 
 const CANVAS_WIDTH = 1840
 const CANVAS_HEIGHT = 1080
@@ -10,9 +10,9 @@ const NEAR = 1
 const FAR = 5000
 const ZOOM = 1
 
-const BACKGROUND_COLOR = '#222'
+const BACKGROUND_COLOR = '#000'
 
-export const D0123: FC = () => {
+export const Spheres2: FC = () => {
   return (
     <div
       style={{
@@ -37,16 +37,11 @@ export const D0123: FC = () => {
         gl={{ localClippingEnabled: true }}
       >
         <directionalLight position={[0, 0, 5]} />
-        <D0123R3F />
+        <Spheres2R3F />
       </Canvas>
     </div>
   )
 }
-
-const CLIP_PLANES = [
-  new Plane(new Vector3(1, 0, 0), 0), // Clip negative x side
-  new Plane(new Vector3(0, 0, -1), 0), // Clip positive z side
-]
 
 const MAX_RADIUS = 12
 const GROWTH_SPEED = 0.01
@@ -59,7 +54,9 @@ interface SphereState {
   opacity: number
 }
 
-const D0123R3F: FC = () => {
+const Spheres2R3F: FC = () => {
+  const camera = useThree((state) => state.camera)
+
   const [sphereStates, setSphereStates] = useState<SphereState[]>(() =>
     times(SPHERE_COUNT, (i) => ({ radius: i * SPHERE_GAP, opacity: 1 })),
   )
@@ -70,16 +67,37 @@ const D0123R3F: FC = () => {
       times(
         SPHERE_COUNT,
         () =>
-          new MeshPhongMaterial({
-            color: 0xffffff,
-            side: DoubleSide,
-            clipIntersection: true,
-            clippingPlanes: CLIP_PLANES,
+          new ShaderMaterial({
+            uniforms: {
+              c: {
+                // type: 'f',
+                value: 1.0,
+              },
+              p: {
+                // type: 'f',
+                value: 1.4,
+              },
+              glowColor: {
+                // type: 'c',
+                value: new Color(0xffffff),
+              },
+              viewVector: {
+                // type: 'v3',
+                value: camera.position,
+              },
+              alpha: {
+                value: 1.0,
+              },
+            },
+            vertexShader: BUBBLE_SHADERS.vertex,
+            fragmentShader: BUBBLE_SHADERS.fragment,
+            side: FrontSide,
+            blending: AdditiveBlending,
             transparent: true,
-            opacity: 1,
+            // opacity: 1,
           }),
       ),
-    [],
+    [camera.position],
   )
 
   useFrame(() => {
@@ -112,7 +130,9 @@ const D0123R3F: FC = () => {
         // Update the material opacity directly instead of creating new materials
         const material = materials[index]
         if (!material) continue // for TS
-        material.opacity = newOpacity
+        if (material.uniforms['alpha']) {
+          material.uniforms['alpha'].value = newOpacity
+        }
       }
       return newStates
     })
@@ -131,4 +151,30 @@ const D0123R3F: FC = () => {
       ))}
     </group>
   )
+}
+
+const BUBBLE_SHADERS = {
+  vertex: `
+    uniform vec3 viewVector;
+    uniform float c;
+    uniform float p;
+    uniform float alpha;
+    varying float intensity;
+
+    void main() {
+      vec3 vNormal = normalize( normalMatrix * normal );
+      vec3 vNormel = normalize( normalMatrix * viewVector );
+      intensity = pow( c - dot(vNormal, vNormel), p ) * alpha;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    }
+  `,
+  fragment: `
+    uniform vec3 glowColor;
+    varying float intensity;
+
+    void main() {
+      vec3 glow = glowColor * intensity;
+      gl_FragColor = vec4( glow, 1.0 );
+    }
+  `,
 }
