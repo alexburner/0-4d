@@ -174,7 +174,7 @@ export const TrailsSurface: FC<{ route: HashRoute }> = ({ route }) => {
             // const isEdge = !SIM_DIMENSIONS.includes(dimension)
             const dForm =
               DIMENSION_FORMS[String(dimension)] ??
-              (dimension > 4 ? 'hv' : undefined)
+              (dimension > 4 ? DIMENSION_FORMS['4'] : undefined)
             const dColor =
               DIMENSION_FORM_COLORS[String(dimension)] ??
               (dimension > 4 ? DIMENSION_FORM_COLORS['4'] : undefined)
