@@ -43,6 +43,14 @@ const links: Link[] = [
     text: 'Stacks — Diffusion',
     hash: '#stacks?behavior=diffusion',
   },
+  {
+    text: 'Spheres — 1',
+    hash: '#spheres-1',
+  },
+  {
+    text: 'Spheres — 2',
+    hash: '#spheres-2',
+  },
   // {
   //   text: 'Torus Test',
   //   hash: '#torus-test',
