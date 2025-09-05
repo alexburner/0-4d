@@ -14,8 +14,10 @@ export const has = <Key extends PropertyKey>(
  * Useful for things like Object.keys(myObject), which is string[]
  * (see https://stackoverflow.com/a/55012175 for why that is)
  */
-export const isKeyOf = <T>(key: unknown, obj: T): key is keyof T =>
-  String(key) in obj
+export const isKeyOf = <T extends object>(
+  key: unknown,
+  obj: T,
+): key is keyof T => String(key) in obj
 
 /**
  * User-Defined Type Guard:
